@@ -24,6 +24,7 @@ import static org.elasticsearch.index.query.QueryBuilders.queryString;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
@@ -56,6 +57,9 @@ class ESSearchService implements SMDsearch {
 	}
 
 	@Override
+	/**
+	 *  TODO don't forget to excludes the configuration index.
+	 */
 	public SMDSearchResponse search(String search, int first, int pageSize) {
 		if (logger.isDebugEnabled())
 			logger.debug("google('{}', {}, {})", search, first, pageSize);
@@ -155,6 +159,18 @@ class ESSearchService implements SMDsearch {
 	public void delete(String id) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void saveAdmin(Map<String, String> json) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Map<String, String> getAdmin() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
