@@ -33,11 +33,11 @@ import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.highlight.HighlightField;
-import org.scrutmydocs.datasource.data.SMDDataSource;
-import org.scrutmydocs.documents.SMDDocument;
-import org.scrutmydocs.search.data.SMDHit;
-import org.scrutmydocs.search.data.SMDSearchResponse;
-import org.scrutmydocs.search.data.SMDsearch;
+import org.scrutmydocs.contract.SMDDataSource;
+import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.contract.SMDHit;
+import org.scrutmydocs.contract.SMDSearchResponse;
+import org.scrutmydocs.contract.SMDsearch;
 import org.scrutmydocs.webapp.api.settings.rivers.AbstractRiverHelper;
 import org.scrutmydocs.webapp.constant.SMDSearchProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +46,14 @@ class ESSearchService implements SMDsearch {
 
 	private ESLogger logger = Loggers.getLogger(getClass().getName());
 
+	private SMDDataSource smdDataSource;
+	
 	@Autowired
 	Client esClient;
+
+	public ESSearchService(SMDDataSource smdDataSource) {
+		this.smdDataSource = smdDataSource;
+	}
 
 	@Override
 	public SMDSearchResponse search(String search, int first, int pageSize) {
@@ -141,12 +147,14 @@ class ESSearchService implements SMDsearch {
 	}
 
 	@Override
-	public void indexe(SMDDocument document, SMDDataSource repository) {
+	public void index(SMDDocument smdDocument) {
 
 	}
 
 	@Override
-	public void delete(String id, SMDDataSource repository) {
-
+	public void delete(String id) {
+		// TODO Auto-generated method stub
+		
 	}
+
 }

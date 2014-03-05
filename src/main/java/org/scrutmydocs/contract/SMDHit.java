@@ -1,4 +1,4 @@
-package org.scrutmydocs.search.data;
+package org.scrutmydocs.contract;
 
 import java.io.Serializable;
 import java.util.ArrayList;

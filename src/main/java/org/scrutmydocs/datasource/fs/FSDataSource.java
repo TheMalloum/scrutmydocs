@@ -17,45 +17,59 @@
  * under the License.
  */
 
-package org.scrutmydocs.datasource.s3;
+package org.scrutmydocs.datasource.fs;
 
 import java.util.List;
+import java.util.Map;
 
-import org.scrutmydocs.datasource.data.SMDChanges;
-import org.scrutmydocs.datasource.data.SMDDataSource;
-import org.scrutmydocs.documents.SMDDocument;
-
+import org.scrutmydocs.contract.SMDChanges;
+import org.scrutmydocs.contract.SMDDataSource;
+import org.scrutmydocs.contract.SMDDocument;
 
 /**
- * Implementation the S3 ScrutMyDocs Data Source
+ * Implementation the DropBox ScrutMyDocs Data Source
  * 
  * @author Malloum LAYA
  * 
  */
+public class FSDataSource extends SMDDataSource {
 
-public class S3DataSource  extends SMDDataSource {
+	public FSDataSource(Map<String, String> json) {
+		super(json);
+	}
 
 	@Override
 	public List<SMDChanges> changes(String since) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getDocumentPath(String id) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getID() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public SMDDocument getDocument(String id) {
-		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String checkSince() {
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return "fs";
+	}
+
+	@Override
+	public String updateSince(String since) {
 		return null;
 	}
 

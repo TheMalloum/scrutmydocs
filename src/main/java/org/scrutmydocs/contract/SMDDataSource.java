@@ -1,22 +1,26 @@
-package org.scrutmydocs.datasource.data;
+package org.scrutmydocs.contract;
 
 import java.util.List;
-
-import org.scrutmydocs.datasource.data.SMDChanges;
-import org.scrutmydocs.documents.SMDDocument;
+import java.util.Map;
 
 public abstract class SMDDataSource {
 
-	public String getName() {
-		return this.getClass().getName();
+	public SMDDataSource(Map<String, String> json){
 	}
-
+	
+	public abstract String getName();
+	
 	public abstract String getID();
-
+	
 	public abstract List<SMDChanges> changes(String since);
 
 	public abstract String getDocumentPath(String id);
 	
 	public abstract SMDDocument getDocument(String id);
+	
+	public abstract String checkSince();
+	
+	public abstract String updateSince(String since);
+	
 
 }

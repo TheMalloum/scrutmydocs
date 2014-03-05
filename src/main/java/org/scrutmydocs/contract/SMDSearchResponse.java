@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.scrutmydocs.search.data;
+package org.scrutmydocs.contract;
 
 import java.util.ArrayList;
 import java.util.List;

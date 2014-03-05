@@ -2,35 +2,35 @@ package org.scrutmydocs.scruting;
 
 import java.util.List;
 
-import org.scrutmydocs.datasource.DataSourceManager;
-import org.scrutmydocs.datasource.data.SMDChanges;
-import org.scrutmydocs.datasource.data.SMDDataSource;
-import org.scrutmydocs.documents.SMDDocument;
-import org.scrutmydocs.search.SearchFactory;
+import org.scrutmydocs.contract.SMDChanges;
+import org.scrutmydocs.contract.SMDChanges.ChangeType;
+import org.scrutmydocs.contract.SMDDataSource;
+import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.datasource.SMDDataSourcesManager;
+import org.scrutmydocs.search.SMDSearchFactory;
 
 public class ScrutMyDocsManager {
 
-	
-	
 	public void scruting() {
 
-		for (SMDDataSource smdDataSource : DataSourceManager
+		for (SMDDataSource smdDataSource : SMDDataSourcesManager
 				.getListDataSources()) {
 
-			String since = checkSince(smdDataSource);
+			String since = smdDataSource.checkSince();
 
 			List<SMDChanges> changes = smdDataSource.changes(since);
 
 			for (SMDChanges smdChanges : changes) {
 
-				if (smdChanges.delete) {
-					SearchFactory.getInstance().delete(smdChanges.idDocument,
-							smdDataSource);
+				if (smdChanges.changeType == ChangeType.DELETE) {
+					SMDSearchFactory.getInstance(smdDataSource).delete(
+							smdChanges.idDocument);
 				} else {
 					SMDDocument smdDocument = smdDataSource
 							.getDocument(smdChanges.idDocument);
-					
-					SearchFactory.getInstance().indexe(smdDocument, smdDataSource);
+
+					SMDSearchFactory.getInstance(smdDataSource).index(
+							smdDocument);
 
 				}
 
@@ -40,8 +40,4 @@ public class ScrutMyDocsManager {
 
 	}
 
-	private String checkSince(SMDDataSource smdDataSource) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
