@@ -1,10 +1,12 @@
-package org.scrutmydocs.contract;
+package org.scrutmydocs.datasource;
 
 import java.util.Date;
 import java.util.List;
 
 import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.Loggers;
+import org.scrutmydocs.contract.SMDChanges;
+import org.scrutmydocs.contract.SMDDocument;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -29,12 +31,5 @@ public abstract class SMDDataSource {
 
 	@JsonIgnore
 	public abstract SMDDocument getDocument(String id);
-
-	
-	@JsonIgnore
-	public abstract String updateSince(String since);
-
-	@JsonIgnore
-	public abstract List<SMDDataSource> listDS();
 
 }

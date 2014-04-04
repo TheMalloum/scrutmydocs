@@ -19,13 +19,16 @@
 
 package org.scrutmydocs.search;
 
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.queryString;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.logging.ESLogger;
@@ -34,21 +37,28 @@ import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.highlight.HighlightField;
-import org.scrutmydocs.contract.SMDDataSource;
 import org.scrutmydocs.contract.SMDDocument;
-import org.scrutmydocs.contract.SMDHit;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDsearch;
+import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.webapp.api.settings.rivers.AbstractRiverHelper;
-import org.scrutmydocs.webapp.constant.SMDSearchProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 class ESSearchService implements SMDsearch {
 
 	private ESLogger logger = Loggers.getLogger(getClass().getName());
 
 	private SMDDataSource smdDataSource;
-	
+
+	final private static String SMDINDEX = "srutmydocs-docs";
+
+	final private static String SMDADMIN = "srutmydocs-admin";
+
+	private ObjectMapper mapper = new ObjectMapper();
+
 	@Autowired
 	Client esClient;
 
@@ -87,61 +97,33 @@ class ESSearchService implements SMDsearch {
 		totalHits = searchHits.getHits().totalHits();
 		took = searchHits.getTookInMillis();
 
-		List<SMDHit> hits = new ArrayList<SMDHit>();
+		List<SMDDocument> documents = new ArrayList<SMDDocument>();
 		for (SearchHit searchHit : searchHits.getHits()) {
-			SMDHit hit = new SMDHit();
 
-			hit.setIndex(searchHit.getIndex());
-			hit.setType(searchHit.getType());
-			hit.setId(searchHit.getId());
-			if (searchHit.getType().equals(SMDSearchProperties.INDEX_TYPE_DOC)) {
-				if (searchHit.getSource() != null) {
-					hit.setTitle(AbstractRiverHelper.getSingleStringValue(
-							SMDSearchProperties.DOC_FIELD_NAME,
-							searchHit.getSource()));
+			String name = AbstractRiverHelper.getSingleStringValue("name",
+					searchHit.getSource());
 
-					if (searchHit.getSource() != null) {
-						hit.setTitle(AbstractRiverHelper.getSingleStringValue(
-								SMDSearchProperties.DOC_FIELD_NAME,
-								searchHit.getSource()));
-					}
-					if (searchHit.getFields() != null
-							&& searchHit.getFields().get("file.content_type") != null) {
-						hit.setContentType((String) searchHit.getFields()
-								.get("file.content_type").getValue());
-					}
-					if (searchHit.getHighlightFields() != null) {
-						for (HighlightField highlightField : searchHit
-								.getHighlightFields().values()) {
+			Collection<String> highlights = null;
+			if (searchHit.getHighlightFields() != null) {
+				highlights = new ArrayList<String>();
+				for (HighlightField highlightField : searchHit
+						.getHighlightFields().values()) {
 
-							Text[] fragmentsBuilder = highlightField
-									.getFragments();
+					Text[] fragmentsBuilder = highlightField.getFragments();
 
-							for (Text fragment : fragmentsBuilder) {
-								hit.getHighlights().add(fragment.string());
-							}
-						}
+					for (Text fragment : fragmentsBuilder) {
+						highlights.add(fragment.string());
 					}
 				}
 			}
 
-			if (searchHit.getType().equals("jira_issue")) {
-				if (searchHit.getSource() != null) {
-					hit.setTitle("Issue "
-							+ AbstractRiverHelper.getSingleStringValue(
-									"issue_key", searchHit.getSource())
-							+ " from project "
-							+ AbstractRiverHelper.getSingleStringValue(
-									"project_name", searchHit.getSource()));
-					hit.setContentType(AbstractRiverHelper
-							.getSingleStringValue("document_url",
-									searchHit.getSource()));
-				}
-			}
-			hits.add(hit);
+			SMDDocument smdDocument = new SMDDocument(searchHit.id(), name,
+					null, null, null, highlights);
+
+			documents.add(smdDocument);
 		}
 
-		searchResponse = new SMDSearchResponse(took, totalHits, hits);
+		searchResponse = new SMDSearchResponse(took, totalHits, documents);
 
 		if (logger.isDebugEnabled())
 			logger.debug("/google({}) : {}", search, totalHits);
@@ -151,26 +133,105 @@ class ESSearchService implements SMDsearch {
 	}
 
 	@Override
-	public void index(SMDDocument smdDocument) {
+	public void index(SMDDocument document) {
+
+		if (logger.isDebugEnabled())
+			logger.debug("push({})", document);
+
+		if (document == null || StringUtils.isEmpty(document.name == null)
+				|| StringUtils.isEmpty(document.id == null)) {
+			throw new IllegalArgumentException(
+					"The document can't be null and must have name or id");
+		}
+
+		try {
+			IndexResponse response = esClient
+					.prepareIndex(SMDINDEX, smdDataSource.id(), document.id)
+					.setSource(
+							jsonBuilder()
+									.startObject()
+									.field("name", document.name)
+									.field("postDate", document.date)
+									.startObject("file")
+									.field("_content_type",
+											document.contentType)
+									.field("_name", document.name)
+									.field("content", document.content)
+									.endObject().endObject()).execute()
+					.actionGet();
+
+		} catch (Exception e) {
+			logger.warn("Can not index document {}", document.name);
+			throw new RuntimeException("Can not index document : "
+					+ document.name + ": " + e.getMessage());
+		}
+
+		if (logger.isDebugEnabled())
+			logger.debug("/push()={}", document);
 
 	}
 
 	@Override
 	public void delete(String id) {
-		// TODO Auto-generated method stub
-		
+
+		if (logger.isDebugEnabled())
+			logger.debug("push({})", id);
+
+		if (StringUtils.isEmpty(id)) {
+			throw new IllegalArgumentException(
+					"The id of document can't be null or empty");
+		}
+
+		try {
+			esClient.prepareDelete(SMDINDEX, smdDataSource.id(), id).execute()
+					.actionGet();
+
+		} catch (Exception e) {
+			logger.warn("Can not index document {} if type  {}", id,
+					smdDataSource.id());
+			throw new RuntimeException("Can not delete document : " + id
+					+ "whith type " + smdDataSource.id() + ": "
+					+ e.getMessage());
+		}
+
+		if (logger.isDebugEnabled())
+			logger.debug("/delete()={}", id);
+
 	}
 
 	@Override
-	public List<SMDDataSource> getConf() {
-		// TODO Auto-generated method stub
-		return null;
+	public SMDDataSource getConf() {
+
+		String register = "yy";
+
+		GetResponse responseEs = esClient
+				.prepareGet(SMDADMIN, this.smdDataSource.id(), register)
+				.execute().actionGet();
+
+		if (!responseEs.isExists()) {
+			return null;
+		}
+
+		SMDDataSource sMDDataSource;
+		try {
+			sMDDataSource = mapper.readValue(responseEs.getSourceAsString(),
+					this.smdDataSource.getClass());
+		} catch (Exception e) {
+			logger.error("Can not checkout the configuration's document : "
+					+ register + "whith type " + smdDataSource.id());
+			throw new RuntimeException(
+					"Can not checkout the configuration's document : "
+							+ register + "whith type " + smdDataSource.id()
+							+ ": " + e.getMessage());
+		}
+
+		return sMDDataSource;
 	}
 
 	@Override
-	public void saveAdmin(SMDDataSource dataSource) {
+	public void saveConf() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

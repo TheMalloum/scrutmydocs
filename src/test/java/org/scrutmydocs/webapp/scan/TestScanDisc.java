@@ -3,8 +3,8 @@ package org.scrutmydocs.webapp.scan;
 import java.util.Map;
 
 import org.junit.Test;
-import org.scrutmydocs.contract.SMDDataSource;
-import org.scrutmydocs.scruting.SMDRegister;
+import org.scrutmydocs.datasource.SMDDataSource;
+import org.scrutmydocs.datasource.SMDRegister;
 import org.scrutmydocs.webapp.test.AbstractConfigurationTest;
 
 public class TestScanDisc extends AbstractConfigurationTest {

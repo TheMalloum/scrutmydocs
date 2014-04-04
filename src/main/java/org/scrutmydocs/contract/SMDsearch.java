@@ -1,7 +1,7 @@
 package org.scrutmydocs.contract;
 
-import java.util.List;
-import java.util.Map;
+import org.scrutmydocs.datasource.SMDDataSource;
+
 
 public interface SMDsearch {
 
@@ -11,8 +11,8 @@ public interface SMDsearch {
 
 	public SMDSearchResponse search(String search, int first, int pageSize);
 	
-	public void saveAdmin(SMDDataSource dataSource);
+	public void saveConf();
 
-	public List<SMDDataSource> getConf();
+	public SMDDataSource getConf();
 
 }

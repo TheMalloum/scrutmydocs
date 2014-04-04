@@ -5,13 +5,14 @@ import java.util.Map;
 
 import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.Loggers;
-import org.scrutmydocs.contract.SMDDataSource;
+import org.scrutmydocs.datasource.SMDDataSource;
+import org.scrutmydocs.datasource.SMDRegister;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ScrutDataSource {
+public class ScanDataSource {
 
 	private ESLogger logger = Loggers.getLogger(getClass().getName());
 
@@ -20,7 +21,7 @@ public class ScrutDataSource {
 
 	public HashMap<String, SMDDataSource> list = new HashMap<String, SMDDataSource>();
 
-	public ScrutDataSource() {
+	public ScanDataSource() {
 
 		Map<String, Object> registers = context
 				.getBeansWithAnnotation(SMDRegister.class);

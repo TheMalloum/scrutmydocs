@@ -1,4 +1,4 @@
-package org.scrutmydocs.scruting;
+package org.scrutmydocs.datasource;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

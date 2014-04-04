@@ -19,16 +19,13 @@
 
 package org.scrutmydocs.datasource.fs;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.scrutmydocs.contract.SMDChanges;
-import org.scrutmydocs.contract.SMDDataSource;
 import org.scrutmydocs.contract.SMDDocument;
-import org.scrutmydocs.scruting.SMDRegister;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.scrutmydocs.datasource.SMDDataSource;
+import org.scrutmydocs.datasource.SMDRegister;
 
 /**
  * Implementation the DropBox ScrutMyDocs Data Source
@@ -60,18 +57,6 @@ public class FSDataSource extends SMDDataSource {
 	}
 
 
-	@Override
-	public String updateSince(String since) {
-		return null;
-	}
-
-	@Override
-	public List<SMDDataSource> listDS() {
-
-		List<SMDDataSource> liste = new ArrayList<SMDDataSource>();
-
-		return liste;
-	}
 
 	@Override
 	public Date since() {

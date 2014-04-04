@@ -1,7 +1,7 @@
 package org.scrutmydocs.search;
 
-import org.scrutmydocs.contract.SMDDataSource;
 import org.scrutmydocs.contract.SMDsearch;
+import org.scrutmydocs.datasource.SMDDataSource;
 
 public class SMDSearchFactory {
 
