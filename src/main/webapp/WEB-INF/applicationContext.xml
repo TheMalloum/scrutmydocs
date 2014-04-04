@@ -29,7 +29,7 @@
     http://www.springframework.org/schema/mvc
     http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 	<task:annotation-driven />
-	<context:component-scan base-package="org.scrutmydocs.webapp" />
+	<context:component-scan base-package="org.scrutmydocs" />
 
 	<mvc:annotation-driven />
 

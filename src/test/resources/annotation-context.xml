@@ -8,7 +8,9 @@
    ">
 
    <context:annotation-config />
-   <context:component-scan base-package="org.scrutmydocs.webapp.test" />
-   <context:component-scan base-package="org.scrutmydocs.webapp.service" />
+   <context:component-scan base-package="org.scrutmydocs" >
+   <context:include-filter type="annotation" expression="org.scrutmydocs.contract.SMDRegister"/>
+   </context:component-scan>
+   
  
 </beans>

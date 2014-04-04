@@ -162,15 +162,15 @@ class ESSearchService implements SMDsearch {
 	}
 
 	@Override
-	public void saveAdmin(Map<String, String> json) {
+	public List<SMDDataSource> getConf() {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public Map<String, String> getAdmin() {
+	public void saveAdmin(SMDDataSource dataSource) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 }

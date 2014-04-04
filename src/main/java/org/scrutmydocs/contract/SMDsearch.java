@@ -1,5 +1,6 @@
 package org.scrutmydocs.contract;
 
+import java.util.List;
 import java.util.Map;
 
 public interface SMDsearch {
@@ -9,13 +10,9 @@ public interface SMDsearch {
 	public void delete(String id);
 
 	public SMDSearchResponse search(String search, int first, int pageSize);
+	
+	public void saveAdmin(SMDDataSource dataSource);
 
-	
-	
-	// if we decide to save the configuration in the same place that the indexes, this choice could be done if we want us the clusters capacity of the search.
-	
-	public void saveAdmin(Map<String, String> json);
-
-	public Map<String, String> getAdmin();
+	public List<SMDDataSource> getConf();
 
 }
