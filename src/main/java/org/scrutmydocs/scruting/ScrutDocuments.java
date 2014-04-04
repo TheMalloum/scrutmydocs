@@ -32,7 +32,7 @@ public class ScrutDocuments {
 
 			for (SMDDataSource conf : ListConf) {
 
-				Date date = conf.checkSince();
+				Date date = conf.since();
 
 				List<SMDChanges> changes = smdDataSource.changes(date);
 

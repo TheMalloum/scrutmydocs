@@ -39,10 +39,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @SMDRegister(name = "fsDataSource")
 public class FSDataSource extends SMDDataSource {
 
-	public FSDataSource(ObjectNode json) {
-		super(json);
-	}
-
 	@Override
 	public List<SMDChanges> changes(Date date) {
 		return null;
@@ -54,7 +50,7 @@ public class FSDataSource extends SMDDataSource {
 	}
 
 	@Override
-	public String getID() {
+	public String id() {
 		return null;
 	}
 
@@ -63,10 +59,6 @@ public class FSDataSource extends SMDDataSource {
 		return null;
 	}
 
-	@Override
-	public Date checkSince() {
-		return null;
-	}
 
 	@Override
 	public String updateSince(String since) {
@@ -79,6 +71,12 @@ public class FSDataSource extends SMDDataSource {
 		List<SMDDataSource> liste = new ArrayList<SMDDataSource>();
 
 		return liste;
+	}
+
+	@Override
+	public Date since() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
