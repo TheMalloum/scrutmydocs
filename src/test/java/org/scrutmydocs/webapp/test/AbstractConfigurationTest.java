@@ -40,9 +40,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 		})
 public abstract class AbstractConfigurationTest {
 	
-	@Autowired protected Node node;
-
-	@Autowired	protected Client client;
 	
 	@Autowired protected ApplicationContext  context;
 }

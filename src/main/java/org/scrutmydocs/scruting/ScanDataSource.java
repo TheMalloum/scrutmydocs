@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.Loggers;
+import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.datasource.SMDRegister;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,25 +17,24 @@ public class ScanDataSource {
 
 	private ESLogger logger = Loggers.getLogger(getClass().getName());
 
-	@Autowired
-	private ApplicationContext context;
-
 	public HashMap<String, SMDDataSource> list = new HashMap<String, SMDDataSource>();
 
-	public ScanDataSource() {
+	@Autowired
+	public ScanDataSource(ApplicationContext context) {
 
 		Map<String, Object> registers = context
 				.getBeansWithAnnotation(SMDRegister.class);
 
 		for (Object register : registers.values()) {
 			if (register instanceof SMDDataSource) {
-				SMDDataSource info_classe = (SMDDataSource) register;
-				if (list.get(((SMDRegister) info_classe).name()) != null) {
+				SMDDataSource myDataSource = (SMDDataSource) register;
+
+				if (list.get(myDataSource.name()) != null) {
 					logger.error("the DataSource  "
-							+ this.list.get(((SMDRegister) info_classe).name()
+							+ this.list.get(myDataSource.name()
 									+ " is early register"));
 				} else {
-					list.put(((SMDRegister) info_classe).name(), info_classe);
+					list.put(myDataSource.name(), myDataSource);
 				}
 			} else {
 				logger.warn("The class " + register.getClass().getName()

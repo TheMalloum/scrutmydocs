@@ -1,18 +1,19 @@
 package org.scrutmydocs.search;
 
+import org.elasticsearch.client.Client;
+import org.elasticsearch.node.NodeBuilder;
 import org.scrutmydocs.contract.SMDsearch;
 import org.scrutmydocs.datasource.SMDDataSource;
 
 public class SMDSearchFactory {
 
-	private static SMDsearch smDsearch;
+	private static Client client;
 
 	public static synchronized SMDsearch getInstance(SMDDataSource smdDataSource) {
 
-		if (smDsearch == null) {
-			smDsearch = new ESSearchService(smdDataSource);
+		if (client == null) {
+			client = NodeBuilder.nodeBuilder().node().client();
 		}
-		return smDsearch;
+		return new ESSearchService(smdDataSource, client);
 	}
-
 }

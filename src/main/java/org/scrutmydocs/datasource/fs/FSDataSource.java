@@ -19,6 +19,7 @@
 
 package org.scrutmydocs.datasource.fs;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -36,8 +37,20 @@ import org.scrutmydocs.datasource.SMDRegister;
 @SMDRegister(name = "fsDataSource")
 public class FSDataSource extends SMDDataSource {
 
+	public FSDataSource() {
+		// TODO Auto-generated constructor stub
+	}
+	public FSDataSource(String id) {
+		super();
+		this.id = id;
+		Calendar c = Calendar.getInstance();
+		c.set(1970, 1, 1, 0, 0);
+		this.date = c.getTime();
+	}
+
 	@Override
 	public List<SMDChanges> changes(Date date) {
+		logger.info("No changes since " + date);
 		return null;
 	}
 
@@ -47,20 +60,7 @@ public class FSDataSource extends SMDDataSource {
 	}
 
 	@Override
-	public String id() {
-		return null;
-	}
-
-	@Override
 	public SMDDocument getDocument(String id) {
-		return null;
-	}
-
-
-
-	@Override
-	public Date since() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -9,7 +9,7 @@
 
    <context:annotation-config />
    <context:component-scan base-package="org.scrutmydocs" >
-   <context:include-filter type="annotation" expression="org.scrutmydocs.contract.SMDRegister"/>
+   <context:include-filter type="annotation" expression="org.scrutmydocs.datasource.SMDRegister"/>
    </context:component-scan>
    
  

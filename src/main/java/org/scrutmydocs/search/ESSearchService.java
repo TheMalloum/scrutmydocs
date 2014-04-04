@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
@@ -35,6 +34,7 @@ import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.highlight.HighlightField;
 import org.scrutmydocs.contract.SMDDocument;
@@ -42,7 +42,6 @@ import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDsearch;
 import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.webapp.api.settings.rivers.AbstractRiverHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,11 +58,16 @@ class ESSearchService implements SMDsearch {
 
 	private ObjectMapper mapper = new ObjectMapper();
 
-	@Autowired
 	Client esClient;
 
-	public ESSearchService(SMDDataSource smdDataSource) {
+	public ESSearchService() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public ESSearchService(SMDDataSource smdDataSource,Client client) {
 		this.smdDataSource = smdDataSource;
+		this.esClient= client;
+//		mapper.configure(Feature., arg1)
 	}
 
 	@Override
@@ -146,7 +150,7 @@ class ESSearchService implements SMDsearch {
 
 		try {
 			IndexResponse response = esClient
-					.prepareIndex(SMDINDEX, smdDataSource.id(), document.id)
+					.prepareIndex(SMDINDEX, smdDataSource.id, document.id)
 					.setSource(
 							jsonBuilder()
 									.startObject()
@@ -183,15 +187,14 @@ class ESSearchService implements SMDsearch {
 		}
 
 		try {
-			esClient.prepareDelete(SMDINDEX, smdDataSource.id(), id).execute()
+			esClient.prepareDelete(SMDINDEX, smdDataSource.id, id).execute()
 					.actionGet();
 
 		} catch (Exception e) {
 			logger.warn("Can not index document {} if type  {}", id,
-					smdDataSource.id());
+					smdDataSource.id);
 			throw new RuntimeException("Can not delete document : " + id
-					+ "whith type " + smdDataSource.id() + ": "
-					+ e.getMessage());
+					+ "whith type " + smdDataSource.id + ": " + e.getMessage());
 		}
 
 		if (logger.isDebugEnabled())
@@ -200,37 +203,48 @@ class ESSearchService implements SMDsearch {
 	}
 
 	@Override
-	public SMDDataSource getConf() {
+	public List<SMDDataSource> getConf() {
 
-		String register = "yy";
-
-		GetResponse responseEs = esClient
-				.prepareGet(SMDADMIN, this.smdDataSource.id(), register)
-				.execute().actionGet();
-
-		if (!responseEs.isExists()) {
-			return null;
-		}
-
-		SMDDataSource sMDDataSource;
+		List<SMDDataSource> response = new ArrayList<SMDDataSource>();
 		try {
-			sMDDataSource = mapper.readValue(responseEs.getSourceAsString(),
-					this.smdDataSource.getClass());
+
+			org.elasticsearch.action.search.SearchResponse searchHits = esClient
+					.prepareSearch(SMDADMIN)
+					.setTypes(this.smdDataSource.name()).execute().actionGet();
+
+			for (SearchHit searchHit : searchHits.getHits()) {
+
+
+				response.add(mapper.readValue(searchHit.getSourceAsString(),
+						this.smdDataSource.getClass()));
+
+			}
+
 		} catch (Exception e) {
 			logger.error("Can not checkout the configuration's document : "
-					+ register + "whith type " + smdDataSource.id());
+					+ this.smdDataSource.name() + "whith type "
+					+ smdDataSource.id);
 			throw new RuntimeException(
 					"Can not checkout the configuration's document : "
-							+ register + "whith type " + smdDataSource.id()
-							+ ": " + e.getMessage());
+							+ this.smdDataSource.name() + "whith type "
+							+ smdDataSource.id + ": " + e);
 		}
 
-		return sMDDataSource;
+		return response;
 	}
 
 	@Override
 	public void saveConf() {
-		// TODO Auto-generated method stub
+		try {
+			esClient.prepareIndex(SMDADMIN, this.smdDataSource.name(),
+					this.smdDataSource.id)
+					.setSource(mapper.writeValueAsString(this.smdDataSource))
+					.execute().actionGet();
+		} catch (Exception e) {
+			throw new RuntimeException("Can not save the configuration : "
+					+ this.smdDataSource.name() + "whith type "
+					+ smdDataSource.id + ": " + e.getMessage());
+		}
 
 	}
 

@@ -20,7 +20,10 @@
 package org.scrutmydocs.webapp.test.rivers;
 
 import fr.pilato.elasticsearch.river.fs.river.FsRiver;
+
+import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.node.Node;
 import org.junit.Assert;
 import org.junit.Test;
 import org.scrutmydocs.webapp.api.settings.rivers.fs.data.FSRiver;
@@ -36,6 +39,10 @@ import java.util.Collection;
 public class AdminFSRiverServiceTest extends AbstractConfigurationTest {
 
 	@Autowired AdminFSRiverService adminService;
+	
+	@Autowired protected Node node;
+
+	@Autowired	protected Client client;
 	
 	@Test public void test_add_river() throws InterruptedException {
 		Assert.assertNotNull(adminService);
