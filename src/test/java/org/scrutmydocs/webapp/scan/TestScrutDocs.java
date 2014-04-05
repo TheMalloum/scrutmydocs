@@ -1,7 +1,6 @@
 package org.scrutmydocs.webapp.scan;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Before;
