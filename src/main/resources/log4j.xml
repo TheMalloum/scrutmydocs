@@ -34,13 +34,10 @@
 	<!-- Limit categories -->
 	<!-- ================ -->
 
-	<category name="org.scrutmydocs.webapp">
+	<category name="org.scrutmydocs">
 		<priority value="DEBUG" />
 	</category>
 
-	<category name="fr.pilato">
-		<priority value="DEBUG" />
-	</category>
 
 	<category name="org.elasticsearch">
 		<priority value="ERROR" />

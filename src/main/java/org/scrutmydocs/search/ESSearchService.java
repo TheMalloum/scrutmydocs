@@ -52,9 +52,9 @@ class ESSearchService implements SMDsearch {
 
 	private SMDDataSource smdDataSource;
 
-	final private static String SMDINDEX = "srutmydocs-docs";
+	final public static String SMDINDEX = "srutmydocs-docs";
 
-	final private static String SMDADMIN = "srutmydocs-admin";
+	final public static String SMDADMIN = "srutmydocs-admin";
 
 	private ObjectMapper mapper = new ObjectMapper();
 
@@ -91,7 +91,7 @@ class ESSearchService implements SMDsearch {
 		}
 
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
-				.prepareSearch().setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+				.prepareSearch().setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setIndices(SMDINDEX)
 				.setQuery(qb).setFrom(first).setSize(pageSize)
 				.addHighlightedField("name").addHighlightedField("file")
 				.setHighlighterPreTags("<span class='badge badge-info'>")

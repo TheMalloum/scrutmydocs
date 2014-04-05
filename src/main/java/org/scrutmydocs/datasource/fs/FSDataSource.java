@@ -19,17 +19,25 @@
 
 package org.scrutmydocs.datasource.fs;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.scrutmydocs.contract.SMDChanges;
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.elasticsearch.common.logging.ESLogger;
+import org.elasticsearch.common.logging.Loggers;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.datasource.SMDRegister;
 
 /**
- * Implementation the DropBox ScrutMyDocs Data Source
+ * Implement the DropBox ScrutMyDocs Data Source
  * 
  * @author Malloum LAYA
  * 
@@ -37,31 +45,87 @@ import org.scrutmydocs.datasource.SMDRegister;
 @SMDRegister(name = "fsDataSource")
 public class FSDataSource extends SMDDataSource {
 
+	
+	protected Logger logger = Logger.getLogger(getClass().getName());
+	
 	public FSDataSource() {
-		// TODO Auto-generated constructor stub
-	}
-	public FSDataSource(String id) {
-		super();
-		this.id = id;
 		Calendar c = Calendar.getInstance();
 		c.set(1970, 1, 1, 0, 0);
 		this.date = c.getTime();
 	}
 
+	public FSDataSource(String id, String url) {
+		super();
+		this.id = id;
+		this.url = url;
+		Calendar c = Calendar.getInstance();
+		c.set(1970, 1, 1, 0, 0);
+		this.date = c.getTime();
+
+	}
+
 	@Override
-	public List<SMDChanges> changes(Date date) {
-		logger.info("No changes since " + date);
-		return null;
+	public List<SMDDocument> changes(Date date) {
+		List<SMDDocument> changes = new ArrayList<SMDDocument>();
+
+		
+		
+		
+		try {
+
+			Collection<File> files = FileUtils.listFiles(new File(url), null,
+					true);
+
+			for (File file : files) {
+
+				if (file.lastModified() > this.date.getTime() && file.isFile()) {
+
+					
+					// getContentType don't works 
+					
+					SMDDocument smdDocument = new SMDDocument(
+							file.getAbsolutePath(),
+							file.getName(),
+							URLConnection
+									.guessContentTypeFromStream(new FileInputStream(
+											file)),
+							FileUtils.readFileToByteArray(file), new Date(
+									file.lastModified()), null);
+
+					changes.add(smdDocument);
+				}
+			}
+		} catch (Exception ex) {
+
+			throw new RuntimeException(
+					"can't checkout changes in the directory " + this.url, ex);
+		}
+
+		return changes;
 	}
 
 	@Override
 	public String getDocumentPath(String id) {
-		return null;
+		return "file//" + id;
 	}
 
 	@Override
 	public SMDDocument getDocument(String id) {
-		return null;
+		File file = new File(id);
+		SMDDocument smdDocument;
+		try {
+			smdDocument = new SMDDocument(file.getAbsolutePath(),
+					file.getName(),
+					URLConnection
+							.guessContentTypeFromStream(new FileInputStream(
+									file)),
+					FileUtils.readFileToByteArray(file), new Date(
+							file.lastModified()), null);
+		} catch (Exception e) {
+			throw new RuntimeException("can't checkout document " + id);
+		}
+
+		return smdDocument;
 	}
 
 }

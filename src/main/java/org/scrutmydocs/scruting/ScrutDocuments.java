@@ -2,10 +2,8 @@ package org.scrutmydocs.scruting;
 
 import java.util.List;
 
-import org.elasticsearch.common.logging.ESLogger;
+import org.apache.log4j.Logger;
 import org.elasticsearch.common.logging.Loggers;
-import org.scrutmydocs.contract.SMDChanges;
-import org.scrutmydocs.contract.SMDChanges.ChangeType;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.search.SMDSearchFactory;
@@ -16,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScrutDocuments {
 
-	private ESLogger logger = Loggers.getLogger(getClass().getName());
+	private Logger logger = Logger.getLogger(getClass().getName());
 
 	@Autowired
 	protected ApplicationContext context;
@@ -33,25 +31,25 @@ public class ScrutDocuments {
 					smdDataSource).getConf();
 
 			for (SMDDataSource dataSourceSave : dataSourcesSave) {
+				logger.info("extracting modified files form the directory "
+						+ dataSourceSave.url);
 
-				List<SMDChanges> changes = dataSourceSave
+				List<SMDDocument> changes = dataSourceSave
 						.changes(dataSourceSave.date);
+
+				logger.info(changes.size()
+						+ " modified files extract from the directory "
+						+ dataSourceSave.url);
 
 				if (changes == null || changes.isEmpty()) {
 					continue;
 				}
-				for (SMDChanges smdChanges : changes) {
-					if (smdChanges.changeType == ChangeType.DELETE) {
-						SMDSearchFactory.getInstance(dataSourceSave).delete(
-								smdChanges.idDocument);
-					} else {
-						SMDDocument smdDocument = dataSourceSave
-								.getDocument(smdChanges.idDocument);
-						SMDSearchFactory.getInstance(dataSourceSave).index(
-								smdDocument);
-						dataSourceSave.date = smdChanges.changeDate;
-					}
-					dataSourceSave.date = smdChanges.changeDate;
+				for (SMDDocument smdDocument : changes) {
+
+					logger.trace("extract document " + smdDocument.id);
+					SMDSearchFactory.getInstance(dataSourceSave).index(
+							smdDocument);
+					dataSourceSave.date = smdDocument.date;
 				}
 				SMDSearchFactory.getInstance(dataSourceSave).saveConf();
 			}

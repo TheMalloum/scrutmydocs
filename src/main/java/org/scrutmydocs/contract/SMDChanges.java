@@ -6,19 +6,19 @@ public class SMDChanges {
 
 	public ChangeType changeType;
 
-	public String idDocument;
+	public SMDDocument document;
 
 	public Date changeDate;
 
-	public SMDChanges(ChangeType changeType, String idDocument, Date date) {
+	public SMDChanges(ChangeType changeType, SMDDocument document, Date date) {
 		super();
-		if (date == null || idDocument == null || changeType == null) {
+		if (date == null || document == null || changeType == null) {
 			throw new IllegalArgumentException(
 					"date, idDocument or changeType can't be null");
 		}
 
 		this.changeType = changeType;
-		this.idDocument = idDocument;
+		this.document = document;
 		this.changeDate = date;
 	}
 

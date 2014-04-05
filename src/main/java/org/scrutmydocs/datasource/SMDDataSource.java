@@ -15,7 +15,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class SMDDataSource {
 
-	protected ESLogger logger = Loggers.getLogger(getClass().getName());
 
 	@JsonInclude
 	public String name() {
@@ -27,12 +26,16 @@ public abstract class SMDDataSource {
 
 	@JsonInclude
 	public String id;
+	
+	@JsonInclude
+	public String url;
+	
 
 	@JsonInclude
 	public Date date;
 
 	@JsonIgnore
-	public abstract List<SMDChanges> changes(Date since);
+	public abstract List<SMDDocument> changes(Date since);
 
 	@JsonIgnore
 	public abstract String getDocumentPath(String id);

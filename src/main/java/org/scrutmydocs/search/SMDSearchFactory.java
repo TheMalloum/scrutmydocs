@@ -13,6 +13,11 @@ public class SMDSearchFactory {
 
 		if (client == null) {
 			client = NodeBuilder.nodeBuilder().node().client();
+			client.admin()
+					.cluster()
+					.prepareHealth(ESSearchService.SMDINDEX,
+							ESSearchService.SMDADMIN).setWaitForYellowStatus()
+					.execute().actionGet();
 		}
 		return new ESSearchService(smdDataSource, client);
 	}
