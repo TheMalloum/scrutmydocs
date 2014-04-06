@@ -1,4 +1,4 @@
-package org.scrutmydocs.scan;
+package org.scrutmydocs.webapp.scan;
 
 import java.io.File;
 
@@ -11,12 +11,10 @@ import org.scrutmydocs.datasource.fs.FSDataSource;
 import org.scrutmydocs.rivers.ScrutDocuments;
 import org.scrutmydocs.search.SMDSearchFactory;
 import org.scrutmydocs.webapp.test.AbstractConfigurationTest;
-import org.springframework.beans.factory.annotation.Autowired;
 
-public class TestScrutDocs extends AbstractConfigurationTest {
+public class TestScrutDocs {
 
-	@Autowired
-	ScrutDocuments scrutDocuments;
+	ScrutDocuments scrutDocuments= new ScrutDocuments();
 
 	FSDataSource fsDataSource;
 
@@ -25,18 +23,19 @@ public class TestScrutDocs extends AbstractConfigurationTest {
 	@Before
 	public void setUp() throws Exception {
 		// create a temp file
-		Thread.sleep(1 * 300);
+		
 		temp = File.createTempFile("scrutmydocsTestFile", ".txt");
-		fsDataSource = new FSDataSource(String.valueOf(Math.random()),
-				temp.getParent());
+		fsDataSource = new FSDataSource("","");
 		SMDSearchFactory.getInstance(fsDataSource).saveConf();
 
 	}
 
 	@Test
 	public void testScanDataSource() throws Exception {
-
+		
 		scrutDocuments.scruting();
+		
+		Thread.sleep(3 * 1000);
 		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance(
 				fsDataSource).search(temp.getName(), 0, 100);
 
@@ -45,9 +44,6 @@ public class TestScrutDocs extends AbstractConfigurationTest {
 		
 		boolean findTmpFile=false;
 		for (SMDDocument smdDocument : searchResponse.getSmdDocuments()) {
-			System.out.println(smdDocument.id);
-			System.out.println(temp.getAbsolutePath());
-			
 			if(smdDocument.id.equalsIgnoreCase(temp.getAbsolutePath())){
 				findTmpFile = true;
 			}

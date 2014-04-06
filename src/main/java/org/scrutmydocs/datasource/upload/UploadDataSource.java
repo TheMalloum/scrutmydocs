@@ -19,7 +19,6 @@
 
 package org.scrutmydocs.datasource.upload;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -40,19 +39,10 @@ public class UploadDataSource extends SMDDataSource {
 	protected Logger logger = Logger.getLogger(getClass().getName());
 
 	public UploadDataSource() {
-		id = "only-one";
-	}
-
-	public UploadDataSource(String id, String url) {
 		super();
-		this.id = id;
-		this.url = url;
-		Calendar c = Calendar.getInstance();
-		c.set(1970, 1, 1, 0, 0);
-		this.date = c.getTime();
-
+		this.id = "only-one";
 	}
-	
+
 	@Override
 	public List<SMDDocument> changes(Date date) {
 

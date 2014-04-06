@@ -70,7 +70,7 @@ public class RiversApi extends CommonBaseApi {
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody
 	void forceScanRiver() throws Exception {
-		ScrutDocuments.scruting();
+		new ScrutDocuments().scruting();
 
 	}
 }

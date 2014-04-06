@@ -19,27 +19,22 @@
 
 package org.scrutmydocs.webapp.test;
 
-
-import org.elasticsearch.client.Client;
-import org.elasticsearch.node.Node;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Just launch the Spring factory
+ * 
  * @author PILATO
- *
+ * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {
-		"classpath:annotation-context.xml"
-		})
+@ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/applicationContext.xml" })
 public abstract class AbstractConfigurationTest {
-	
-	
-	@Autowired protected ApplicationContext  context;
+
+	@Autowired
+	protected ApplicationContext context;
 }

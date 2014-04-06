@@ -1,37 +1,42 @@
 package org.scrutmydocs.rivers;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 
 import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.Loggers;
-import org.scrutmydocs.contract.SMDDocument;
+import org.reflections.Reflections;
 import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.datasource.SMDRegister;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
-@Component
 public class ScanDataSource {
 
-	private ESLogger logger = Loggers.getLogger(getClass().getName());
+	private static ESLogger logger = Loggers.getLogger(ScanDataSource.class
+			.getName());
 
-	public HashMap<String, SMDDataSource> list = new HashMap<String, SMDDataSource>();
+	public static HashMap<String, SMDDataSource> getAll() {
+		HashMap<String, SMDDataSource> list = new HashMap<String, SMDDataSource>();
+		Reflections reflections = new Reflections("org.scrutmydocs");
 
-	@Autowired
-	public ScanDataSource(ApplicationContext context) {
+		Set<Class<?>> annotated = reflections
+				.getTypesAnnotatedWith(SMDRegister.class);
 
-		Map<String, Object> registers = context
-				.getBeansWithAnnotation(SMDRegister.class);
+		for (Class<?> class1 : annotated) {
 
-		for (Object register : registers.values()) {
+			Object register;
+			try {
+				register = class1.newInstance();
+			} catch (Exception e) {
+				logger.error(class1.getName()+" doesn't have constucteur without parameters");
+				throw new RuntimeException(e);
+			}
+
 			if (register instanceof SMDDataSource) {
 				SMDDataSource myDataSource = (SMDDataSource) register;
 
 				if (list.get(myDataSource.name()) != null) {
 					logger.error("the DataSource  "
-							+ this.list.get(myDataSource.name()
+							+ list.get(myDataSource.name()
 									+ " is early register"));
 				} else {
 					list.put(myDataSource.name(), myDataSource);
@@ -42,6 +47,6 @@ public class ScanDataSource {
 			}
 		}
 
+		return list;
 	}
-
 }

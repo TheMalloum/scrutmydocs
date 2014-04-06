@@ -1,12 +1,11 @@
-package org.scrutmydocs.scan;
+package org.scrutmydocs.webapp.scan;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.scrutmydocs.rivers.ScanDataSource;
-import org.scrutmydocs.webapp.test.AbstractConfigurationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class TestScanRegister extends AbstractConfigurationTest {
+public class TestScanRegister  {
 
 	@Autowired
 	ScanDataSource dataSource;
@@ -15,7 +14,7 @@ public class TestScanRegister extends AbstractConfigurationTest {
 
 	@Test
 	public void testScanDataSource() throws Exception {
-		Assert.assertEquals(1, dataSource.list.size());
+		Assert.assertEquals(2, ScanDataSource.getAll().size());
 	}
 
 }

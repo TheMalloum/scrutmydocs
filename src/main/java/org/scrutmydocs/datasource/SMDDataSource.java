@@ -1,5 +1,6 @@
 package org.scrutmydocs.datasource;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +14,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class SMDDataSource {
+
+	public SMDDataSource() {
+		Calendar c = Calendar.getInstance();
+		c.set(1970, 1, 1, 0, 0);
+		this.date = c.getTime();
+	}
 
 	@JsonInclude
 	@Nonnull

@@ -6,25 +6,17 @@ import org.apache.log4j.Logger;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.search.SMDSearchFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
-@Component
 public class ScrutDocuments {
 
-	private static Logger logger = Logger.getLogger(ScrutDocuments.class.getName());
+	private  Logger logger = Logger.getLogger(ScrutDocuments.class.getName());
 
-	@Autowired
-	protected static ApplicationContext context;
+	public  ScanDataSource datasoures = new ScanDataSource();
 
-	@Autowired
-	public static ScanDataSource datasoures;
-
-	public static void scruting() {
+	public  void scruting() {
 		// checkout all conf datasources register
 
-		for (SMDDataSource smdDataSource : datasoures.list.values()) {
+		for (SMDDataSource smdDataSource : ScanDataSource.getAll().values()) {
 
 			List<SMDDataSource> dataSourcesSave = SMDSearchFactory.getInstance(
 					smdDataSource).getConf();

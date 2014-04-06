@@ -45,23 +45,17 @@ import org.scrutmydocs.datasource.SMDRegister;
 @SMDRegister(name = "fsDataSource")
 public class FSDataSource extends SMDDataSource {
 
-	protected Logger logger = Logger.getLogger(getClass().getName());
-
-	public FSDataSource() {
-		Calendar c = Calendar.getInstance();
-		c.set(1970, 1, 1, 0, 0);
-		this.date = c.getTime();
-	}
-
 	public FSDataSource(String id, String url) {
 		super();
-		this.id = id;
+		this.id=id;
 		this.url = url;
-		Calendar c = Calendar.getInstance();
-		c.set(1970, 1, 1, 0, 0);
-		this.date = c.getTime();
-
+		
 	}
+
+	public FSDataSource() {
+	}
+
+	protected Logger logger = Logger.getLogger(getClass().getName());
 
 	@Override
 	public List<SMDDocument> changes(Date date) {
