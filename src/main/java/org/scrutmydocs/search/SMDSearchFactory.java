@@ -21,4 +21,19 @@ public class SMDSearchFactory {
 		}
 		return new ESSearchService(smdDataSource, client);
 	}
+	
+	
+	public static synchronized SMDsearch getInstance() {
+
+		if (client == null) {
+			client = NodeBuilder.nodeBuilder().node().client();
+			client.admin()
+					.cluster()
+					.prepareHealth(ESSearchService.SMDINDEX,
+							ESSearchService.SMDADMIN).setWaitForYellowStatus()
+					.execute().actionGet();
+		}
+		return new ESSearchService(null, client);
+	}
+	
 }

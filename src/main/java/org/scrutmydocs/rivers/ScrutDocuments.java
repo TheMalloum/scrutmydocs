@@ -1,4 +1,4 @@
-package org.scrutmydocs.scruting;
+package org.scrutmydocs.rivers;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class ScrutDocuments {
 				logger.info("extracting modified files form the directory "
 						+ dataSourceSave.url);
 
-				List<SMDDocument> changes = dataSourceSave
+				List<SMDDocument> changes = dataSourceSave	
 						.changes(dataSourceSave.date);
 
 				logger.info(changes.size()
@@ -49,7 +49,10 @@ public class ScrutDocuments {
 					logger.trace("extract document " + smdDocument.id);
 					SMDSearchFactory.getInstance(dataSourceSave).index(
 							smdDocument);
-					dataSourceSave.date = smdDocument.date;
+					if (smdDocument.date.after(dataSourceSave.date)) {
+						dataSourceSave.date = smdDocument.date;
+					}
+
 				}
 				SMDSearchFactory.getInstance(dataSourceSave).saveConf();
 			}

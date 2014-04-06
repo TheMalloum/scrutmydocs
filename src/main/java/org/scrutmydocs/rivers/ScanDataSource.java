@@ -1,4 +1,4 @@
-package org.scrutmydocs.scruting;
+package org.scrutmydocs.rivers;
 
 import java.util.HashMap;
 import java.util.Map;

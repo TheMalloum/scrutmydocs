@@ -3,9 +3,8 @@ package org.scrutmydocs.datasource;
 import java.util.Date;
 import java.util.List;
 
-import org.elasticsearch.common.logging.ESLogger;
-import org.elasticsearch.common.logging.Loggers;
-import org.scrutmydocs.contract.SMDChanges;
+import javax.annotation.Nonnull;
+
 import org.scrutmydocs.contract.SMDDocument;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,8 +14,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class SMDDataSource {
 
-
 	@JsonInclude
+	@Nonnull
 	public String name() {
 		SMDRegister myRegister = this.getClass().getAnnotation(
 				SMDRegister.class);
@@ -25,13 +24,15 @@ public abstract class SMDDataSource {
 	}
 
 	@JsonInclude
+	@Nonnull
 	public String id;
-	
-	@JsonInclude
-	public String url;
-	
 
 	@JsonInclude
+	@Nonnull
+	public String url;
+
+	@JsonInclude
+	@Nonnull
 	public Date date;
 
 	@JsonIgnore

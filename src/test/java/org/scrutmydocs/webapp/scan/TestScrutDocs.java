@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.datasource.fs.FSDataSource;
-import org.scrutmydocs.scruting.ScrutDocuments;
+import org.scrutmydocs.rivers.ScrutDocuments;
 import org.scrutmydocs.search.SMDSearchFactory;
 import org.scrutmydocs.webapp.test.AbstractConfigurationTest;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -16,5 +16,6 @@ public interface SMDsearch {
 	public void saveConf();
 
 	public List<SMDDataSource> getConf();
+	
 
 }

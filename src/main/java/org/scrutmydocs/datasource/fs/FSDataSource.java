@@ -45,9 +45,8 @@ import org.scrutmydocs.datasource.SMDRegister;
 @SMDRegister(name = "fsDataSource")
 public class FSDataSource extends SMDDataSource {
 
-	
 	protected Logger logger = Logger.getLogger(getClass().getName());
-	
+
 	public FSDataSource() {
 		Calendar c = Calendar.getInstance();
 		c.set(1970, 1, 1, 0, 0);
@@ -68,9 +67,6 @@ public class FSDataSource extends SMDDataSource {
 	public List<SMDDocument> changes(Date date) {
 		List<SMDDocument> changes = new ArrayList<SMDDocument>();
 
-		
-		
-		
 		try {
 
 			Collection<File> files = FileUtils.listFiles(new File(url), null,
@@ -78,11 +74,10 @@ public class FSDataSource extends SMDDataSource {
 
 			for (File file : files) {
 
-				if (file.lastModified() > this.date.getTime() && file.isFile()) {
+				if (new Date(file.lastModified()).after(date) && file.isFile()) {
 
-					
-					// getContentType don't works 
-					
+					// getContentType don't works
+
 					SMDDocument smdDocument = new SMDDocument(
 							file.getAbsolutePath(),
 							file.getName(),

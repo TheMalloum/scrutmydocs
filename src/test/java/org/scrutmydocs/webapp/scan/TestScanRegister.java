@@ -2,7 +2,7 @@ package org.scrutmydocs.webapp.scan;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.scrutmydocs.scruting.ScanDataSource;
+import org.scrutmydocs.rivers.ScanDataSource;
 import org.scrutmydocs.webapp.test.AbstractConfigurationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 

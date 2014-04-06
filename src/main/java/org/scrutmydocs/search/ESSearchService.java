@@ -26,6 +26,7 @@ import static org.elasticsearch.index.query.QueryBuilders.queryString;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -33,15 +34,14 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.text.Text;
+import org.elasticsearch.common.xcontent.support.XContentMapValues;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.highlight.HighlightField;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDsearch;
 import org.scrutmydocs.datasource.SMDDataSource;
-import org.scrutmydocs.webapp.api.settings.rivers.AbstractRiverHelper;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -104,7 +104,7 @@ class ESSearchService implements SMDsearch {
 		List<SMDDocument> documents = new ArrayList<SMDDocument>();
 		for (SearchHit searchHit : searchHits.getHits()) {
 
-			String name = AbstractRiverHelper.getSingleStringValue("name",
+			String name = getSingleStringValue("name",
 					searchHit.getSource());
 
 			Collection<String> highlights = null;
@@ -246,6 +246,14 @@ class ESSearchService implements SMDsearch {
 					+ smdDataSource.id + ": " + e.getMessage());
 		}
 
+	}
+	
+	private static String getSingleStringValue(String path, Map<String, Object> content) {
+		List<Object> obj = XContentMapValues.extractRawValues(path, content);
+		if(obj.isEmpty()) 
+			return null;
+		else 
+			return ((String) obj.get(0));
 	}
 
 }
