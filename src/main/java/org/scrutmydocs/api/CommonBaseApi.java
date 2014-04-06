@@ -19,26 +19,22 @@
 
 package org.scrutmydocs.api;
 
-import org.scrutmydocs.webapp.api.common.data.Api;
-import org.scrutmydocs.webapp.api.common.data.RestResponseWelcome;
-import org.scrutmydocs.webapp.api.common.data.Welcome;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
 public abstract class CommonBaseApi {
 
 	public abstract String helpMessage();
-	
+
 	public abstract Api[] helpApiList();
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "_help")
 	public @ResponseBody
-	RestResponseWelcome welcomeHelp() {
+	Welcome welcomeHelp() {
 		// Build a Welcome Message
 		Welcome welcome = new Welcome(helpMessage());
 		welcome.setApis(helpApiList());
-		return new RestResponseWelcome(welcome);
+		return welcome;
 	}
 }

@@ -25,7 +25,6 @@ import org.apache.poi.ss.formula.eval.NotImplementedException;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.datasource.upload.UploadDataSource;
 import org.scrutmydocs.search.SMDSearchFactory;
-import org.scrutmydocs.webapp.api.common.data.Api;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;

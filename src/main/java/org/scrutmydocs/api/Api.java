@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.scrutmydocs.webapp.api.common.data;
+package org.scrutmydocs.api;
 
 import java.io.Serializable;
 

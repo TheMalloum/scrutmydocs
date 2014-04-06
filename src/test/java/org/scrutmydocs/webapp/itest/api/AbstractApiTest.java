@@ -25,8 +25,8 @@ import static org.junit.Assert.assertTrue;
 import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.ESLoggerFactory;
 import org.junit.Test;
+import org.scrutmydocs.api.Welcome;
 import org.scrutmydocs.webapp.api.common.data.RestResponseWelcome;
-import org.scrutmydocs.webapp.api.common.data.Welcome;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 

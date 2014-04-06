@@ -19,6 +19,7 @@
 
 package org.scrutmydocs.webapp.api.common.data;
 
+import org.scrutmydocs.api.Welcome;
 import org.scrutmydocs.webapp.api.common.RestAPIException;
 
 

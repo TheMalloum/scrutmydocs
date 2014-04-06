@@ -3,7 +3,6 @@ package org.scrutmydocs.rivers;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.elasticsearch.common.logging.Loggers;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.search.SMDSearchFactory;
@@ -14,15 +13,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScrutDocuments {
 
-	private Logger logger = Logger.getLogger(getClass().getName());
+	private static Logger logger = Logger.getLogger(ScrutDocuments.class.getName());
 
 	@Autowired
-	protected ApplicationContext context;
+	protected static ApplicationContext context;
 
 	@Autowired
-	public ScanDataSource datasoures;
+	public static ScanDataSource datasoures;
 
-	public void scruting() {
+	public static void scruting() {
 		// checkout all conf datasources register
 
 		for (SMDDataSource smdDataSource : datasoures.list.values()) {

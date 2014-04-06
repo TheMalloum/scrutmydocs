@@ -1,4 +1,4 @@
-package org.scrutmydocs.webapp.scan;
+package org.scrutmydocs.scan;
 
 import org.junit.Assert;
 import org.junit.Test;

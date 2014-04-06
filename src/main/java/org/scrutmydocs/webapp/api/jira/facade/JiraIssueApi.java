@@ -1,8 +1,8 @@
 package org.scrutmydocs.webapp.api.jira.facade;
 
+import org.scrutmydocs.api.Api;
 import org.scrutmydocs.api.CommonBaseApi;
 import org.scrutmydocs.webapp.api.common.RestAPIException;
-import org.scrutmydocs.webapp.api.common.data.Api;
 import org.scrutmydocs.webapp.api.jira.data.JiraIssue;
 import org.scrutmydocs.webapp.api.jira.data.RestResponseJiraIssue;
 import org.scrutmydocs.webapp.service.jira.JiraIssueService;

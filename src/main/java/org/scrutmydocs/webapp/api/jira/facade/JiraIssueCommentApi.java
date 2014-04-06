@@ -1,7 +1,7 @@
 package org.scrutmydocs.webapp.api.jira.facade;
 
+import org.scrutmydocs.api.Api;
 import org.scrutmydocs.api.CommonBaseApi;
-import org.scrutmydocs.webapp.api.common.data.Api;
 import org.scrutmydocs.webapp.api.jira.data.JiraIssueComment;
 import org.scrutmydocs.webapp.service.jira.JiraIssueCommentService;
 import org.springframework.beans.factory.annotation.Autowired;

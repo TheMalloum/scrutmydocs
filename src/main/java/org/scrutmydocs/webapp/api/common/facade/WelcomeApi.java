@@ -19,10 +19,10 @@
 
 package org.scrutmydocs.webapp.api.common.facade;
 
+import org.scrutmydocs.api.Api;
 import org.scrutmydocs.api.CommonBaseApi;
-import org.scrutmydocs.webapp.api.common.data.Api;
+import org.scrutmydocs.api.Welcome;
 import org.scrutmydocs.webapp.api.common.data.RestResponseWelcome;
-import org.scrutmydocs.webapp.api.common.data.Welcome;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

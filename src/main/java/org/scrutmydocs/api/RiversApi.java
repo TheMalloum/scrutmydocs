@@ -23,48 +23,54 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.search.SearcherFactory;
 import org.scrutmydocs.datasource.SMDDataSource;
+import org.scrutmydocs.rivers.ScrutDocuments;
 import org.scrutmydocs.search.SMDSearchFactory;
-import org.scrutmydocs.webapp.api.common.RestAPIException;
-import org.scrutmydocs.webapp.api.common.data.Api;
-import org.scrutmydocs.webapp.api.settings.rivers.basic.data.BasicRiver;
-import org.scrutmydocs.webapp.api.settings.rivers.basic.data.RestResponseRivers;
-import org.scrutmydocs.webapp.service.settings.rivers.RiverService;
-import org.scrutmydocs.webapp.service.settings.rivers.basic.AdminRiverService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 
 @Controller
 @RequestMapping("/2/settings/rivers")
 public class RiversApi extends CommonBaseApi {
 	protected final Log logger = LogFactory.getLog(getClass());
 
-
 	@Override
 	public Api[] helpApiList() {
 		Api[] apis = new Api[1];
-		apis[0] = new Api("/1/settings/rivers", "GET", "Get all existing rivers");
+		apis[0] = new Api("/1/settings/rivers", "GET",
+				"Get all existing rivers");
 		return apis;
 	}
-	
+
 	@Override
 	public String helpMessage() {
 		return "The /1/settings/rivers API gives details about rivers.";
 	}
-	
+
 	/**
 	 * Search for rivers
+	 * 
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody List<SMDDataSource> get() throws Exception {
+	public @ResponseBody
+	List<SMDDataSource> get() throws Exception {
 
-		return SMDSearchFactory.getInstance().getConf();		
-		
+		return SMDSearchFactory.getInstance().getConf();
+
+	}
+
+	/**
+	 * 
+	 * force to Scan All repositories 
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.POST)
+	public @ResponseBody
+	void forceScanRiver() throws Exception {
+		ScrutDocuments.scruting();
+
 	}
 }
