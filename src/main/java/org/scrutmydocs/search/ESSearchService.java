@@ -36,12 +36,14 @@ import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.xcontent.support.XContentMapValues;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.highlight.HighlightField;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDsearch;
 import org.scrutmydocs.datasource.SMDDataSource;
+import org.scrutmydocs.datasource.upload.UploadDataSource;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,7 +52,6 @@ class ESSearchService implements SMDsearch {
 
 	private ESLogger logger = Loggers.getLogger(getClass().getName());
 
-	private SMDDataSource smdDataSource;
 
 	final public static String SMDINDEX = "srutmydocs-docs";
 
@@ -58,22 +59,20 @@ class ESSearchService implements SMDsearch {
 
 	private ObjectMapper mapper = new ObjectMapper();
 
-	Client esClient;
+	private Client esClient;
 
 	public ESSearchService() {
-		// TODO Auto-generated constructor stub
-	}
 
-	public ESSearchService(SMDDataSource smdDataSource,Client client) {
-		this.smdDataSource = smdDataSource;
-		this.esClient= client;
-//		mapper.configure(Feature., arg1)
+		this.esClient = NodeBuilder.nodeBuilder().node().client();
+		esClient.admin()
+				.cluster()
+				.prepareHealth(ESSearchService.SMDINDEX,
+						ESSearchService.SMDADMIN).setWaitForYellowStatus()
+				.execute().actionGet();
+
 	}
 
 	@Override
-	/**
-	 *  TODO don't forget to excludes the configuration index.
-	 */
 	public SMDSearchResponse search(String search, int first, int pageSize) {
 		if (logger.isDebugEnabled())
 			logger.debug("google('{}', {}, {})", search, first, pageSize);
@@ -91,9 +90,10 @@ class ESSearchService implements SMDsearch {
 		}
 
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
-				.prepareSearch().setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setIndices(SMDINDEX)
-				.setQuery(qb).setFrom(first).setSize(pageSize)
-				.addHighlightedField("name").addHighlightedField("file")
+				.prepareSearch().setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+				.setIndices(SMDINDEX).setQuery(qb).setFrom(first)
+				.setSize(pageSize).addHighlightedField("name")
+				.addHighlightedField("file")
 				.setHighlighterPreTags("<span class='badge badge-info'>")
 				.setHighlighterPostTags("</span>").addFields("*", "_source")
 				.execute().actionGet();
@@ -104,8 +104,7 @@ class ESSearchService implements SMDsearch {
 		List<SMDDocument> documents = new ArrayList<SMDDocument>();
 		for (SearchHit searchHit : searchHits.getHits()) {
 
-			String name = getSingleStringValue("name",
-					searchHit.getSource());
+			String name = getSingleStringValue("name", searchHit.getSource());
 
 			Collection<String> highlights = null;
 			if (searchHit.getHighlightFields() != null) {
@@ -137,7 +136,7 @@ class ESSearchService implements SMDsearch {
 	}
 
 	@Override
-	public void index(SMDDocument document) {
+	public void index(SMDDataSource smdDataSource, SMDDocument document) {
 
 		if (logger.isDebugEnabled())
 			logger.debug("push({})", document);
@@ -178,6 +177,8 @@ class ESSearchService implements SMDsearch {
 	@Override
 	public void delete(String id) {
 
+		UploadDataSource smdDataSource = new UploadDataSource();
+
 		if (logger.isDebugEnabled())
 			logger.debug("push({})", id);
 
@@ -203,30 +204,29 @@ class ESSearchService implements SMDsearch {
 	}
 
 	@Override
-	public List<SMDDataSource> getConf() {
+	public List<SMDDataSource> getConf(SMDDataSource smdDataSource) {
 
 		List<SMDDataSource> response = new ArrayList<SMDDataSource>();
 		try {
 
 			org.elasticsearch.action.search.SearchResponse searchHits = esClient
 					.prepareSearch(SMDADMIN)
-					.setTypes(this.smdDataSource.name()).execute().actionGet();
+					.setTypes(smdDataSource.name()).execute().actionGet();
 
 			for (SearchHit searchHit : searchHits.getHits()) {
 
-
 				response.add(mapper.readValue(searchHit.getSourceAsString(),
-						this.smdDataSource.getClass()));
+						smdDataSource.getClass()));
 
 			}
 
 		} catch (Exception e) {
 			logger.error("Can not checkout the configuration's document : "
-					+ this.smdDataSource.name() + "whith type "
+					+ smdDataSource.name() + "whith type "
 					+ smdDataSource.id);
 			throw new RuntimeException(
 					"Can not checkout the configuration's document : "
-							+ this.smdDataSource.name() + "whith type "
+							+ smdDataSource.name() + "whith type "
 							+ smdDataSource.id + ": " + e);
 		}
 
@@ -234,26 +234,28 @@ class ESSearchService implements SMDsearch {
 	}
 
 	@Override
-	public void saveConf() {
+	public void saveConf(SMDDataSource smdDataSource) {
 		try {
-			esClient.prepareIndex(SMDADMIN, this.smdDataSource.name(),
-					this.smdDataSource.id)
-					.setSource(mapper.writeValueAsString(this.smdDataSource))
+			esClient.prepareIndex(SMDADMIN, smdDataSource.name(),
+					smdDataSource.id)
+					.setSource(mapper.writeValueAsString(smdDataSource))
 					.execute().actionGet();
 		} catch (Exception e) {
 			throw new RuntimeException("Can not save the configuration : "
-					+ this.smdDataSource.name() + "whith type "
+					+ smdDataSource.name() + "whith type "
 					+ smdDataSource.id + ": " + e.getMessage());
 		}
 
 	}
-	
-	private static String getSingleStringValue(String path, Map<String, Object> content) {
+
+	private static String getSingleStringValue(String path,
+			Map<String, Object> content) {
 		List<Object> obj = XContentMapValues.extractRawValues(path, content);
-		if(obj.isEmpty()) 
+		if (obj.isEmpty())
 			return null;
-		else 
+		else
 			return ((String) obj.get(0));
 	}
+
 
 }

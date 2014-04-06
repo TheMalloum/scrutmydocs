@@ -9,23 +9,23 @@ import org.scrutmydocs.search.SMDSearchFactory;
 
 public class ScrutDocuments {
 
-	private  Logger logger = Logger.getLogger(ScrutDocuments.class.getName());
+	private Logger logger = Logger.getLogger(ScrutDocuments.class.getName());
 
-	public  ScanDataSource datasoures = new ScanDataSource();
+	public ScanDataSource datasoures = new ScanDataSource();
 
-	public  void scruting() {
+	public void scruting() {
 		// checkout all conf datasources register
 
 		for (SMDDataSource smdDataSource : ScanDataSource.getAll().values()) {
 
-			List<SMDDataSource> dataSourcesSave = SMDSearchFactory.getInstance(
-					smdDataSource).getConf();
+			List<SMDDataSource> dataSourcesSave = SMDSearchFactory
+					.getInstance().getConf(smdDataSource);
 
 			for (SMDDataSource dataSourceSave : dataSourcesSave) {
 				logger.info("extracting modified files form the directory "
 						+ dataSourceSave.url);
 
-				List<SMDDocument> changes = dataSourceSave	
+				List<SMDDocument> changes = dataSourceSave
 						.changes(dataSourceSave.date);
 
 				logger.info(changes.size()
@@ -38,14 +38,14 @@ public class ScrutDocuments {
 				for (SMDDocument smdDocument : changes) {
 
 					logger.trace("extract document " + smdDocument.id);
-					SMDSearchFactory.getInstance(dataSourceSave).index(
+					SMDSearchFactory.getInstance().index(dataSourceSave,
 							smdDocument);
 					if (smdDocument.date.after(dataSourceSave.date)) {
 						dataSourceSave.date = smdDocument.date;
 					}
 
 				}
-				SMDSearchFactory.getInstance(dataSourceSave).saveConf();
+				SMDSearchFactory.getInstance().saveConf(smdDataSource);
 			}
 
 		}

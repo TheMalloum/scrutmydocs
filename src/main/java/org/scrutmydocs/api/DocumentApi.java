@@ -61,7 +61,7 @@ public class DocumentApi extends CommonBaseApi {
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody
 	void push(@RequestBody SMDDocument smdDocument) {
-		SMDSearchFactory.getInstance(new UploadDataSource()).index(smdDocument);
+		SMDSearchFactory.getInstance().index(new UploadDataSource(),smdDocument);
 	}
 
 	/**

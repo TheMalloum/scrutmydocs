@@ -26,7 +26,7 @@ public class TestScrutDocs {
 		
 		temp = File.createTempFile("scrutmydocsTestFile", ".txt");
 		fsDataSource = new FSDataSource("","");
-		SMDSearchFactory.getInstance(fsDataSource).saveConf();
+		SMDSearchFactory.getInstance().saveConf(fsDataSource);
 
 	}
 
@@ -36,8 +36,7 @@ public class TestScrutDocs {
 		scrutDocuments.scruting();
 		
 		Thread.sleep(3 * 1000);
-		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance(
-				fsDataSource).search(temp.getName(), 0, 100);
+		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance().search(temp.getName(), 0, 100);
 
 		
 		Assert.assertTrue(searchResponse.getTotalHits()>0);

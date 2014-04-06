@@ -19,11 +19,13 @@
 
 package org.scrutmydocs.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.datasource.SMDDataSource;
+import org.scrutmydocs.rivers.ScanDataSource;
 import org.scrutmydocs.rivers.ScrutDocuments;
 import org.scrutmydocs.search.SMDSearchFactory;
 import org.springframework.stereotype.Controller;
@@ -58,13 +60,24 @@ public class RiversApi extends CommonBaseApi {
 	public @ResponseBody
 	List<SMDDataSource> get() throws Exception {
 
-		return SMDSearchFactory.getInstance().getConf();
+		List<SMDDataSource> result = new ArrayList<SMDDataSource>();
+		for (SMDDataSource smdDataSource : ScanDataSource.getAll().values()) {
+			List<SMDDataSource> dataSourcesSave = SMDSearchFactory
+					.getInstance().getConf(smdDataSource);
+
+			for (SMDDataSource dataSourceSave : dataSourcesSave) {
+				result.add(dataSourceSave);
+			}
+
+		}
+		return result;
 
 	}
 
 	/**
 	 * 
-	 * force to Scan All repositories 
+	 * force to Scan All repositories
+	 * 
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST)
