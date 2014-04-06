@@ -23,9 +23,11 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.search.SearcherFactory;
+import org.scrutmydocs.datasource.SMDDataSource;
+import org.scrutmydocs.search.SMDSearchFactory;
 import org.scrutmydocs.webapp.api.common.RestAPIException;
 import org.scrutmydocs.webapp.api.common.data.Api;
-import org.scrutmydocs.webapp.api.common.facade.CommonBaseApi;
 import org.scrutmydocs.webapp.api.settings.rivers.basic.data.BasicRiver;
 import org.scrutmydocs.webapp.api.settings.rivers.basic.data.RestResponseRivers;
 import org.scrutmydocs.webapp.service.settings.rivers.RiverService;
@@ -41,9 +43,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/2/settings/rivers")
 public class RiversApi extends CommonBaseApi {
 	protected final Log logger = LogFactory.getLog(getClass());
-
-	@Autowired	protected AdminRiverService adminService;
-	@Autowired	protected RiverService riverService;
 
 
 	@Override
@@ -63,20 +62,9 @@ public class RiversApi extends CommonBaseApi {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody RestResponseRivers get() throws Exception {
-		List<BasicRiver> fsrivers = null;
-		try {
-			fsrivers = adminService.get();
-			
-			// For each river, we must look if it's running or not
-			for (BasicRiver fsRiver : fsrivers) {
-				fsRiver.setStart(riverService.checkState(fsRiver));
-			}
-			
-		} catch (Exception e) {
-			return new RestResponseRivers(new RestAPIException(e));
-		}
+	public @ResponseBody List<SMDDataSource> get() throws Exception {
+
+		return SMDSearchFactory.getInstance().getConf();		
 		
-		return new RestResponseRivers(fsrivers);
 	}
 }

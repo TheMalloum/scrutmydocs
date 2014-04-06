@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.scrutmydocs.webapp.api.common.facade;
+package org.scrutmydocs.api;
 
 import org.scrutmydocs.webapp.api.common.data.Api;
 import org.scrutmydocs.webapp.api.common.data.RestResponseWelcome;

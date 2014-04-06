@@ -21,9 +21,9 @@ package org.scrutmydocs.webapp.api.index.facade;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.scrutmydocs.api.CommonBaseApi;
 import org.scrutmydocs.webapp.api.common.RestAPIException;
 import org.scrutmydocs.webapp.api.common.data.Api;
-import org.scrutmydocs.webapp.api.common.facade.CommonBaseApi;
 import org.scrutmydocs.webapp.api.index.data.Index;
 import org.scrutmydocs.webapp.api.index.data.RestResponseIndex;
 import org.scrutmydocs.webapp.constant.SMDSearchProperties;

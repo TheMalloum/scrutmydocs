@@ -19,6 +19,7 @@
 
 package org.scrutmydocs.webapp.api.common.facade;
 
+import org.scrutmydocs.api.CommonBaseApi;
 import org.scrutmydocs.webapp.api.common.data.Api;
 import org.scrutmydocs.webapp.api.common.data.RestResponseWelcome;
 import org.scrutmydocs.webapp.api.common.data.Welcome;

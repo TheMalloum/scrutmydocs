@@ -23,9 +23,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.scrutmydocs.api.CommonBaseApi;
 import org.scrutmydocs.webapp.api.common.RestAPIException;
 import org.scrutmydocs.webapp.api.common.data.Api;
-import org.scrutmydocs.webapp.api.common.facade.CommonBaseApi;
 import org.scrutmydocs.webapp.api.settings.rivers.basic.data.BasicRiver;
 import org.scrutmydocs.webapp.api.settings.rivers.s3.data.RestResponseS3River;
 import org.scrutmydocs.webapp.api.settings.rivers.s3.data.RestResponseS3Rivers;
