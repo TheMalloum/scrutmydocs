@@ -24,10 +24,8 @@
 
 	<context:annotation-config />
 	
-	<context:component-scan base-package="org.scrutmydocs.scruting"/>
-	<context:component-scan base-package="org.scrutmydocs.datasource">
-		<context:include-filter type="annotation" expression="org.scrutmydocs.datasource.SMDRegister" />
-	</context:component-scan>
+	<context:component-scan base-package="org.scrutmydocs.api"/>
+	<context:component-scan base-package="org.scrutmydocs.webapp"/>
 
 
 	<mvc:annotation-driven />
