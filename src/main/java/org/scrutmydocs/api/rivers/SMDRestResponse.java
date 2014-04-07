@@ -24,7 +24,6 @@ import java.util.List;
 import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.webapp.api.common.RestAPIException;
 import org.scrutmydocs.webapp.api.common.data.RestResponse;
-import org.scrutmydocs.webapp.api.settings.rivers.drive.data.DriveRiver;
 
 /**
  * A RestReponse for a list of Google Drive rivers.

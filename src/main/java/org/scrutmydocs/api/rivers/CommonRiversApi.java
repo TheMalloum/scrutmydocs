@@ -24,7 +24,6 @@ import java.util.List;
 import org.scrutmydocs.api.CommonBaseApi;
 import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.search.SMDSearchFactory;
-import org.scrutmydocs.webapp.api.settings.rivers.drive.data.RestResponseDriveRiver;
 
 public abstract class CommonRiversApi extends CommonBaseApi {
 
@@ -51,9 +50,9 @@ public abstract class CommonRiversApi extends CommonBaseApi {
 		return new SMDRestResponse(river);
 	}
 
-	public SMDRestResponse delete(String id) {
+	public SMDRestResponse delete(SMDDataSource river,String id) {
 
-		SMDSearchFactory.getInstance().delete(id);
+		SMDSearchFactory.getInstance().delelteConf(river,id);
 
 		return new SMDRestResponse();
 	}

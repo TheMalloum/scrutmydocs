@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.logging.ESLogger;
@@ -43,7 +42,6 @@ import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDsearch;
 import org.scrutmydocs.datasource.SMDDataSource;
-import org.scrutmydocs.datasource.drive.DriveSMDDataSource;
 import org.scrutmydocs.datasource.upload.UploadSMDDataSource;
 import org.springframework.util.StringUtils;
 
@@ -148,7 +146,7 @@ class ESSearchService implements SMDsearch {
 		}
 
 		try {
-			IndexResponse response = esClient
+			esClient
 					.prepareIndex(SMDINDEX, smdDataSource.id, document.id)
 					.setSource(
 							jsonBuilder()
@@ -247,15 +245,6 @@ class ESSearchService implements SMDsearch {
 
 	}
 
-	private static String getSingleStringValue(String path,
-			Map<String, Object> content) {
-		List<Object> obj = XContentMapValues.extractRawValues(path, content);
-		if (obj.isEmpty())
-			return null;
-		else
-			return ((String) obj.get(0));
-	}
-
 	@Override
 	public SMDDataSource getConf(SMDDataSource smdDataSource, String id) {
 
@@ -268,6 +257,23 @@ class ESSearchService implements SMDsearch {
 		}
 
 		return null;
+	}
+
+	@Override
+	public void delelteConf(SMDDataSource smdDataSource, String id) {
+
+		esClient.prepareDelete(SMDADMIN, smdDataSource.name(), id).execute()
+				.actionGet();
+
+	}
+
+	private static String getSingleStringValue(String path,
+			Map<String, Object> content) {
+		List<Object> obj = XContentMapValues.extractRawValues(path, content);
+		if (obj.isEmpty())
+			return null;
+		else
+			return ((String) obj.get(0));
 	}
 
 }

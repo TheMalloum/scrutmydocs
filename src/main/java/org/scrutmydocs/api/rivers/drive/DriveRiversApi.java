@@ -140,7 +140,7 @@ public class DriveRiversApi extends CommonRiversApi {
 	public @ResponseBody
 	SMDRestResponse delete(@PathVariable final String id) {
 
-		return super.delete(id);
+		return super.delete(new DriveSMDDataSource(),id);
 	}
 
 	/**
