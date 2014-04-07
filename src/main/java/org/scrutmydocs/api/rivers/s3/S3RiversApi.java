@@ -47,10 +47,6 @@ public class S3RiversApi extends CommonRiversApi {
 	/** A commons logger for diagnostic messages. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	@Autowired
-	protected RiverService riverService;
-	@Autowired
-	protected AdminS3RiverService adminService;
 
 	@Override
 	public Api[] helpApiList() {

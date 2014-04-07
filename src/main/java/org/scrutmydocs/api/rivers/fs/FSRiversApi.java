@@ -41,10 +41,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class FSRiversApi extends CommonRiversApi {
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	@Autowired
-	protected AdminFSRiverService adminService;
-	@Autowired
-	protected RiverService riverService;
 
 	@Override
 	public Api[] helpApiList() {

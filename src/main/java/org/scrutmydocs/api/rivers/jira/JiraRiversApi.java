@@ -40,10 +40,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class JiraRiversApi extends CommonRiversApi {
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	@Autowired
-	protected AdminJiraRiverService adminService;
-	@Autowired
-	protected RiverService riverService;
 
 	@Override
 	public Api[] helpApiList() {
