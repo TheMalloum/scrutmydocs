@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.webapp.api.common.RestAPIException;
-
 
 public class RestResponse<T> implements Serializable {
 
@@ -41,9 +41,10 @@ public class RestResponse<T> implements Serializable {
 	public RestResponse() {
 		this.ok = true;
 	}
-	
+
 	/**
 	 * We can get an object back, so there is no error and ok=true
+	 * 
 	 * @param object
 	 */
 	public RestResponse(T object) {
@@ -51,9 +52,9 @@ public class RestResponse<T> implements Serializable {
 		this.ok = true;
 	}
 
-
 	/**
 	 * We build a response when we have errors
+	 * 
 	 * @param errors
 	 */
 	public RestResponse(String[] errors) {
@@ -63,10 +64,16 @@ public class RestResponse<T> implements Serializable {
 
 	/**
 	 * We build a response when we have a single exception
+	 * 
 	 * @param e
 	 */
 	public RestResponse(RestAPIException e) {
 		addError(e);
+	}
+
+	public RestResponse(SMDDataSource river) {
+		this.object = (T) river;
+		this.ok = true;
 	}
 
 	public boolean isOk() {
@@ -88,20 +95,22 @@ public class RestResponse<T> implements Serializable {
 	public Object getObject() {
 		return object;
 	}
-	
+
 	public void setObject(T object) {
 		this.object = object;
 	}
-	
+
 	/**
 	 * Add an error to the error list
+	 * 
 	 * @param e
 	 */
 	public void addError(RestAPIException e) {
 		this.ok = false;
 		Collection<String> errs = new ArrayList<String>();
-		if (this.errors != null) Collections.addAll(errs, this.errors);
+		if (this.errors != null)
+			Collections.addAll(errs, this.errors);
 		errs.add(e.getMessage());
-		this.errors = (String[])errs.toArray(new String[errs.size()]);
+		this.errors = (String[]) errs.toArray(new String[errs.size()]);
 	}
 }

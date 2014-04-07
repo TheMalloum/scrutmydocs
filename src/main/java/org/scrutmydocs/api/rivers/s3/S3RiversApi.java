@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.scrutmydocs.api.rivers.s3.facade;
+package org.scrutmydocs.api.rivers.s3;
 
 import java.util.List;
 

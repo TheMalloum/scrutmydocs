@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.datasource.fs.FSDataSource;
+import org.scrutmydocs.datasource.fs.FSSMDDataSource;
 import org.scrutmydocs.rivers.ScrutDocuments;
 import org.scrutmydocs.search.SMDSearchFactory;
 import org.scrutmydocs.webapp.test.AbstractConfigurationTest;
@@ -16,7 +16,7 @@ public class TestScrutDocs {
 
 	ScrutDocuments scrutDocuments= new ScrutDocuments();
 
-	FSDataSource fsDataSource;
+	FSSMDDataSource fsDataSource;
 
 	File temp;
 
@@ -25,7 +25,7 @@ public class TestScrutDocs {
 		// create a temp file
 		
 		temp = File.createTempFile("scrutmydocsTestFile", ".txt");
-		fsDataSource = new FSDataSource("","");
+		fsDataSource = new FSSMDDataSource("","");
 		SMDSearchFactory.getInstance().saveConf(fsDataSource);
 
 	}

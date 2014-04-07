@@ -23,7 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.formula.eval.NotImplementedException;
 import org.scrutmydocs.contract.SMDDocument;
-import org.scrutmydocs.datasource.upload.UploadDataSource;
+import org.scrutmydocs.datasource.upload.UploadSMDDataSource;
 import org.scrutmydocs.search.SMDSearchFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,7 +61,7 @@ public class DocumentApi extends CommonBaseApi {
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody
 	void push(@RequestBody SMDDocument smdDocument) {
-		SMDSearchFactory.getInstance().index(new UploadDataSource(),smdDocument);
+		SMDSearchFactory.getInstance().index(new UploadSMDDataSource(),smdDocument);
 	}
 
 	/**

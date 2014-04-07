@@ -3,6 +3,7 @@ package org.scrutmydocs.contract;
 import java.util.List;
 
 import org.scrutmydocs.datasource.SMDDataSource;
+import org.scrutmydocs.datasource.drive.DriveSMDDataSource;
 
 public interface SMDsearch {
 
@@ -15,5 +16,7 @@ public interface SMDsearch {
 	public void saveConf(SMDDataSource smdDataSource);
 
 	public List<SMDDataSource> getConf(SMDDataSource smdDataSource);
+
+	public SMDDataSource getConf(SMDDataSource smdDataSource, String id);
 
 }

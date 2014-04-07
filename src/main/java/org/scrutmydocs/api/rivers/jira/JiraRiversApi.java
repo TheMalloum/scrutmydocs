@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.scrutmydocs.api.rivers.jira.facade;
+package org.scrutmydocs.api.rivers.jira;
 
 import java.util.List;
 

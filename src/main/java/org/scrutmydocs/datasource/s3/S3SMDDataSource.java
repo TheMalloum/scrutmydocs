@@ -17,39 +17,38 @@
  * under the License.
  */
 
-package org.scrutmydocs.api.rivers.s3.data;
+package org.scrutmydocs.datasource.s3;
 
-import org.scrutmydocs.webapp.api.settings.rivers.abstractfs.data.AbstractFSRiver;
+import java.util.Date;
+import java.util.List;
+
+import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.datasource.SMDDataSource;
+import org.scrutmydocs.datasource.SMDRegister;
 import org.scrutmydocs.webapp.util.StringTools;
 
 /**
  * Manage Amazon S3 river metadata.
  * @author Laurent Broudoux
  */
-public class S3River extends AbstractFSRiver {
+@SMDRegister(name = "amazon-s3")
+public class S3SMDDataSource extends SMDDataSource {
 
    private String accessKey;
    private String secretKey;
    private String bucket;
    
-   public S3River() {
+   public S3SMDDataSource() {
       this(null, null, null, "bucket", "path/to/folder/", 60L);
    }
    
-   public S3River(String id, String accessKey, String secretKey, String bucket, String pathPrefix, Long updateRate) {
+   public S3SMDDataSource(String id, String accessKey, String secretKey, String bucket, String pathPrefix, Long updateRate) {
       super(id, pathPrefix, updateRate);
       this.accessKey = accessKey;
       this.secretKey = secretKey;
       this.bucket = bucket;
    }
    
-   /**
-    * We implement here a "amazon-s3" river.
-    */
-   @Override
-   public String getType() {
-      return "amazon-s3";
-   }
    
    @Override
    public String toString() {
@@ -79,4 +78,22 @@ public class S3River extends AbstractFSRiver {
    public void setBucket(String bucket) {
       this.bucket = bucket;
    }
+
+@Override
+public List<SMDDocument> changes(Date since) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public String getDocumentPath(String id) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public SMDDocument getDocument(String id) {
+	// TODO Auto-generated method stub
+	return null;
+}
 }

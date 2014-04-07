@@ -43,7 +43,8 @@ import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDsearch;
 import org.scrutmydocs.datasource.SMDDataSource;
-import org.scrutmydocs.datasource.upload.UploadDataSource;
+import org.scrutmydocs.datasource.drive.DriveSMDDataSource;
+import org.scrutmydocs.datasource.upload.UploadSMDDataSource;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -176,7 +177,7 @@ class ESSearchService implements SMDsearch {
 	@Override
 	public void delete(String id) {
 
-		UploadDataSource smdDataSource = new UploadDataSource();
+		UploadSMDDataSource smdDataSource = new UploadSMDDataSource();
 
 		if (logger.isDebugEnabled())
 			logger.debug("push({})", id);
@@ -253,6 +254,20 @@ class ESSearchService implements SMDsearch {
 			return null;
 		else
 			return ((String) obj.get(0));
+	}
+
+	@Override
+	public SMDDataSource getConf(SMDDataSource smdDataSource, String id) {
+
+		for (SMDDataSource dataSource : getConf(smdDataSource)) {
+
+			if (dataSource.id == id) {
+
+				return dataSource;
+			}
+		}
+
+		return null;
 	}
 
 }

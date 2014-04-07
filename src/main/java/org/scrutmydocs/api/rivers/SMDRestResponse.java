@@ -17,31 +17,40 @@
  * under the License.
  */
 
-package org.scrutmydocs.api.rivers.drive.data;
+package org.scrutmydocs.api.rivers;
 
+import java.util.List;
+
+import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.webapp.api.common.RestAPIException;
 import org.scrutmydocs.webapp.api.common.data.RestResponse;
+import org.scrutmydocs.webapp.api.settings.rivers.drive.data.DriveRiver;
 
 /**
- * A RestResponse for Google Drive river.
+ * A RestReponse for a list of Google Drive rivers.
+ * 
  * @author Laurent Broudoux
  */
-public class RestResponseDriveRiver extends RestResponse<DriveRiver> {
+public class SMDRestResponse extends RestResponse<List<SMDDataSource>> {
 
-   /**
-    * Default serial version UID.
-    */
-   private static final long serialVersionUID = 1L;
+	/**
+	 * Default serial version UID.
+	 */
+	private static final long serialVersionUID = 1L;
 
-   public RestResponseDriveRiver() {
-      super();
-   }
-   
-   public RestResponseDriveRiver(DriveRiver river) {
-      super(river);
-   }
-   
-   public RestResponseDriveRiver(RestAPIException e) {
-      super(e);
-   }
+	public SMDRestResponse() {
+		super();
+	}
+
+	public SMDRestResponse(List<SMDDataSource> rivers) {
+		super(rivers);
+	}
+
+	public SMDRestResponse(SMDDataSource river) {
+		super(river);
+	}
+
+	public SMDRestResponse(RestAPIException e) {
+		super(e);
+	}
 }

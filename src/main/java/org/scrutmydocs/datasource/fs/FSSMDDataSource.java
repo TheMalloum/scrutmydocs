@@ -43,16 +43,21 @@ import org.scrutmydocs.datasource.SMDRegister;
  * 
  */
 @SMDRegister(name = "fsDataSource")
-public class FSDataSource extends SMDDataSource {
+public class FSSMDDataSource extends SMDDataSource {
 
-	public FSDataSource(String id, String url) {
+	private String protocol;
+	private String server;
+	private String username;
+	private String password;
+
+	public FSSMDDataSource(String id, String url) {
 		super();
-		this.id=id;
+		this.id = id;
 		this.url = url;
-		
+
 	}
 
-	public FSDataSource() {
+	public FSSMDDataSource() {
 	}
 
 	protected Logger logger = Logger.getLogger(getClass().getName());

@@ -19,7 +19,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.elasticsearch.ElasticSearchException;
 import org.scrutmydocs.contract.SMDDocument;
-import org.scrutmydocs.datasource.upload.UploadDataSource;
+import org.scrutmydocs.datasource.upload.UploadSMDDataSource;
 import org.scrutmydocs.search.SMDSearchFactory;
 
 /**
@@ -82,7 +82,7 @@ public class UploadServlet extends HttpServlet {
 	private String indexDocument(String fileName, String contentType, byte[] content) throws ElasticSearchException, IOException {
 		
 		
-		SMDSearchFactory.getInstance().index(new UploadDataSource(), new SMDDocument(fileName, fileName, contentType, content, new Date()));
+		SMDSearchFactory.getInstance().index(new UploadSMDDataSource(), new SMDDocument(fileName, fileName, contentType, content, new Date()));
 		
 		
 		return "ok";

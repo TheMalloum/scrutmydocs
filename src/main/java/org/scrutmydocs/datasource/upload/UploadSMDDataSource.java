@@ -17,33 +17,47 @@
  * under the License.
  */
 
-package org.scrutmydocs.api.rivers.drive.data;
+package org.scrutmydocs.datasource.upload;
 
+import java.util.Date;
 import java.util.List;
 
-import org.scrutmydocs.webapp.api.common.RestAPIException;
-import org.scrutmydocs.webapp.api.common.data.RestResponse;
+import org.apache.log4j.Logger;
+import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.datasource.SMDDataSource;
+import org.scrutmydocs.datasource.SMDRegister;
 
 /**
- * A RestReponse for a list of Google Drive rivers.
- * @author Laurent Broudoux
+ * Implement the DropBox ScrutMyDocs Data Source
+ * 
+ * @author Malloum LAYA
+ * 
  */
-public class RestResponseDriveRivers extends RestResponse<List<DriveRiver>> {
+@SMDRegister(name = "uploadDataSource")
+public class UploadSMDDataSource extends SMDDataSource {
 
-   /**
-    * Default serial version UID.
-    */
-   private static final long serialVersionUID = 1L;
+	protected Logger logger = Logger.getLogger(getClass().getName());
 
-   public RestResponseDriveRivers() {
-      super();
-   }
-   
-   public RestResponseDriveRivers(List<DriveRiver> rivers) {
-      super(rivers);
-   }
-   
-   public RestResponseDriveRivers(RestAPIException e) {
-      super(e);
-   }
+	public UploadSMDDataSource() {
+		super();
+		this.id = "only-one";
+	}
+
+	@Override
+	public List<SMDDocument> changes(Date date) {
+
+		return null;
+	}
+
+	@Override
+	public String getDocumentPath(String id) {
+		return "file//" + id;
+	}
+
+	@Override
+	public SMDDocument getDocument(String id) {
+
+		return null;
+	}
+
 }

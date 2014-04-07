@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.scrutmydocs.api.rivers.fs.facade;
+package org.scrutmydocs.api.rivers.fs;
 
 import java.util.List;
 

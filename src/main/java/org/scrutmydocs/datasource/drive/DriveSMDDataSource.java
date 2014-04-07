@@ -17,16 +17,22 @@
  * under the License.
  */
 
-package org.scrutmydocs.api.rivers.drive.data;
+package org.scrutmydocs.datasource.drive;
 
-import org.scrutmydocs.webapp.api.settings.rivers.abstractfs.data.AbstractFSRiver;
+import java.util.Date;
+import java.util.List;
+
+import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.datasource.SMDDataSource;
+import org.scrutmydocs.datasource.SMDRegister;
 import org.scrutmydocs.webapp.util.StringTools;
 
 /**
  * Manage Google Drive river metadata.
  * @author Laurent Broudoux
  */
-public class DriveRiver extends AbstractFSRiver {
+@SMDRegister(name = "google-drive")
+public class DriveSMDDataSource extends SMDDataSource {
 
    /**
     * Default serial version UID.
@@ -37,24 +43,17 @@ public class DriveRiver extends AbstractFSRiver {
    private String clientSecret;
    private String refreshToken;
    
-   public DriveRiver() {
+   public DriveSMDDataSource() {
       this(null, null, null, "refresh", "folder", 60L);
    }
    
-   public DriveRiver(String id, String clientId, String clientSecret, String refreshToken, String folder, Long updateRate) {
+   public DriveSMDDataSource(String id, String clientId, String clientSecret, String refreshToken, String folder, Long updateRate) {
       super(id, folder, updateRate);
       this.clientId = clientId;
       this.clientSecret = clientSecret;
       this.refreshToken = refreshToken;
    }
    
-   /**
-    * We implement here a "google-drive" river
-    */
-   @Override
-   public String getType() {
-      return "google-drive";
-   }
    
    @Override
    public String toString() {
@@ -84,4 +83,22 @@ public class DriveRiver extends AbstractFSRiver {
    public void setRefreshToken(String refreshToken) {
       this.refreshToken = refreshToken;
    }
+
+@Override
+public List<SMDDocument> changes(Date since) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public String getDocumentPath(String id) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public SMDDocument getDocument(String id) {
+	// TODO Auto-generated method stub
+	return null;
+}
 }

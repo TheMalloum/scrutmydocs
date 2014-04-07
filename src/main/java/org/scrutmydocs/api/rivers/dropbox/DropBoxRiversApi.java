@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.scrutmydocs.api.rivers.dropbox.facade;
+package org.scrutmydocs.api.rivers.dropbox;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

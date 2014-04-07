@@ -20,6 +20,14 @@ public abstract class SMDDataSource {
 		c.set(1970, 1, 1, 0, 0);
 		this.date = c.getTime();
 	}
+	
+	
+	public SMDDataSource(String id, String url, Long updateRate){
+		this.id=id;
+		this.updateRate = updateRate;
+		this.url = url;
+		this.analyzer = "standard";
+	}
 
 	@JsonInclude
 	@Nonnull
@@ -33,6 +41,19 @@ public abstract class SMDDataSource {
 	@JsonInclude
 	@Nonnull
 	public String id;
+
+	@JsonInclude
+	public Long updateRate;
+	
+	@JsonInclude
+	public String includes;
+
+	@JsonInclude
+	public String excludes;
+	
+	@JsonInclude
+	@Nonnull
+	private String analyzer;
 
 	@JsonInclude
 	@Nonnull
