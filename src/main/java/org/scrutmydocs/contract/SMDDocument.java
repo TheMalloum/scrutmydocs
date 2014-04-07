@@ -24,4 +24,17 @@ public class SMDDocument {
 		this.highlights = highlights;
 	}
 
+	
+	public SMDDocument(String id, String name, String contentType,
+			byte[] content, Date date) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.contentType = contentType;
+		this.content = content;
+		this.date = date;
+		this.highlights=null;
+	}
+
+	
 }

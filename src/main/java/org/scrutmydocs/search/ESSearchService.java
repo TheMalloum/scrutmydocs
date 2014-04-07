@@ -52,7 +52,6 @@ class ESSearchService implements SMDsearch {
 
 	private ESLogger logger = Loggers.getLogger(getClass().getName());
 
-
 	final public static String SMDINDEX = "srutmydocs-docs";
 
 	final public static String SMDADMIN = "srutmydocs-admin";
@@ -90,9 +89,9 @@ class ESSearchService implements SMDsearch {
 		}
 
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
-				.prepareSearch().setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-				.setIndices(SMDINDEX).setQuery(qb).setFrom(first)
-				.setSize(pageSize).addHighlightedField("name")
+				.prepareSearch().setIndices(SMDINDEX)
+				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(qb)
+				.setFrom(first).setSize(pageSize).addHighlightedField("name")
 				.addHighlightedField("file")
 				.setHighlighterPreTags("<span class='badge badge-info'>")
 				.setHighlighterPostTags("</span>").addFields("*", "_source")
@@ -210,8 +209,8 @@ class ESSearchService implements SMDsearch {
 		try {
 
 			org.elasticsearch.action.search.SearchResponse searchHits = esClient
-					.prepareSearch(SMDADMIN)
-					.setTypes(smdDataSource.name()).execute().actionGet();
+					.prepareSearch(SMDADMIN).setTypes(smdDataSource.name())
+					.execute().actionGet();
 
 			for (SearchHit searchHit : searchHits.getHits()) {
 
@@ -222,8 +221,7 @@ class ESSearchService implements SMDsearch {
 
 		} catch (Exception e) {
 			logger.error("Can not checkout the configuration's document : "
-					+ smdDataSource.name() + "whith type "
-					+ smdDataSource.id);
+					+ smdDataSource.name() + "whith type " + smdDataSource.id);
 			throw new RuntimeException(
 					"Can not checkout the configuration's document : "
 							+ smdDataSource.name() + "whith type "
@@ -242,8 +240,8 @@ class ESSearchService implements SMDsearch {
 					.execute().actionGet();
 		} catch (Exception e) {
 			throw new RuntimeException("Can not save the configuration : "
-					+ smdDataSource.name() + "whith type "
-					+ smdDataSource.id + ": " + e.getMessage());
+					+ smdDataSource.name() + "whith type " + smdDataSource.id
+					+ ": " + e.getMessage());
 		}
 
 	}
@@ -256,6 +254,5 @@ class ESSearchService implements SMDsearch {
 		else
 			return ((String) obj.get(0));
 	}
-
 
 }

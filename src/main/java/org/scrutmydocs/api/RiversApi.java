@@ -29,11 +29,12 @@ import org.scrutmydocs.rivers.ScanDataSource;
 import org.scrutmydocs.rivers.ScrutDocuments;
 import org.scrutmydocs.search.SMDSearchFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller
+@Controller("RiversApiv2")
 @RequestMapping("/2/settings/rivers")
 public class RiversApi extends CommonBaseApi {
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -75,6 +76,19 @@ public class RiversApi extends CommonBaseApi {
 	}
 
 	/**
+	 * Search for rivers
+	 * 
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.PUT)
+	public @ResponseBody
+	void put(@PathVariable String register, @PathVariable String id)
+			throws Exception {
+
+		// @todo
+	}
+
+	/**
 	 * 
 	 * force to Scan All repositories
 	 * 
@@ -82,7 +96,7 @@ public class RiversApi extends CommonBaseApi {
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody
-	void forceScanRiver() throws Exception {
+	void post() throws Exception {
 		new ScrutDocuments().scruting();
 
 	}

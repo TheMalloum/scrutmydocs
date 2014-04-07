@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller
+@Controller(value="DocumentApiv2")
 @RequestMapping("/2/doc")
 public class DocumentApi extends CommonBaseApi {
 	protected final Log logger = LogFactory.getLog(getClass());

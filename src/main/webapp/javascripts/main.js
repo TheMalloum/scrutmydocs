@@ -45,7 +45,7 @@ var doSearchPage = function(query, from) {
 	};
 	// Rest
 	lastData = data;
-	$.postJSON("api/1/search", data, handleSearchResults);
+	$.postJSON("api/2/search", data, handleSearchResults);
     $("#loading img").show();
 };
 

@@ -37,12 +37,12 @@
 	
 	<servlet>
 		<servlet-name>DownloadServlet</servlet-name>
-		<servlet-class>org.scrutmydocs.webapp.servlet.DownloadServlet</servlet-class>
+		<servlet-class>org.scrutmydocs.servlet.DownloadServlet</servlet-class>
 	</servlet>
 	
 	<servlet>
 		<servlet-name>UploadServlet</servlet-name>
-		<servlet-class>org.scrutmydocs.webapp.servlet.UploadServlet</servlet-class>
+		<servlet-class>org.scrutmydocs.servlet.UploadServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
