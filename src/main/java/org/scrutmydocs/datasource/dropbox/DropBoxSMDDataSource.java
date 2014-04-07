@@ -40,6 +40,11 @@ public class DropBoxSMDDataSource extends SMDDataSource {
 	private String token;
 	private String secret;
 
+	
+	public DropBoxSMDDataSource() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	/**
 	 * @param id
 	 *            The unique id of this river

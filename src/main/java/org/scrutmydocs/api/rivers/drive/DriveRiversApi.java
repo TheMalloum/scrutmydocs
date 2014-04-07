@@ -19,17 +19,12 @@
 
 package org.scrutmydocs.api.rivers.drive;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.api.Api;
-import org.scrutmydocs.api.CommonBaseApi;
+import org.scrutmydocs.api.rivers.CommonRiversApi;
 import org.scrutmydocs.api.rivers.SMDRestResponse;
-import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.datasource.drive.DriveSMDDataSource;
-import org.scrutmydocs.search.SMDSearchFactory;
-import org.scrutmydocs.webapp.api.settings.rivers.drive.data.RestResponseDriveRiver;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +39,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("/1/settings/rivers/drive")
-public class DriveRiversApi extends CommonBaseApi {
+public class DriveRiversApi extends CommonRiversApi {
 
 	/** Commons logger for diagnostic messages. */
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -85,10 +80,7 @@ public class DriveRiversApi extends CommonBaseApi {
 	public @ResponseBody
 	SMDRestResponse get() throws Exception {
 
-		List<SMDDataSource> rivers = SMDSearchFactory.getInstance().getConf(
-				new DriveSMDDataSource());
-
-		return new SMDRestResponse(rivers);
+		return super.get(new DriveSMDDataSource());
 	}
 
 	/**
@@ -104,10 +96,7 @@ public class DriveRiversApi extends CommonBaseApi {
 	public @ResponseBody
 	SMDRestResponse get(@PathVariable final String id) throws Exception {
 
-		SMDDataSource river = SMDSearchFactory.getInstance().getConf(
-				new DriveSMDDataSource(), id);
-
-		return new SMDRestResponse(river);
+		return super.get(new DriveSMDDataSource(), id);
 	}
 
 	/**
@@ -121,9 +110,7 @@ public class DriveRiversApi extends CommonBaseApi {
 	public @ResponseBody
 	SMDRestResponse put(@RequestBody DriveSMDDataSource river) throws Exception {
 
-		SMDSearchFactory.getInstance().saveConf(river);
-
-		return new SMDRestResponse(river);
+		return super.put(river);
 	}
 
 	/**
@@ -135,8 +122,9 @@ public class DriveRiversApi extends CommonBaseApi {
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody
-	SMDRestResponse post(@RequestBody DriveSMDDataSource river) throws Exception {
-		return put(river);
+	SMDRestResponse post(@RequestBody DriveSMDDataSource river)
+			throws Exception {
+		return super.put(river);
 	}
 
 	/**
@@ -150,11 +138,9 @@ public class DriveRiversApi extends CommonBaseApi {
 	 */
 	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
 	public @ResponseBody
-	RestResponseDriveRiver delete(@PathVariable final String id){
-	
-		SMDSearchFactory.getInstance().delete(id);
+	SMDRestResponse delete(@PathVariable final String id) {
 
-		return new RestResponseDriveRiver();
+		return super.delete(id);
 	}
 
 	/**
@@ -168,9 +154,8 @@ public class DriveRiversApi extends CommonBaseApi {
 	 */
 	@RequestMapping(value = "{id}/start", method = RequestMethod.GET)
 	public @ResponseBody
-	RestResponseDriveRiver start(@PathVariable final String id)
-			throws Exception {
-		return new RestResponseDriveRiver();
+	SMDRestResponse start(@PathVariable final String id){
+		return super.start(id);
 
 	}
 
@@ -185,7 +170,7 @@ public class DriveRiversApi extends CommonBaseApi {
 	 */
 	@RequestMapping(value = "{id}/stop", method = RequestMethod.GET)
 	public @ResponseBody
-	RestResponseDriveRiver stop(@PathVariable final String id) throws Exception {
-		return new RestResponseDriveRiver();
+	SMDRestResponse stop(@PathVariable final String id){
+		return super.stop(id);
 	}
 }

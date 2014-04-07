@@ -22,169 +22,129 @@ package org.scrutmydocs.api.rivers.dropbox;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.api.Api;
-import org.scrutmydocs.api.CommonBaseApi;
-import org.scrutmydocs.webapp.api.common.RestAPIException;
-import org.scrutmydocs.webapp.api.settings.rivers.basic.data.BasicRiver;
-import org.scrutmydocs.webapp.api.settings.rivers.dropbox.data.DropBoxRiver;
-import org.scrutmydocs.webapp.api.settings.rivers.dropbox.data.RestResponseDropBoxRiver;
-import org.scrutmydocs.webapp.api.settings.rivers.dropbox.data.RestResponseDropBoxRivers;
-import org.scrutmydocs.webapp.service.settings.rivers.RiverService;
-import org.scrutmydocs.webapp.service.settings.rivers.dropbox.AdminDropBoxRiverService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.scrutmydocs.api.rivers.CommonRiversApi;
+import org.scrutmydocs.api.rivers.SMDRestResponse;
+import org.scrutmydocs.datasource.dropbox.DropBoxSMDDataSource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/1/settings/rivers/dropbox")
-public class DropBoxRiversApi extends CommonBaseApi {
+public class DropBoxRiversApi extends CommonRiversApi {
 	protected final Log logger = LogFactory.getLog(getClass());
-
-	@Autowired protected AdminDropBoxRiverService adminService;
-	@Autowired protected RiverService riverService;
-	
 
 	@Override
 	public Api[] helpApiList() {
 		Api[] apis = new Api[7];
-		apis[0] = new Api("/1/settings/rivers/dropbox", "GET", "Get all existing FileSystem rivers");
-		apis[1] = new Api("/1/settings/rivers/dropbox/{name}", "GET", "Get details about a FileSystem river");
-		apis[2] = new Api("/1/settings/rivers/dropbox", "PUT", "Create or update a FileSystem river");
-		apis[3] = new Api("/1/settings/rivers/dropbox", "POST", "Create or update a FileSystem river");
-		apis[4] = new Api("/1/settings/rivers/dropbox/{name}", "DELETE", "Delete an existing FileSystem river");
-		apis[5] = new Api("/1/settings/rivers/dropbox/{name}/start", "GET", "Start a river");
-		apis[6] = new Api("/1/settings/rivers/dropbox/{name}/stop", "GET", "Stop a river");
+		apis[0] = new Api("/1/settings/rivers/dropbox", "GET",
+				"Get all existing FileSystem rivers");
+		apis[1] = new Api("/1/settings/rivers/dropbox/{name}", "GET",
+				"Get details about a FileSystem river");
+		apis[2] = new Api("/1/settings/rivers/dropbox", "PUT",
+				"Create or update a FileSystem river");
+		apis[3] = new Api("/1/settings/rivers/dropbox", "POST",
+				"Create or update a FileSystem river");
+		apis[4] = new Api("/1/settings/rivers/dropbox/{name}", "DELETE",
+				"Delete an existing FileSystem river");
+		apis[5] = new Api("/1/settings/rivers/dropbox/{name}/start", "GET",
+				"Start a river");
+		apis[6] = new Api("/1/settings/rivers/dropbox/{name}/stop", "GET",
+				"Stop a river");
 		return apis;
 	}
-	
+
 	@Override
 	public String helpMessage() {
 		return "The /1/settings/rivers/dropbox API manage Dropbox rivers.";
 	}
-	
+
 	/**
 	 * Search for all Dropbox rivers
+	 * 
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody RestResponseDropBoxRivers get() throws Exception {
-		List<DropBoxRiver> rivers = null;
-		try {
-			rivers = adminService.get();
-			
-			// For each river, we must look if it's running or not
-			for (BasicRiver river : rivers) {
-				river.setStart(riverService.checkState(river));
-			}
-			
-		} catch (Exception e) {
-			return new RestResponseDropBoxRivers(new RestAPIException(e));
-		}
-		
-		return new RestResponseDropBoxRivers(rivers);
+	public @ResponseBody
+	SMDRestResponse get() throws Exception {
+
+		return super.get(new DropBoxSMDDataSource());
 	}
-	
+
 	/**
 	 * Search for one Dropbox river
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "{id}", method = RequestMethod.GET)
-	public @ResponseBody RestResponseDropBoxRiver get(@PathVariable final String id) throws Exception {
-		DropBoxRiver river = null;
-		try {
-			river = adminService.get(id);
-			if (river != null) {
-				river.setStart(riverService.checkState(river));
-			}
-		} catch (Exception e) {
-			return new RestResponseDropBoxRiver(new RestAPIException(e));
-		}
-		
-		return new RestResponseDropBoxRiver(river);
+	public @ResponseBody
+	SMDRestResponse get(@PathVariable final String id) throws Exception {
+
+		return super.get(new DropBoxSMDDataSource(), id);
+
 	}
 
 	/**
 	 * Create or Update a Dropbox river
+	 * 
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.PUT)
-	public @ResponseBody RestResponseDropBoxRiver put(@RequestBody DropBoxRiver river) throws Exception {
-		try {
-			adminService.update(river);
-		} catch (Exception e) {
-			return new RestResponseDropBoxRiver(new RestAPIException(e));
-		}
-		
-		return new RestResponseDropBoxRiver();
+	public @ResponseBody
+	SMDRestResponse put(@RequestBody DropBoxSMDDataSource river)
+			throws Exception {
+		return super.put(river);
 	}
-	
+
 	/**
 	 * Create or Update a Dropbox river
+	 * 
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public @ResponseBody RestResponseDropBoxRiver push(@RequestBody DropBoxRiver river) throws Exception {
-		return put(river);
+	public @ResponseBody
+	SMDRestResponse push(@RequestBody DropBoxSMDDataSource river)
+			throws Exception {
+		return super.put(river);
 	}
 
 	/**
 	 * Remove a Dropbox river
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-	public @ResponseBody RestResponseDropBoxRiver delete(@PathVariable final String id) throws Exception {
-		try {
-			adminService.remove(new DropBoxRiver(id, null, null, null, null));
-		} catch (Exception e) {
-			return new RestResponseDropBoxRiver(new RestAPIException(e));
-		}
-		
-		return new RestResponseDropBoxRiver();
+	public @ResponseBody
+	SMDRestResponse delete(@PathVariable final String id) {
+
+		return super.delete(id);
 	}
-	
+
 	/**
 	 * Start a river
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "{id}/start", method = RequestMethod.GET)
-	public @ResponseBody RestResponseDropBoxRiver start(@PathVariable final String id) throws Exception {
-		DropBoxRiver river = null;
-		try {
-			river = adminService.get(id);
-			if (river == null) {
-				return new RestResponseDropBoxRiver(new RestAPIException("River " + id + " does not exist."));
-			}
-			river.setStart(true);
-			adminService.start(river);
-		} catch (Exception e) {
-			return new RestResponseDropBoxRiver(new RestAPIException(e));
-		}
-		
-		return new RestResponseDropBoxRiver();
+	public @ResponseBody
+	SMDRestResponse start(@PathVariable final String id) {
+
+		return super.start(id);
 	}
 
 	/**
 	 * Stop a river
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "{id}/stop", method = RequestMethod.GET)
-	public @ResponseBody RestResponseDropBoxRiver stop(@PathVariable final String id) throws Exception {
-		BasicRiver river = null;
-		try {
-			river = adminService.get(id);
-			if (river == null) {
-				return new RestResponseDropBoxRiver(new RestAPIException("River " + id + " does not exist."));
-			}
-			river.setStart(false);
-			riverService.stop(river);
-		} catch (Exception e) {
-			return new RestResponseDropBoxRiver(new RestAPIException(e));
-		}
-		
-		return new RestResponseDropBoxRiver();
-	}
+	public @ResponseBody
+	SMDRestResponse stop(@PathVariable final String id) {
 
+		return super.stop(id);
+	}
 
 }

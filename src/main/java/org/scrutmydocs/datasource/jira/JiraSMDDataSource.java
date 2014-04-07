@@ -72,6 +72,10 @@ public class JiraSMDDataSource extends SMDDataSource {
 		this.jiraRiverActivityIndexName = jiraRiverActivityIndexName;
 	}
 
+	public JiraSMDDataSource() {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * @return base URL of JIRA instance
 	 */
