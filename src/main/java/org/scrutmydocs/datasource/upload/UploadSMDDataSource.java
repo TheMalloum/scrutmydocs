@@ -51,12 +51,18 @@ public class UploadSMDDataSource extends SMDDataSource {
 
 	@Override
 	public String getDocumentPath(String id) {
-		return "file//" + id;
+		return "file://" + id;
 	}
 
 	@Override
 	public SMDDocument getDocument(String id) {
 
+		return null;
+	}
+
+	@Override
+	public String toJson() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

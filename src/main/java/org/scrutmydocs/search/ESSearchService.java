@@ -43,6 +43,7 @@ import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDsearch;
 import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.datasource.upload.UploadSMDDataSource;
+import org.scrutmydocs.webapp.api.common.RestAPIException;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,7 +68,9 @@ class ESSearchService implements SMDsearch {
 				.prepareHealth(ESSearchService.SMDINDEX,
 						ESSearchService.SMDADMIN).setWaitForYellowStatus()
 				.execute().actionGet();
-
+		createIndex(SMDADMIN);
+		createIndex(SMDINDEX);
+		
 	}
 
 	@Override
@@ -146,8 +149,7 @@ class ESSearchService implements SMDsearch {
 		}
 
 		try {
-			esClient
-					.prepareIndex(SMDINDEX, smdDataSource.id, document.id)
+			esClient.prepareIndex(SMDINDEX, smdDataSource.id, document.id)
 					.setSource(
 							jsonBuilder()
 									.startObject()
@@ -202,7 +204,7 @@ class ESSearchService implements SMDsearch {
 	}
 
 	@Override
-	public List<SMDDataSource> getConf(SMDDataSource smdDataSource) {
+	public List<SMDDataSource> getSettings(SMDDataSource smdDataSource) {
 
 		List<SMDDataSource> response = new ArrayList<SMDDataSource>();
 		try {
@@ -231,7 +233,7 @@ class ESSearchService implements SMDsearch {
 	}
 
 	@Override
-	public void saveConf(SMDDataSource smdDataSource) {
+	public void saveSetting(SMDDataSource smdDataSource) {
 		try {
 			esClient.prepareIndex(SMDADMIN, smdDataSource.name(),
 					smdDataSource.id)
@@ -246,9 +248,9 @@ class ESSearchService implements SMDsearch {
 	}
 
 	@Override
-	public SMDDataSource getConf(SMDDataSource smdDataSource, String id) {
+	public SMDDataSource getSetting(SMDDataSource smdDataSource, String id) {
 
-		for (SMDDataSource dataSource : getConf(smdDataSource)) {
+		for (SMDDataSource dataSource : getSettings(smdDataSource)) {
 
 			if (dataSource.id == id) {
 
@@ -260,7 +262,7 @@ class ESSearchService implements SMDsearch {
 	}
 
 	@Override
-	public void delelteConf(SMDDataSource smdDataSource, String id) {
+	public void deleteSetting(SMDDataSource smdDataSource, String id) {
 
 		esClient.prepareDelete(SMDADMIN, smdDataSource.name(), id).execute()
 				.actionGet();
@@ -276,4 +278,24 @@ class ESSearchService implements SMDsearch {
 			return ((String) obj.get(0));
 	}
 
+	/**
+	 * Create an index
+	 * 
+	 * @param index
+	 * @param type
+	 * @param analyzer
+	 * @return
+	 * @throws RestAPIException
+	 */
+	private void createIndex(String index) {
+		if (logger.isDebugEnabled())
+			logger.debug("createIndex({}, {}, {})", index);
+
+		if (!esClient.admin().indices().prepareExists(index).execute()
+				.actionGet().isExists()) {
+			esClient.admin().indices()
+					.prepareCreate(index).execute();
+		}
+
+	}
 }

@@ -26,7 +26,7 @@ public class TestScrutDocs {
 		
 		temp = File.createTempFile("scrutmydocsTestFile", ".txt");
 		fsDataSource = new FSSMDDataSource("","");
-		SMDSearchFactory.getInstance().saveConf(fsDataSource);
+		SMDSearchFactory.getInstance().saveSetting(fsDataSource);
 
 	}
 

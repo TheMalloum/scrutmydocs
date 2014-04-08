@@ -100,7 +100,7 @@ public class FSSMDDataSource extends SMDDataSource {
 
 	@Override
 	public String getDocumentPath(String id) {
-		return "file//" + id;
+		return "file://" + id;
 	}
 
 	@Override
@@ -120,6 +120,12 @@ public class FSSMDDataSource extends SMDDataSource {
 		}
 
 		return smdDocument;
+	}
+
+	@Override
+	public String toJson() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

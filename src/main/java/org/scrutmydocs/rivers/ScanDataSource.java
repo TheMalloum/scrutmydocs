@@ -43,7 +43,7 @@ public class ScanDataSource {
 				}
 			} else {
 				logger.warn("The class " + register.getClass().getName()
-						+ " must implement " + SMDDataSource.class.getName());
+						+ " must extend " + SMDDataSource.class.getName());
 			}
 		}
 

@@ -25,9 +25,6 @@ import org.scrutmydocs.api.Api;
 import org.scrutmydocs.api.rivers.CommonRiversApi;
 import org.scrutmydocs.api.rivers.SMDRestResponse;
 import org.scrutmydocs.datasource.jira.JiraSMDDataSource;
-import org.scrutmydocs.webapp.service.settings.rivers.RiverService;
-import org.scrutmydocs.webapp.service.settings.rivers.jira.AdminJiraRiverService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/1/settings/rivers/jira")
+@RequestMapping("/2/settings/rivers/jira")
 public class JiraRiversApi extends CommonRiversApi {
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -44,26 +41,26 @@ public class JiraRiversApi extends CommonRiversApi {
 	@Override
 	public Api[] helpApiList() {
 		Api[] apis = new Api[7];
-		apis[0] = new Api("/1/settings/rivers/jira", "GET",
+		apis[0] = new Api("/2/settings/rivers/jira", "GET",
 				"Get all existing Jira rivers");
-		apis[1] = new Api("/1/settings/rivers/jira/{name}", "GET",
+		apis[1] = new Api("/2/settings/rivers/jira/{name}", "GET",
 				"Get details about a Jira river");
-		apis[2] = new Api("/1/settings/rivers/jira", "PUT",
+		apis[2] = new Api("/2/settings/rivers/jira", "PUT",
 				"Create or update a Jira river");
-		apis[3] = new Api("/1/settings/rivers/jira", "POST",
+		apis[3] = new Api("/2/settings/rivers/jira", "POST",
 				"Create or update a Jira river");
-		apis[4] = new Api("/1/settings/rivers/jira/{name}", "DELETE",
+		apis[4] = new Api("/2/settings/rivers/jira/{name}", "DELETE",
 				"Delete an existing Jira river");
-		apis[5] = new Api("/1/settings/rivers/jira/{name}/start", "GET",
+		apis[5] = new Api("/2/settings/rivers/jira/{name}/start", "GET",
 				"Start a Jira river");
-		apis[6] = new Api("/1/settings/rivers/jira/{name}/stop", "GET",
+		apis[6] = new Api("/2/settings/rivers/jira/{name}/stop", "GET",
 				"Stop a Jira river");
 		return apis;
 	}
 
 	@Override
 	public String helpMessage() {
-		return "The /1/settings/rivers/jira API manage Jira rivers.";
+		return "The /2/settings/rivers/jira API manage Jira rivers.";
 	}
 
 	/**
@@ -135,7 +132,7 @@ public class JiraRiversApi extends CommonRiversApi {
 	public @ResponseBody
 	SMDRestResponse start(@PathVariable final String id) {
 
-		return super.start(id);
+		return super.start(new JiraSMDDataSource(),id);
 	}
 
 	/**
@@ -146,7 +143,7 @@ public class JiraRiversApi extends CommonRiversApi {
 	@RequestMapping(value = "{id}/stop", method = RequestMethod.GET)
 	public @ResponseBody
 	SMDRestResponse stop(@PathVariable final String id) {
-		return super.stop(id);
+		return super.stop(new JiraSMDDataSource(),id);
 	}
 
 }

@@ -19,7 +19,7 @@ public class ScrutDocuments {
 		for (SMDDataSource smdDataSource : ScanDataSource.getAll().values()) {
 
 			List<SMDDataSource> dataSourcesSave = SMDSearchFactory
-					.getInstance().getConf(smdDataSource);
+					.getInstance().getSettings(smdDataSource);
 
 			for (SMDDataSource dataSourceSave : dataSourcesSave) {
 				logger.info("extracting modified files form the directory "
@@ -45,7 +45,7 @@ public class ScrutDocuments {
 					}
 
 				}
-				SMDSearchFactory.getInstance().saveConf(smdDataSource);
+				SMDSearchFactory.getInstance().saveSetting(smdDataSource);
 			}
 
 		}

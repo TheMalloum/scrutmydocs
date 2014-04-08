@@ -57,7 +57,7 @@ var initRiverJira = function(){
 	$("#btnJiraRiverUpdate").click(doUpdateJiraRiver);
 
 	// Load rivers
-	$.getJSON("api/1/settings/rivers/jira",function(json) {
+	$.getJSON("api/2/settings/rivers/jira",function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -96,7 +96,7 @@ var openJiraRiver = function(id) {
 	$("#"+id).addClass("active");
 
 	var riverId = id.substring("river-jira-".length);
-	$.getJSON("api/1/settings/rivers/jira/" + riverId, function(json) {
+	$.getJSON("api/2/settings/rivers/jira/" + riverId, function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -195,7 +195,7 @@ var doCreateJiraRiver = function(e) {
 
 	var data = getJiraRiver();
 	data.start = false;
-	$.postJSON("api/1/settings/rivers/jira/", data, function(json) {
+	$.postJSON("api/2/settings/rivers/jira/", data, function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -225,7 +225,7 @@ var doCreateJiraRiver = function(e) {
 var doDeleteJiraRiver = function(e) {
 	var data = getJiraRiver();
 	$.ajax({
-		url: "api/1/settings/rivers/jira/" + data.id,
+		url: "api/2/settings/rivers/jira/" + data.id,
 		type: "DELETE",
 		success: function(json) {
 			// Handle errors
@@ -258,7 +258,7 @@ var doUpdateJiraRiver = function(e) {
 	}
 	
 	var data = getJiraRiver();
-	$.postJSON("api/1/settings/rivers/jira/", data, function(json) {
+	$.postJSON("api/2/settings/rivers/jira/", data, function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -284,7 +284,7 @@ var doStartJiraRiver = function(e) {
 	$("#btnJiraRiverStart").button("loading");
 	var data = getJiraRiver();
 	data.start = true;
-	$.getJSON("api/1/settings/rivers/jira/" + data.id + "/start", null, function (json){
+	$.getJSON("api/2/settings/rivers/jira/" + data.id + "/start", null, function (json){
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -311,7 +311,7 @@ var doStopJiraRiver = function(e) {
 	$("#btnJiraRiverStop").button("loading");
 	var data = getJiraRiver();
 	data.start = false;
-	$.getJSON("api/1/settings/rivers/jira/" + data.id + "/stop", null, function (json){
+	$.getJSON("api/2/settings/rivers/jira/" + data.id + "/stop", null, function (json){
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);

@@ -1,7 +1,5 @@
 package org.scrutmydocs.search;
 
-import org.elasticsearch.client.Client;
-import org.elasticsearch.node.NodeBuilder;
 import org.scrutmydocs.contract.SMDsearch;
 
 public class SMDSearchFactory {

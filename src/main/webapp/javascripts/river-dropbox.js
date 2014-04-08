@@ -65,7 +65,7 @@ var initRiverDropBox = function(){
 	$("#btnDropBoxRiverUpdate").click(doUpdateDropBoxRiver);
 
 	// Load rivers
-	$.getJSON("api/1/settings/rivers/dropbox",function(json) {
+	$.getJSON("api/2/settings/rivers/dropbox",function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -104,7 +104,7 @@ var openDropBoxRiver = function(id) {
 	$("#"+id).addClass("active");
 
 	var riverId = id.substring("river-dropbox-".length);
-	$.getJSON("api/1/settings/rivers/dropbox/" + riverId, function(json) {
+	$.getJSON("api/2/settings/rivers/dropbox/" + riverId, function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -191,7 +191,7 @@ var doCreateDropBoxRiver = function(e) {
 
 	var data = getDropBoxRiver();
 	data.start = false;
-	$.postJSON("api/1/settings/rivers/dropbox/", data, function(json) {
+	$.postJSON("api/2/settings/rivers/dropbox/", data, function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -221,7 +221,7 @@ var doCreateDropBoxRiver = function(e) {
 var doDeleteDropBoxRiver = function(e) {
 	var data = getDropBoxRiver();
 	$.ajax({
-		url: "api/1/settings/rivers/dropbox/" + data.id,
+		url: "api/2/settings/rivers/dropbox/" + data.id,
 		type: "DELETE",
 		success: function(json) {
 			// Handle errors
@@ -254,7 +254,7 @@ var doUpdateDropBoxRiver = function(e) {
 	}
 	
 	var data = getDropBoxRiver();
-	$.postJSON("api/1/settings/rivers/dropbox/", data, function(json) {
+	$.postJSON("api/2/settings/rivers/dropbox/", data, function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -280,7 +280,7 @@ var doStartDropBoxRiver = function(e) {
 	$("#btnDropBoxRiverStart").button("loading");
 	var data = getDropBoxRiver();
 	data.start = true;
-	$.getJSON("api/1/settings/rivers/dropbox/" + data.id + "/start", null, function (json){
+	$.getJSON("api/2/settings/rivers/dropbox/" + data.id + "/start", null, function (json){
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -307,7 +307,7 @@ var doStopDropBoxRiver = function(e) {
 	$("#btnDropBoxRiverStop").button("loading");
 	var data = getDropBoxRiver();
 	data.start = false;
-	$.getJSON("api/1/settings/rivers/dropbox/" + data.id + "/stop", null, function (json){
+	$.getJSON("api/2/settings/rivers/dropbox/" + data.id + "/stop", null, function (json){
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);

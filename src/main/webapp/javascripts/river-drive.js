@@ -27,7 +27,7 @@ var initRiverDrive = function(){
 	$("#btnDriveRiverUpdate").click(doUpdateDriveRiver);
 
 	// Load rivers
-	$.getJSON("api/1/settings/rivers/drive",function(json) {
+	$.getJSON("api/2/settings/rivers/drive",function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -105,7 +105,7 @@ var openDriveRiver = function(id) {
 	$("#"+id).addClass("active");
 
 	var riverId = id.substring("river-drive-".length);
-	$.getJSON("api/1/settings/rivers/drive/" + riverId, function(json) {
+	$.getJSON("api/2/settings/rivers/drive/" + riverId, function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -195,7 +195,7 @@ var doCreateDriveRiver = function(e) {
 
 	var data = getDriveRiver();
 	data.start = false;
-	$.postJSON("api/1/settings/rivers/drive/", data, function(json) {
+	$.postJSON("api/2/settings/rivers/drive/", data, function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -225,7 +225,7 @@ var doCreateDriveRiver = function(e) {
 var doDeleteDriveRiver = function(e) {
 	var data = getDriveRiver();
 	$.ajax({
-		url: "api/1/settings/rivers/drive/" + data.id,
+		url: "api/2/settings/rivers/drive/" + data.id,
 		type: "DELETE",
 		success: function(json) {
 			// Handle errors
@@ -258,7 +258,7 @@ var doUpdateDriveRiver = function(e) {
 	}
 	
 	var data = getDriveRiver();
-	$.postJSON("api/1/settings/rivers/drive/", data, function(json) {
+	$.postJSON("api/2/settings/rivers/drive/", data, function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -284,7 +284,7 @@ var doStartDriveRiver = function(e) {
 	$("#btnDriveRiverStart").button("loading");
 	var data = getDriveRiver();
 	data.start = true;
-	$.getJSON("api/1/settings/rivers/drive/" + data.id + "/start", null, function (json){
+	$.getJSON("api/2/settings/rivers/drive/" + data.id + "/start", null, function (json){
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -310,7 +310,7 @@ var doStopDriveRiver = function(e) {
 	$("#btnDriveRiverStop").button("loading");
 	var data = getDriveRiver();
 	data.start = false;
-	$.getJSON("api/1/settings/rivers/drive/" + data.id + "/stop", null, function (json){
+	$.getJSON("api/2/settings/rivers/drive/" + data.id + "/stop", null, function (json){
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);

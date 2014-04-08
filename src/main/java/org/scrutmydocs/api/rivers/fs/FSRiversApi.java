@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 //import org.scrutmydocs.webapp.api.settings.rivers.basic.data.BasicRiver;
 
 @Controller
-@RequestMapping("/1/settings/rivers/fs")
+@RequestMapping("/2/settings/rivers/fs")
 public class FSRiversApi extends CommonRiversApi {
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -45,26 +45,26 @@ public class FSRiversApi extends CommonRiversApi {
 	@Override
 	public Api[] helpApiList() {
 		Api[] apis = new Api[7];
-		apis[0] = new Api("/1/settings/rivers/fs", "GET",
+		apis[0] = new Api("/2/settings/rivers/fs", "GET",
 				"Get all existing FileSystem rivers");
-		apis[1] = new Api("/1/settings/rivers/fs{name}", "GET",
+		apis[1] = new Api("/2/settings/rivers/fs{name}", "GET",
 				"Get details about a FileSystem river");
-		apis[2] = new Api("/1/settings/rivers/fs", "PUT",
+		apis[2] = new Api("/2/settings/rivers/fs", "PUT",
 				"Create or update a FileSystem river");
-		apis[3] = new Api("/1/settings/rivers/fs", "POST",
+		apis[3] = new Api("/2/settings/rivers/fs", "POST",
 				"Create or update a FileSystem river");
-		apis[4] = new Api("/1/settings/rivers/fs/{name}", "DELETE",
+		apis[4] = new Api("/2/settings/rivers/fs/{name}", "DELETE",
 				"Delete an existing FileSystem river");
-		apis[5] = new Api("/1/settings/rivers/fs/{name}/start", "GET",
+		apis[5] = new Api("/2/settings/rivers/fs/{name}/start", "GET",
 				"Start a river");
-		apis[6] = new Api("/1/settings/rivers/fs/{name}/stop", "GET",
+		apis[6] = new Api("/2/settings/rivers/fs/{name}/stop", "GET",
 				"Stop a river");
 		return apis;
 	}
 
 	@Override
 	public String helpMessage() {
-		return "The /1/settings/rivers/fs API manage FileSystem rivers.";
+		return "The /2/settings/rivers/fs API manage FileSystem rivers.";
 	}
 
 	/**
@@ -134,7 +134,7 @@ public class FSRiversApi extends CommonRiversApi {
 	public @ResponseBody
 	SMDRestResponse start(@PathVariable final String id) {
 
-		return super.start(id);
+		return super.start(new FSSMDDataSource(),id);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class FSRiversApi extends CommonRiversApi {
 	@RequestMapping(value = "{id}/stop", method = RequestMethod.GET)
 	public @ResponseBody
 	SMDRestResponse stop(@PathVariable final String id) {
-		return super.stop(id);
+		return super.stop(new FSSMDDataSource(),id);
 	}
 
 }

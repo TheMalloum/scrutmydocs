@@ -44,7 +44,7 @@
 	</category>
 
 	<category name="org.springframework">
-		<priority value="ERROR" />
+		<priority value="DEBUG" />
 	</category>
 
 	<!-- Limit the org.apache category to INFO as its DEBUG is verbose -->

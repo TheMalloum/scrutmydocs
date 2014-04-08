@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Laurent Broudoux
  */
 @Controller
-@RequestMapping("/1/settings/rivers/drive")
+@RequestMapping("/2/settings/rivers/drive")
 public class DriveRiversApi extends CommonRiversApi {
 
 	/** Commons logger for diagnostic messages. */
@@ -46,25 +46,25 @@ public class DriveRiversApi extends CommonRiversApi {
 
 	@Override
 	public String helpMessage() {
-		return "The /1/settings/rivers/drive API manage Google Drive rivers.";
+		return "The /2/settings/rivers/drive API manage Google Drive rivers.";
 	}
 
 	@Override
 	public Api[] helpApiList() {
 		Api[] apis = new Api[7];
-		apis[0] = new Api("/1/settings/rivers/drive", "GET",
+		apis[0] = new Api("/2/settings/rivers/drive", "GET",
 				"Get all existing Google Drive rivers");
-		apis[1] = new Api("/1/settings/rivers/drive/{name}", "GET",
+		apis[1] = new Api("/2/settings/rivers/drive/{name}", "GET",
 				"Get details about a Google Drive river");
-		apis[2] = new Api("/1/settings/rivers/drive", "PUT",
+		apis[2] = new Api("/2/settings/rivers/drive", "PUT",
 				"Create or update a Google Drive river");
-		apis[3] = new Api("/1/settings/rivers/drive", "POST",
+		apis[3] = new Api("/2/settings/rivers/drive", "POST",
 				"Create or update a Google Drive river");
-		apis[4] = new Api("/1/settings/rivers/drive/{name}", "DELETE",
+		apis[4] = new Api("/2/settings/rivers/drive/{name}", "DELETE",
 				"Delete an existing Google Drive river");
-		apis[5] = new Api("/1/settings/rivers/drive/{name}/start", "GET",
+		apis[5] = new Api("/2/settings/rivers/drive/{name}/start", "GET",
 				"Start a Google Drive river");
-		apis[6] = new Api("/1/settings/rivers/drive/{name}/stop", "GET",
+		apis[6] = new Api("/2/settings/rivers/drive/{name}/stop", "GET",
 				"Stop a Google Drive river");
 		return apis;
 	}
@@ -155,7 +155,7 @@ public class DriveRiversApi extends CommonRiversApi {
 	@RequestMapping(value = "{id}/start", method = RequestMethod.GET)
 	public @ResponseBody
 	SMDRestResponse start(@PathVariable final String id){
-		return super.start(id);
+		return super.start(new DriveSMDDataSource(),id);
 
 	}
 
@@ -171,6 +171,6 @@ public class DriveRiversApi extends CommonRiversApi {
 	@RequestMapping(value = "{id}/stop", method = RequestMethod.GET)
 	public @ResponseBody
 	SMDRestResponse stop(@PathVariable final String id){
-		return super.stop(id);
+		return super.stop(new DriveSMDDataSource(),id);
 	}
 }

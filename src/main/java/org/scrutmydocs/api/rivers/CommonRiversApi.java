@@ -29,15 +29,15 @@ public abstract class CommonRiversApi extends CommonBaseApi {
 
 	public SMDRestResponse get(SMDDataSource smdDataSource) {
 
-		List<SMDDataSource> rivers = SMDSearchFactory.getInstance().getConf(
-				smdDataSource);
+		List<SMDDataSource> rivers = SMDSearchFactory.getInstance()
+				.getSettings(smdDataSource);
 
 		return new SMDRestResponse(rivers);
 	}
 
 	public SMDRestResponse get(SMDDataSource smdDataSource, final String id) {
 
-		SMDDataSource river = SMDSearchFactory.getInstance().getConf(
+		SMDDataSource river = SMDSearchFactory.getInstance().getSetting(
 				smdDataSource, id);
 
 		return new SMDRestResponse(river);
@@ -45,24 +45,35 @@ public abstract class CommonRiversApi extends CommonBaseApi {
 
 	public SMDRestResponse put(SMDDataSource river) {
 
-		SMDSearchFactory.getInstance().saveConf(river);
+		SMDSearchFactory.getInstance().saveSetting(river);
 
 		return new SMDRestResponse(river);
 	}
 
-	public SMDRestResponse delete(SMDDataSource river,String id) {
+	public SMDRestResponse delete(SMDDataSource river, String id) {
 
-		SMDSearchFactory.getInstance().delelteConf(river,id);
+		SMDSearchFactory.getInstance().deleteSetting(river, id);
 
 		return new SMDRestResponse();
 	}
 
-	public SMDRestResponse start(String id) {
+	public SMDRestResponse start(SMDDataSource smdDataSource, String id) {
+
+		SMDDataSource river = SMDSearchFactory.getInstance().getSetting(
+				smdDataSource, id);
+		river.start = true;
+		this.put(river);
+
 		return new SMDRestResponse();
 
 	}
 
-	public SMDRestResponse stop(String id) {
+	public SMDRestResponse stop(SMDDataSource smdDataSource, String id) {
+		SMDDataSource river = SMDSearchFactory.getInstance().getSetting(
+				smdDataSource, id);
+		river.start = false;
+		this.put(river);
+
 		return new SMDRestResponse();
 	}
 

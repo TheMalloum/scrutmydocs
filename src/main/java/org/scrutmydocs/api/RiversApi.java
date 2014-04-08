@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.scrutmydocs.api.rivers.SMDRestResponse;
 import org.scrutmydocs.datasource.SMDDataSource;
 import org.scrutmydocs.rivers.ScanDataSource;
 import org.scrutmydocs.rivers.ScrutDocuments;
@@ -42,14 +43,14 @@ public class RiversApi extends CommonBaseApi {
 	@Override
 	public Api[] helpApiList() {
 		Api[] apis = new Api[1];
-		apis[0] = new Api("/1/settings/rivers", "GET",
+		apis[0] = new Api("/2/settings/rivers", "GET",
 				"Get all existing rivers");
 		return apis;
 	}
 
 	@Override
 	public String helpMessage() {
-		return "The /1/settings/rivers API gives details about rivers.";
+		return "The /2/settings/rivers API gives details about rivers.";
 	}
 
 	/**
@@ -59,19 +60,19 @@ public class RiversApi extends CommonBaseApi {
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody
-	List<SMDDataSource> get() throws Exception {
+	SMDRestResponse get() throws Exception {
 
 		List<SMDDataSource> result = new ArrayList<SMDDataSource>();
 		for (SMDDataSource smdDataSource : ScanDataSource.getAll().values()) {
 			List<SMDDataSource> dataSourcesSave = SMDSearchFactory
-					.getInstance().getConf(smdDataSource);
+					.getInstance().getSettings(smdDataSource);
 
 			for (SMDDataSource dataSourceSave : dataSourcesSave) {
 				result.add(dataSourceSave);
 			}
 
 		}
-		return result;
+		return new SMDRestResponse(result);
 
 	}
 

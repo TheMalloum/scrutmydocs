@@ -25,9 +25,6 @@ import org.scrutmydocs.api.Api;
 import org.scrutmydocs.api.rivers.CommonRiversApi;
 import org.scrutmydocs.api.rivers.SMDRestResponse;
 import org.scrutmydocs.datasource.s3.S3SMDDataSource;
-import org.scrutmydocs.webapp.service.settings.rivers.RiverService;
-import org.scrutmydocs.webapp.service.settings.rivers.s3.AdminS3RiverService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,7 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Laurent Broudoux
  */
 @Controller
-@RequestMapping("/1/settings/rivers/s3")
+@RequestMapping("/2/settings/rivers/s3")
 public class S3RiversApi extends CommonRiversApi {
 
 	/** A commons logger for diagnostic messages. */
@@ -51,26 +48,26 @@ public class S3RiversApi extends CommonRiversApi {
 	@Override
 	public Api[] helpApiList() {
 		Api[] apis = new Api[7];
-		apis[0] = new Api("/1/settings/rivers/s3", "GET",
+		apis[0] = new Api("/2/settings/rivers/s3", "GET",
 				"Get all existing Amazon S3 rivers");
-		apis[1] = new Api("/1/settings/rivers/s3/{name}", "GET",
+		apis[1] = new Api("/2/settings/rivers/s3/{name}", "GET",
 				"Get details about an Amazon S3 river");
-		apis[2] = new Api("/1/settings/rivers/s3", "PUT",
+		apis[2] = new Api("/2/settings/rivers/s3", "PUT",
 				"Create or update an Amazon S3 river");
-		apis[3] = new Api("/1/settings/rivers/s3", "POST",
+		apis[3] = new Api("/2/settings/rivers/s3", "POST",
 				"Create or update an Amazon S3 river");
-		apis[4] = new Api("/1/settings/rivers/s3/{name}", "DELETE",
+		apis[4] = new Api("/2/settings/rivers/s3/{name}", "DELETE",
 				"Delete an existing Amazon S3 river");
-		apis[5] = new Api("/1/settings/rivers/s3/{name}/start", "GET",
+		apis[5] = new Api("/2/settings/rivers/s3/{name}/start", "GET",
 				"Start a river");
-		apis[6] = new Api("/1/settings/rivers/s3/{name}/stop", "GET",
+		apis[6] = new Api("/2/settings/rivers/s3/{name}/stop", "GET",
 				"Stop a river");
 		return apis;
 	}
 
 	@Override
 	public String helpMessage() {
-		return "The /1/settings/rivers/s3 API manage Amazon S3 rivers.";
+		return "The /2/settings/rivers/s3 API manage Amazon S3 rivers.";
 	}
 
 	/**
@@ -149,7 +146,7 @@ public class S3RiversApi extends CommonRiversApi {
 	@RequestMapping(value = "{id}/start", method = RequestMethod.GET)
 	public @ResponseBody
 	SMDRestResponse start(@PathVariable final String id) {
-		return super.start(id);
+		return super.start(new S3SMDDataSource(),id);
 	}
 
 	/**
@@ -162,6 +159,6 @@ public class S3RiversApi extends CommonRiversApi {
 	@RequestMapping(value = "{id}/stop", method = RequestMethod.GET)
 	public @ResponseBody
 	SMDRestResponse stop(@PathVariable final String id) {
-		return super.stop(id);
+		return super.stop(new S3SMDDataSource(),id);
 	}
 }
