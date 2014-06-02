@@ -24,17 +24,13 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.search.SearchHit;
-import org.scrutmydocs.contract.*;
+import org.scrutmydocs.contract.SMDSettings;
+import org.scrutmydocs.contract.SMDSettingsService;
 import org.scrutmydocs.elasticsearch.SMDElasticsearchClientFactory;
 import org.scrutmydocs.plugins.PluginsUtils;
 import org.scrutmydocs.plugins.SMDAbstractPlugin;
-import org.scrutmydocs.plugins.fs.FSSMDPlugin;
-import org.scrutmydocs.plugins.upload.UploadSMDPlugin;
 
 import java.util.Collection;
-import java.util.HashMap;
-
-import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 class SettingsServiceImpl implements SMDSettingsService {
 
@@ -65,6 +61,10 @@ class SettingsServiceImpl implements SMDSettingsService {
 			org.elasticsearch.action.search.SearchResponse searchHits = esClient
 					.prepareSearch(SMDADMIN).setTypes(SMDADMIN_SETTINGS)
 					.execute().actionGet();
+
+            if (searchHits.getHits().totalHits() == 0) {
+                return null;
+            }
 
 			SearchHit searchHit = searchHits.getHits().getAt(0);
             return mapper.readValue(searchHit.getSourceAsString(), SMDSettings.class);
