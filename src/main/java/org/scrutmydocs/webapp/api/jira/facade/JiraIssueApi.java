@@ -1,15 +1,12 @@
 package org.scrutmydocs.webapp.api.jira.facade;
 
 import org.scrutmydocs.api.Api;
-import org.scrutmydocs.api.CommonBaseApi;
-import org.scrutmydocs.webapp.api.common.RestAPIException;
+import org.scrutmydocs.webapp.CommonBaseApi;
 import org.scrutmydocs.webapp.api.jira.data.JiraIssue;
-import org.scrutmydocs.webapp.api.jira.data.RestResponseJiraIssue;
 import org.scrutmydocs.webapp.service.jira.JiraIssueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;

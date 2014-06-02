@@ -17,15 +17,14 @@
  * under the License.
  */
 
-package org.scrutmydocs.datasource.upload;
+package org.scrutmydocs.plugins.upload;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.scrutmydocs.contract.SMDDocument;
-import org.scrutmydocs.datasource.SMDDataSource;
-import org.scrutmydocs.datasource.SMDRegister;
+import org.scrutmydocs.plugins.SMDAbstractPlugin;
+import org.scrutmydocs.plugins.SMDPlugin;
 
 /**
  * Implement the DropBox ScrutMyDocs Data Source
@@ -33,20 +32,18 @@ import org.scrutmydocs.datasource.SMDRegister;
  * @author Malloum LAYA
  * 
  */
-@SMDRegister(name = "uploadDataSource")
-public class UploadSMDDataSource extends SMDDataSource {
+@SMDPlugin(name = "uploadDataSource")
+public class UploadSMDPlugin extends SMDAbstractPlugin {
 
 	protected Logger logger = Logger.getLogger(getClass().getName());
 
-	public UploadSMDDataSource() {
+	public UploadSMDPlugin() {
 		super();
 		this.id = "only-one";
 	}
 
 	@Override
-	public List<SMDDocument> changes(Date date) {
-
-		return null;
+	public void changes(Date date) {
 	}
 
 	@Override

@@ -22,7 +22,7 @@ package org.scrutmydocs.webapp.api.search.facade;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.api.Api;
-import org.scrutmydocs.api.CommonBaseApi;
+import org.scrutmydocs.webapp.CommonBaseApi;
 import org.scrutmydocs.webapp.api.common.RestAPIException;
 import org.scrutmydocs.webapp.api.search.data.RestResponseSearchResponse;
 import org.scrutmydocs.webapp.api.search.data.SearchQuery;

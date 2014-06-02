@@ -20,7 +20,7 @@
 package org.scrutmydocs.webapp.api.common.facade;
 
 import org.scrutmydocs.api.Api;
-import org.scrutmydocs.api.CommonBaseApi;
+import org.scrutmydocs.webapp.CommonBaseApi;
 import org.scrutmydocs.api.Welcome;
 import org.scrutmydocs.webapp.api.common.data.RestResponseWelcome;
 import org.springframework.stereotype.Controller;

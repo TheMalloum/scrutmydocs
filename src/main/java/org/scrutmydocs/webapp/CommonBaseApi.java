@@ -17,39 +17,26 @@
  * under the License.
  */
 
-package org.scrutmydocs.api.rivers;
+package org.scrutmydocs.webapp;
 
-import java.util.List;
+import org.scrutmydocs.api.Api;
+import org.scrutmydocs.api.Welcome;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.scrutmydocs.datasource.SMDDataSource;
-import org.scrutmydocs.webapp.api.common.RestAPIException;
-import org.scrutmydocs.webapp.api.common.data.RestResponse;
+public abstract class CommonBaseApi {
 
-/**
- * A RestReponse for a list of Google Drive rivers.
- * 
- * @author Laurent Broudoux
- */
-public class SMDRestResponse extends RestResponse<List<SMDDataSource>> {
+	public abstract String helpMessage();
 
-	/**
-	 * Default serial version UID.
-	 */
-	private static final long serialVersionUID = 1L;
+	public abstract Api[] helpApiList();
 
-	public SMDRestResponse() {
-		super();
-	}
-
-	public SMDRestResponse(List<SMDDataSource> rivers) {
-		super(rivers);
-	}
-
-	public SMDRestResponse(SMDDataSource river) {
-		super(river);
-	}
-
-	public SMDRestResponse(RestAPIException e) {
-		super(e);
+	@RequestMapping(method = RequestMethod.GET, value = "_help")
+	public @ResponseBody
+    Welcome welcomeHelp() {
+		// Build a Welcome Message
+		Welcome welcome = new Welcome(helpMessage());
+		welcome.setApis(helpApiList());
+		return welcome;
 	}
 }

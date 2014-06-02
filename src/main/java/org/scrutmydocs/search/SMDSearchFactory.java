@@ -1,17 +1,20 @@
 package org.scrutmydocs.search;
 
-import org.scrutmydocs.contract.SMDsearch;
+import org.scrutmydocs.contract.SMDSearchService;
 
 public class SMDSearchFactory {
 
-	private static SMDsearch smDsearch;
+	private static SMDSearchService SMDSearchService;
 
-	public static synchronized SMDsearch getInstance() {
-
-		if (smDsearch== null) {
-			smDsearch = new ESSearchService();
+    /**
+     * We instantiate an elasticsearch backend implementation
+     */
+	public static synchronized SMDSearchService getInstance() {
+		if (SMDSearchService == null) {
+			SMDSearchService = new ESSearchServiceServiceImpl();
 		}
-		return smDsearch;
+
+		return SMDSearchService;
 	}
 	
 }

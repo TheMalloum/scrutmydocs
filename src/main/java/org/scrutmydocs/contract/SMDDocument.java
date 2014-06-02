@@ -11,20 +11,7 @@ public class SMDDocument {
 	public final byte[] content;
 	public final Date date;
 
-	public final Collection<String> highlights;
 
-	public SMDDocument(String id, String name, String contentType,
-			byte[] content, Date date, Collection<String> highlights) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.contentType = contentType;
-		this.content = content;
-		this.date = date;
-		this.highlights = highlights;
-	}
-
-	
 	public SMDDocument(String id, String name, String contentType,
 			byte[] content, Date date) {
 		super();
@@ -33,8 +20,5 @@ public class SMDDocument {
 		this.contentType = contentType;
 		this.content = content;
 		this.date = date;
-		this.highlights=null;
 	}
-
-	
 }

@@ -23,63 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SMDSearchResponse  {
-	protected long took;
-	protected long totalHits;
-	protected List<SMDDocument> smdDocuments = new ArrayList<SMDDocument>();
+	public final long took;
+    public final long totalHits;
+    public final List<SMDResponseDocument> smdDocuments;
 
-	
-	/**
-	 * @param took
-	 * @param totalHits
-	 * @param hits
-	 */
-	public SMDSearchResponse(long took, long totalHits, List<SMDDocument> smdDocuments) {
+	public SMDSearchResponse(long took, long totalHits, List<SMDResponseDocument> smdDocuments) {
 		super();
 		this.took = took;
 		this.totalHits = totalHits;
 		this.smdDocuments = smdDocuments;
 	}
-
-	/**
-	 * @return the took
-	 */
-	public long getTook() {
-		return took;
-	}
-
-	/**
-	 * @param took
-	 *            the took to set
-	 */
-	public void setTook(long took) {
-		this.took = took;
-	}
-
-	/**
-	 * @return the totalHits
-	 */
-	public long getTotalHits() {
-		return totalHits;
-	}
-
-	/**
-	 * @param totalHits
-	 *            the totalHits to set
-	 */
-	public void setTotalHits(long totalHits) {
-		this.totalHits = totalHits;
-	}
-
-
-	public List<SMDDocument> getSmdDocuments() {
-		return smdDocuments;
-	}
-
-
-	public void setSmdDocuments(List<SMDDocument> smdDocuments) {
-		this.smdDocuments = smdDocuments;
-	}
-
-	
-
 }

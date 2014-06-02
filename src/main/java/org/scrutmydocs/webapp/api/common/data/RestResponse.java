@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.scrutmydocs.datasource.SMDDataSource;
+import org.scrutmydocs.plugins.SMDAbstractPlugin;
 import org.scrutmydocs.webapp.api.common.RestAPIException;
 
 public class RestResponse<T> implements Serializable {
@@ -71,7 +71,7 @@ public class RestResponse<T> implements Serializable {
 		addError(e);
 	}
 
-	public RestResponse(SMDDataSource river) {
+	public RestResponse(SMDAbstractPlugin river) {
 		this.object = (T) river;
 		this.ok = true;
 	}

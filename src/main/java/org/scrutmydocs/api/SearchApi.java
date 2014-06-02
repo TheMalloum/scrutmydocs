@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.search.SMDSearchFactory;
+import org.scrutmydocs.webapp.CommonBaseApi;
 import org.scrutmydocs.webapp.api.search.data.SearchQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,13 +56,13 @@ public class SearchApi extends CommonBaseApi {
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody
-	RestResponseSMDSearchResponse term(@RequestBody SearchQuery query) {
+    SMDSearchResponse term(@RequestBody SearchQuery query) {
 		SMDSearchResponse results = null;
 
 		results = SMDSearchFactory.getInstance().search(query.getSearch(),
 				query.getFirst(), query.getPageSize());
 
-		return new RestResponseSMDSearchResponse(results);
+		return results;
 	}
 
 }

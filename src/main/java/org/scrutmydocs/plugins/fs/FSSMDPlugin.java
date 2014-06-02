@@ -17,24 +17,19 @@
  * under the License.
  */
 
-package org.scrutmydocs.datasource.fs;
+package org.scrutmydocs.plugins.fs;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.elasticsearch.common.logging.ESLogger;
-import org.elasticsearch.common.logging.Loggers;
 import org.scrutmydocs.contract.SMDDocument;
-import org.scrutmydocs.datasource.SMDDataSource;
-import org.scrutmydocs.datasource.SMDRegister;
+import org.scrutmydocs.plugins.SMDAbstractPlugin;
+import org.scrutmydocs.plugins.SMDPlugin;
 
 /**
  * Implement the DropBox ScrutMyDocs Data Source
@@ -42,30 +37,28 @@ import org.scrutmydocs.datasource.SMDRegister;
  * @author Malloum LAYA
  * 
  */
-@SMDRegister(name = "fsDataSource")
-public class FSSMDDataSource extends SMDDataSource {
+@SMDPlugin(name = "fsDataSource")
+public class FSSMDPlugin extends SMDAbstractPlugin {
 
 	private String protocol;
 	private String server;
 	private String username;
 	private String password;
 
-	public FSSMDDataSource(String id, String url) {
+	public FSSMDPlugin(String id, String url) {
 		super();
 		this.id = id;
 		this.url = url;
 
 	}
 
-	public FSSMDDataSource() {
+	public FSSMDPlugin() {
 	}
 
 	protected Logger logger = Logger.getLogger(getClass().getName());
 
 	@Override
-	public List<SMDDocument> changes(Date date) {
-		List<SMDDocument> changes = new ArrayList<SMDDocument>();
-
+	public void changes(Date date) {
 		try {
 
 			Collection<File> files = FileUtils.listFiles(new File(url), null,
@@ -84,9 +77,9 @@ public class FSSMDDataSource extends SMDDataSource {
 									.guessContentTypeFromStream(new FileInputStream(
 											file)),
 							FileUtils.readFileToByteArray(file), new Date(
-									file.lastModified()), null);
+									file.lastModified()));
 
-					changes.add(smdDocument);
+                    index(smdDocument);
 				}
 			}
 		} catch (Exception ex) {
@@ -94,8 +87,6 @@ public class FSSMDDataSource extends SMDDataSource {
 			throw new RuntimeException(
 					"can't checkout changes in the directory " + this.url, ex);
 		}
-
-		return changes;
 	}
 
 	@Override
@@ -114,7 +105,7 @@ public class FSSMDDataSource extends SMDDataSource {
 							.guessContentTypeFromStream(new FileInputStream(
 									file)),
 					FileUtils.readFileToByteArray(file), new Date(
-							file.lastModified()), null);
+							file.lastModified()));
 		} catch (Exception e) {
 			throw new RuntimeException("can't checkout document " + id);
 		}
