@@ -47,7 +47,7 @@ class SettingsServiceImpl implements SMDSettingsService {
         this.esClient = SMDElasticsearchClientFactory.getInstance();
         SMDElasticsearchClientFactory.createIndex(SMDADMIN);
 
-        Collection<SMDAbstractPlugin> all = PluginsUtils.getAll();
+        Collection<SMDAbstractPlugin> all = PluginsUtils.getAll().values();
 
         for (SMDAbstractPlugin plugin : all) {
             mapper.addMixInAnnotations(plugin.getClass(), SMDAbstractPlugin.class);

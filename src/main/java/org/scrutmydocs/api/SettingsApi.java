@@ -19,9 +19,15 @@
 
 package org.scrutmydocs.api;
 
+import java.util.HashMap;
+
+import javassist.NotFoundException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.contract.SMDSettings;
+import org.scrutmydocs.plugins.PluginsUtils;
+import org.scrutmydocs.plugins.SMDAbstractPlugin;
 import org.scrutmydocs.rivers.ScanDocuments;
 import org.scrutmydocs.search.SMDSearchFactory;
 import org.scrutmydocs.settings.SMDSettingsFactory;
@@ -53,6 +59,18 @@ public class SettingsApi {
 	public @ResponseBody
 	void put(@RequestBody SMDSettings settings)
 			throws Exception {
+		
+		
+		// verification 
+		HashMap<String, SMDAbstractPlugin> plugins = PluginsUtils.getAll();
+		
+		for (SMDAbstractPlugin setting : settings.smdAbstractPlugins) {
+			if(plugins.get(setting.name()) == null){
+				throw new NotFoundException(" the plugin "+ setting.name()+"dosn't exite");
+			}
+			
+		}
+		
         SMDSettingsFactory.getInstance().saveSettings(settings);
 	}
 

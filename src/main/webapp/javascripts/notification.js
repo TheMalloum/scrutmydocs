@@ -96,12 +96,6 @@ var onAjaxError = function(jqXHR, textStatus, errorThrown) {
 
 // Show rest error
 var showRestError = function(json) {
-	var msg;
-	if ($.isArray(json.errors)) {
-		msg = json.errors.join('<br>');
-	} else {
-		msg = errors;
-	}
 	showNotification({
 		icon: "img/error.png",
 		title: "Error",

@@ -48,11 +48,9 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 	protected Logger logger = Logger.getLogger(getClass().getName());
 
 
-	public FSSMDPlugin(String id, String url) {
+	public FSSMDPlugin(String url) {
 		super();
-		this.id = id;
 		this.url = url;
-
 	}
 
 	public FSSMDPlugin() {
@@ -84,7 +82,7 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 							FileUtils.readFileToByteArray(file), new Date(
 									file.lastModified()));
 
-					index(smdDocument);
+					 SMDSearchFactory.getInstance().index(this,smdDocument);
 				} else {
 					logger.debug("cleanning directory "+ path + " ....");
 					cleanDirectory(file);
@@ -133,7 +131,7 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 				if(!new File(smdResponseDocument.document.url).exists())
 				{
 					logger.debug("remove file "+ smdResponseDocument.document.url + " ....");
-					this.delete(smdResponseDocument.document.url);
+					 SMDSearchFactory.getInstance().delete(this,smdResponseDocument.document.url);
 				}
 			}
 			

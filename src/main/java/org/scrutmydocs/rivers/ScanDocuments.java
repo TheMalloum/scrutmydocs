@@ -26,7 +26,7 @@ public class ScanDocuments {
 
         for (SMDAbstractPlugin plugin : settings.smdAbstractPlugins) {
 				logger.info("checking plugin " + plugin);
-				plugin.changes(settings.lastScan);
+				plugin.scrut(settings.lastScan);
         }
 
         settings.lastScan = lastScan;

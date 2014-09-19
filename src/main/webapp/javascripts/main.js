@@ -50,15 +50,15 @@ var doSearchPage = function(query, from) {
 };
 
 // Handle Search Results
-var handleSearchResults = function(data) {
+var handleSearchResults = function(json) {
     $("#loading img").hide();
     // Handle errors
-	if (!data.ok) {
-		showRestError(data);
-		return;
-	}
+//	if (!data.ok) {
+//		showRestError(data);
+//		return;
+//	}
 	// OK
-	var json = data.object;
+//	var json = data.object;
 
 	// Layout
 	$("#intro").removeClass("hero-unit").addClass("well");

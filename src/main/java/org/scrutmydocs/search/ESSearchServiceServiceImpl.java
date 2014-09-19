@@ -161,7 +161,7 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 		}
 
         try {
-            bulk.add(new IndexRequest(SMDINDEX, smdAbstractPlugin.id, document.url)
+            bulk.add(new IndexRequest(SMDINDEX, smdAbstractPlugin.url, document.url)
                         .source(
                                 jsonBuilder()
                                         .startObject()
@@ -198,12 +198,12 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 		}
 
 		try {
-            bulk.add(new DeleteRequest(SMDINDEX, smdAbstractPlugin.id, id));
+            bulk.add(new DeleteRequest(SMDINDEX, smdAbstractPlugin.url, id));
 		} catch (Exception e) {
 			logger.warn("Can not delete document {} of type  {}", id,
-					smdAbstractPlugin.id);
+					smdAbstractPlugin.url);
 			throw new RuntimeException("Can not delete document : " + id
-					+ "whith type " + smdAbstractPlugin.id + ": " + e.getMessage());
+					+ "whith type " + smdAbstractPlugin.url + ": " + e.getMessage());
 		}
 
 		if (logger.isDebugEnabled())

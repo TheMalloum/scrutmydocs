@@ -194,11 +194,6 @@
 			<version>${fsriver.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jboss.elasticsearch</groupId>
-			<artifactId>elasticsearch-river-jira</artifactId>
-			<version>${jirariver.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>fr.pilato.elasticsearch.river</groupId>
 			<artifactId>dropbox</artifactId>
 			<version>${dropbox.version}</version>

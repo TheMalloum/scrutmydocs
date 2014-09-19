@@ -36,29 +36,18 @@
 	</servlet>
 	
 	<servlet>
-		<servlet-name>DownloadServlet</servlet-name>
-		<servlet-class>org.scrutmydocs.servlet.DownloadServlet</servlet-class>
+		<servlet-name>ServletInit</servlet-name>
+		<servlet-class>org.scrutmydocs.servlet.ServletInit</servlet-class>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
-	<servlet>
-		<servlet-name>UploadServlet</servlet-name>
-		<servlet-class>org.scrutmydocs.servlet.UploadServlet</servlet-class>
-	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>scrutmydocs-api</servlet-name>
 		<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
 	
-	<servlet-mapping>
-		<servlet-name>DownloadServlet</servlet-name>
-		<url-pattern>/download</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>UploadServlet</servlet-name>
-		<url-pattern>/upload/*</url-pattern>
-	</servlet-mapping>
+
 
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

@@ -12,10 +12,10 @@ public class SMDDocument {
 	public final Date date;
 
 
-	public SMDDocument(String id, String name, String contentType,
+	public SMDDocument(String url, String name, String contentType,
 			byte[] content, Date date) {
 		super();
-		this.url = id;
+		this.url = url;
 		this.name = name;
 		this.contentType = contentType;
 		this.content = content;

@@ -7,6 +7,7 @@ import java.util.List;
 
 public class SMDSettings {
     public final List<SMDAbstractPlugin> smdAbstractPlugins;
+   
     public Date lastScan;
 
     public SMDSettings(List<SMDAbstractPlugin> smdAbstractPlugins) {

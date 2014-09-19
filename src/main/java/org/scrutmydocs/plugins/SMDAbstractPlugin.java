@@ -13,37 +13,13 @@ import org.scrutmydocs.search.SMDSearchFactory;
 
 public abstract class SMDAbstractPlugin {
 
-	public SMDAbstractPlugin(String json) {
-	}
-
-	public SMDAbstractPlugin(String id, String url, Long updateRate) {
-		this.id = id;
-		this.updateRate = updateRate;
-		this.url = url;
-		this.analyzer = "standard";
-	}
-
-	public SMDAbstractPlugin() {
-	}
-
+	
 	public String name() {
 		SMDPlugin myRegister = this.getClass().getAnnotation(
 				SMDPlugin.class);
 		return myRegister.name();
 
 	}
-
-
-    public void index(SMDDocument document) {
-        SMDSearchFactory.getInstance().index(this, document);
-    }
-
-
-    public void delete(String id) {
-        SMDSearchFactory.getInstance().delete(this, id);
-    }
-
-    public String id;
 
     public Long updateRate;
 
@@ -54,8 +30,6 @@ public abstract class SMDAbstractPlugin {
     public String analyzer;
 
     public String url;
-
-    public Date date;
 
 	public boolean start;
 

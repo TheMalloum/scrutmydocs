@@ -22,7 +22,6 @@ package org.scrutmydocs.plugins.upload;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
-import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.plugins.SMDAbstractPlugin;
 import org.scrutmydocs.plugins.SMDPlugin;
 
@@ -39,28 +38,11 @@ public class UploadSMDPlugin extends SMDAbstractPlugin {
 
 	public UploadSMDPlugin() {
 		super();
-		this.id = "only-one";
 	}
 
 	@Override
-	public void changes(Date date) {
+	public void scrut(Date date) {
 	}
 
-	@Override
-	public String getDocumentPath(String id) {
-		return "file://" + id;
-	}
-
-	@Override
-	public SMDDocument getDocument(String id) {
-
-		return null;
-	}
-
-	@Override
-	public String toJson() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

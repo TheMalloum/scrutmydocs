@@ -12,7 +12,7 @@ public class PluginsUtils {
 
 	private static ESLogger logger = Loggers.getLogger(PluginsUtils.class);
 
-	public static Collection<SMDAbstractPlugin> getAll() {
+	public static HashMap<String, SMDAbstractPlugin> getAll() {
 		HashMap<String, SMDAbstractPlugin> list = new HashMap<String, SMDAbstractPlugin>();
 		Reflections reflections = new Reflections("org.scrutmydocs");
 
@@ -46,6 +46,6 @@ public class PluginsUtils {
 			}
 		}
 
-		return list.values();
+		return list;
 	}
 }
