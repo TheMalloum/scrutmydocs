@@ -155,13 +155,13 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 			logger.debug("index({})", document);
 
 		if (document == null || StringUtils.isEmpty(document.name == null)
-				|| StringUtils.isEmpty(document.id == null)) {
+				|| StringUtils.isEmpty(document.url == null)) {
 			throw new IllegalArgumentException(
 					"The document can't be null and must have name or id");
 		}
 
         try {
-            bulk.add(new IndexRequest(SMDINDEX, smdAbstractPlugin.id, document.id)
+            bulk.add(new IndexRequest(SMDINDEX, smdAbstractPlugin.id, document.url)
                         .source(
                                 jsonBuilder()
                                         .startObject()
@@ -220,5 +220,12 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 			return null;
 		else
 			return ((String) obj.get(0));
+	}
+
+	@Override
+	public SMDSearchResponse searchFileByDirectory(String directory, int first,
+			int pageSize) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

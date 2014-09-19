@@ -22,14 +22,19 @@ package org.scrutmydocs.plugins.fs;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URLConnection;
-import java.util.Collection;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.contract.SMDResponseDocument;
+import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.plugins.SMDAbstractPlugin;
 import org.scrutmydocs.plugins.SMDPlugin;
+import org.scrutmydocs.search.SMDSearchFactory;
 
 /**
  * Implement the DropBox ScrutMyDocs Data Source
@@ -39,11 +44,9 @@ import org.scrutmydocs.plugins.SMDPlugin;
  */
 @SMDPlugin(name = "fsDataSource")
 public class FSSMDPlugin extends SMDAbstractPlugin {
+	
+	protected Logger logger = Logger.getLogger(getClass().getName());
 
-	private String protocol;
-	private String server;
-	private String username;
-	private String password;
 
 	public FSSMDPlugin(String id, String url) {
 		super();
@@ -55,21 +58,23 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 	public FSSMDPlugin() {
 	}
 
-	protected Logger logger = Logger.getLogger(getClass().getName());
-
+	
 	@Override
-	public void changes(Date date) {
+	public void scrut(Date lastModified) {
 		try {
+			
+			logger.info("we are scrutting your dyrectory "+ url + " ....");
 
-			Collection<File> files = FileUtils.listFiles(new File(url), null,
-					true);
+			List<Path> paths = parcourirDirectory(new File(this.url),
+					lastModified);
 
-			for (File file : files) {
+			for (Path path : paths) {
 
-				if (new Date(file.lastModified()).after(date) && file.isFile()) {
+				File file = path.toFile();
 
-					// getContentType don't works
+				if (!file.isDirectory()) {
 
+					logger.debug("index  file "+ path);
 					SMDDocument smdDocument = new SMDDocument(
 							file.getAbsolutePath(),
 							file.getName(),
@@ -79,8 +84,12 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 							FileUtils.readFileToByteArray(file), new Date(
 									file.lastModified()));
 
-                    index(smdDocument);
+					index(smdDocument);
+				} else {
+					logger.debug("cleanning directory "+ path + " ....");
+					cleanDirectory(file);
 				}
+
 			}
 		} catch (Exception ex) {
 
@@ -89,34 +98,64 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 		}
 	}
 
-	@Override
-	public String getDocumentPath(String id) {
-		return "file://" + id;
-	}
+	public List<Path> parcourirDirectory(File dir, Date lastModified) {
 
-	@Override
-	public SMDDocument getDocument(String id) {
-		File file = new File(id);
-		SMDDocument smdDocument;
-		try {
-			smdDocument = new SMDDocument(file.getAbsolutePath(),
-					file.getName(),
-					URLConnection
-							.guessContentTypeFromStream(new FileInputStream(
-									file)),
-					FileUtils.readFileToByteArray(file), new Date(
-							file.lastModified()));
-		} catch (Exception e) {
-			throw new RuntimeException("can't checkout document " + id);
+		if (!dir.isDirectory()) {
+
+			throw new IllegalArgumentException(" dir must be a directory");
 		}
 
-		return smdDocument;
+		List<Path> paths = new ArrayList<Path>();
+
+		for (File file : dir.listFiles()) {
+			paths.add(file.toPath());
+
+			if (file.isDirectory()) {
+				for (Path path : parcourirDirectory(file, lastModified)) {
+					paths.add(path);
+				}
+
+			}
+		}
+
+		return paths;
 	}
 
-	@Override
-	public String toJson() {
-		// TODO Auto-generated method stub
-		return null;
+	public void cleanDirectory(File directory) {
+		
+		int first = 0;
+		int page =100;
+		long total = 1;
+		while(first < total){
+			
+			SMDSearchResponse searchResponse =  SMDSearchFactory.getInstance().searchFileByDirectory("*",first, page);
+			for (SMDResponseDocument smdResponseDocument : searchResponse.smdDocuments) {
+				if(!new File(smdResponseDocument.document.url).exists())
+				{
+					logger.debug("remove file "+ smdResponseDocument.document.url + " ....");
+					this.delete(smdResponseDocument.document.url);
+				}
+			}
+			
+			total = searchResponse.totalHits;
+			first =+ page;
+		}
+		
+		
 	}
 
+	public static void main(String[] args) {
+
+		File dir = new File("C:\\Users\\LAYA\\Downloads");
+		Date lastModified = new Date();
+		lastModified.setYear(0);
+
+		List<Path> paths = new FSSMDPlugin().parcourirDirectory(dir,
+				lastModified);
+
+		for (Path path : paths) {
+			System.out.println(path.toString());
+		}
+
+	}
 }

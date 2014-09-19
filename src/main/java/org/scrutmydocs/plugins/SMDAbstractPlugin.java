@@ -59,12 +59,7 @@ public abstract class SMDAbstractPlugin {
 
 	public boolean start;
 
-	public abstract void changes(Date since);
+	public abstract void scrut(Date since);
 
-	public abstract String getDocumentPath(String id);
-
-	public abstract SMDDocument getDocument(String id);
-
-	public abstract String toJson();
 
 }
