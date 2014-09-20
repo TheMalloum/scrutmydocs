@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.contract.SMDSettings;
 import org.scrutmydocs.plugins.PluginsUtils;
 import org.scrutmydocs.plugins.SMDAbstractPlugin;
-import org.scrutmydocs.rivers.ScanDocuments;
+import org.scrutmydocs.scan.ScanDocuments;
 import org.scrutmydocs.search.SMDSearchFactory;
 import org.scrutmydocs.settings.SMDSettingsFactory;
 import org.springframework.stereotype.Controller;

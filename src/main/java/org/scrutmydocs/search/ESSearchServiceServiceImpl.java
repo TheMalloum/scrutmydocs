@@ -184,6 +184,7 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 					.source(jsonBuilder().startObject()
 							.field("name", document.name)
 							.field("postDate", document.date)
+							.field("pathDirectory", document.pathDirectory)
 							.startObject("file")
 							.field("_content_type", document.contentType)
 							.field("_name", document.name)
@@ -246,7 +247,7 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 		
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
 				.prepareSearch().setIndices(SMDINDEX)
-				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(query)
+				.setSearchType(SearchType.DEFAULT).setQuery(query)
 				.setFrom(first).setSize(pageSize).execute().actionGet();
 
 		totalHits = searchHits.getHits().totalHits();

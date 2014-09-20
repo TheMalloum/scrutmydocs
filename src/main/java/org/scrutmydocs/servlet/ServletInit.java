@@ -5,7 +5,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
 import org.apache.log4j.Logger;
-import org.scrutmydocs.webapp.util.ESHelper;
 
 public class ServletInit extends HttpServlet {
 
@@ -20,7 +19,7 @@ public class ServletInit extends HttpServlet {
 
 		String contentLICENSE;
 		try {
-			contentLICENSE = ESHelper.readFileInClasspath("/demo/LICENSE");
+//			contentLICENSE = ESHelper.readFileInClasspath("/demo/LICENSE");
 
 //			SMDDocument LICENCE = new SMDDocument(new File(contentLICENSE.getBytes()));
 //

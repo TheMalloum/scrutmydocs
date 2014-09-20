@@ -22,9 +22,8 @@ package org.scrutmydocs.api;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.contract.SMDSearchResponse;
+import org.scrutmydocs.contract.SearchQuery;
 import org.scrutmydocs.search.SMDSearchFactory;
-import org.scrutmydocs.webapp.CommonBaseApi;
-import org.scrutmydocs.webapp.api.search.data.SearchQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,17 +32,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller(value = "SearchApiV2")
 @RequestMapping("/2/search")
-public class SearchApi extends CommonBaseApi {
+public class SearchApi  {
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	@Override
 	public Api[] helpApiList() {
 		Api[] apis = new Api[1];
 		apis[0] = new Api("/1/search", "POST", "Search for documents");
 		return apis;
 	}
 
-	@Override
 	public String helpMessage() {
 		return "The /1/search API helps you to search your documents.";
 	}

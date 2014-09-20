@@ -1,4 +1,4 @@
-package org.scrutmydocs.rivers;
+package org.scrutmydocs.scan;
 
 import org.apache.log4j.Logger;
 import org.scrutmydocs.contract.SMDSettings;
