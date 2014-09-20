@@ -4,7 +4,6 @@
 package org.scrutmydocs.servlet;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
@@ -18,9 +17,6 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.elasticsearch.ElasticSearchException;
-import org.scrutmydocs.contract.SMDDocument;
-import org.scrutmydocs.plugins.upload.UploadSMDPlugin;
-import org.scrutmydocs.search.SMDSearchFactory;
 
 /**
  * Download Document Servlet
@@ -82,7 +78,7 @@ public class UploadServlet extends HttpServlet {
 	private String indexDocument(String fileName, String contentType, byte[] content) throws ElasticSearchException, IOException {
 		
 		
-		SMDSearchFactory.getInstance().index(new UploadSMDPlugin(), new SMDDocument(fileName, fileName, contentType, content, new Date()));
+//		SMDSearchFactory.getInstance().index(new UploadSMDPlugin(), new SMDDocument(fileName, fileName, contentType, content, new Date()));
 		
 		
 		return "ok";

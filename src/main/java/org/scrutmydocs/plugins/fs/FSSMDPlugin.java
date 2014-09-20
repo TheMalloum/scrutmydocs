@@ -73,14 +73,7 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 				if (!file.isDirectory()) {
 
 					logger.debug("index  file "+ path);
-					SMDDocument smdDocument = new SMDDocument(
-							file.getAbsolutePath(),
-							file.getName(),
-							URLConnection
-									.guessContentTypeFromStream(new FileInputStream(
-											file)),
-							FileUtils.readFileToByteArray(file), new Date(
-									file.lastModified()));
+					SMDDocument smdDocument = new SMDDocument(file);
 
 					 SMDSearchFactory.getInstance().index(this,smdDocument);
 				} else {

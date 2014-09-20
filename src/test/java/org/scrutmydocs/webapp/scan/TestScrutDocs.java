@@ -11,7 +11,7 @@ public class TestScrutDocs {
 	@Test
 	public void testScanDataSource() throws Exception {
 
-        SMDAbstractPlugin smdAbstractPlugin = new FSSMDPlugin("toto", "url");
+        SMDAbstractPlugin smdAbstractPlugin = new FSSMDPlugin("url");
         ObjectMapper mapper = new ObjectMapper();
 
         mapper.addMixInAnnotations(FSSMDPlugin.class, SMDAbstractPlugin.class);

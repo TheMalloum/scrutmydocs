@@ -26,7 +26,6 @@ import static org.elasticsearch.index.query.QueryBuilders.queryString;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
@@ -39,50 +38,63 @@ import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.common.xcontent.support.XContentMapValues;
+import org.elasticsearch.index.query.BoolFilterBuilder;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.highlight.HighlightField;
-import org.scrutmydocs.contract.*;
-import org.scrutmydocs.plugins.SMDAbstractPlugin;
+import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.contract.SMDResponseDocument;
+import org.scrutmydocs.contract.SMDSearchResponse;
+import org.scrutmydocs.contract.SMDSearchService;
 import org.scrutmydocs.elasticsearch.SMDElasticsearchClientFactory;
+import org.scrutmydocs.plugins.SMDAbstractPlugin;
 import org.springframework.util.StringUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 class ESSearchServiceServiceImpl implements SMDSearchService {
 
-    private ESLogger logger = Loggers.getLogger(ESSearchServiceServiceImpl.class);
+	private ESLogger logger = Loggers
+			.getLogger(ESSearchServiceServiceImpl.class);
 
 	final public static String SMDINDEX = "scrutmydocs-docs";
 
 	private Client esClient;
 
-    private BulkProcessor bulk;
+	private BulkProcessor bulk;
 
 	public ESSearchServiceServiceImpl() {
 
 		this.esClient = SMDElasticsearchClientFactory.getInstance();
-        SMDElasticsearchClientFactory.createIndex(SMDINDEX);
+		SMDElasticsearchClientFactory.createIndex(SMDINDEX);
 
-        this.bulk = new BulkProcessor.Builder(esClient, new BulkProcessor.Listener() {
-            @Override
-            public void beforeBulk(long l, BulkRequest bulkRequest) {
-                logger.debug("before bulking {} actions", bulkRequest.numberOfActions());
-            }
+		this.bulk = new BulkProcessor.Builder(esClient,
+				new BulkProcessor.Listener() {
+					@Override
+					public void beforeBulk(long l, BulkRequest bulkRequest) {
+						logger.debug("before bulking {} actions",
+								bulkRequest.numberOfActions());
+					}
 
-            @Override
-            public void afterBulk(long l, BulkRequest bulkRequest, BulkResponse bulkItemResponses) {
-                logger.debug("after bulking {} actions: failures: {}", bulkRequest.numberOfActions(), bulkItemResponses.hasFailures());
-                // TODO check if errors
-            }
+					@Override
+					public void afterBulk(long l, BulkRequest bulkRequest,
+							BulkResponse bulkItemResponses) {
+						logger.debug("after bulking {} actions: failures: {}",
+								bulkRequest.numberOfActions(),
+								bulkItemResponses.hasFailures());
+						// TODO check if errors
+					}
 
-            @Override
-            public void afterBulk(long l, BulkRequest bulkRequest, Throwable throwable) {
-                logger.warn("Error while executing bulk", throwable);
-            }
-        })
-                .setFlushInterval(TimeValue.timeValueSeconds(5))
-                .setBulkActions(100)
-                .build();
+					@Override
+					public void afterBulk(long l, BulkRequest bulkRequest,
+							Throwable throwable) {
+						logger.warn("Error while executing bulk", throwable);
+					}
+				}).setFlushInterval(TimeValue.timeValueSeconds(5))
+				.setBulkActions(100).build();
 	}
 
 	@Override
@@ -117,8 +129,6 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 		List<SMDResponseDocument> documents = new ArrayList<SMDResponseDocument>();
 		for (SearchHit searchHit : searchHits.getHits()) {
 
-			String name = getSingleStringValue("name", searchHit.getSource());
-
 			Collection<String> highlights = null;
 			if (searchHit.getHighlightFields() != null) {
 				highlights = new ArrayList<String>();
@@ -133,9 +143,17 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 				}
 			}
 
-			SMDDocument smdDocument = new SMDDocument(searchHit.id(), name,
-					null, null, null);
-            SMDResponseDocument smdResponseDocument = new SMDResponseDocument(smdDocument, highlights);
+			ObjectMapper mapper = new ObjectMapper();
+			SMDDocument smdDocument;
+			try {
+				smdDocument = mapper.readValue(
+						searchHit.getSource().toString(), SMDDocument.class);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+
+			SMDResponseDocument smdResponseDocument = new SMDResponseDocument(
+					smdDocument, highlights);
 			documents.add(smdResponseDocument);
 		}
 
@@ -160,20 +178,17 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 					"The document can't be null and must have name or id");
 		}
 
-        try {
-            bulk.add(new IndexRequest(SMDINDEX, smdAbstractPlugin.url, document.url)
-                        .source(
-                                jsonBuilder()
-                                        .startObject()
-                                        .field("name", document.name)
-                                        .field("postDate", document.date)
-                                        .startObject("file")
-                                        .field("_content_type",
-                                                document.contentType)
-                                        .field("_name", document.name)
-                                        .field("content", document.content)
-                                        .endObject().endObject()
-                        ));
+		try {
+			bulk.add(new IndexRequest(SMDINDEX, smdAbstractPlugin.url,
+					document.url)
+					.source(jsonBuilder().startObject()
+							.field("name", document.name)
+							.field("postDate", document.date)
+							.startObject("file")
+							.field("_content_type", document.contentType)
+							.field("_name", document.name)
+							.field("content", document.content).endObject()
+							.endObject()));
 		} catch (Exception e) {
 			logger.warn("Can not index document {}", document.name);
 			throw new RuntimeException("Can not index document : "
@@ -188,7 +203,6 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 	@Override
 	public void delete(SMDAbstractPlugin smdAbstractPlugin, String id) {
 
-
 		if (logger.isDebugEnabled())
 			logger.debug("delete({})", id);
 
@@ -198,12 +212,13 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 		}
 
 		try {
-            bulk.add(new DeleteRequest(SMDINDEX, smdAbstractPlugin.url, id));
+			bulk.add(new DeleteRequest(SMDINDEX, smdAbstractPlugin.url, id));
 		} catch (Exception e) {
 			logger.warn("Can not delete document {} of type  {}", id,
 					smdAbstractPlugin.url);
 			throw new RuntimeException("Can not delete document : " + id
-					+ "whith type " + smdAbstractPlugin.url + ": " + e.getMessage());
+					+ "whith type " + smdAbstractPlugin.url + ": "
+					+ e.getMessage());
 		}
 
 		if (logger.isDebugEnabled())
@@ -212,20 +227,68 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 	}
 
 
-
-	private static String getSingleStringValue(String path,
-			Map<String, Object> content) {
-		List<Object> obj = XContentMapValues.extractRawValues(path, content);
-		if (obj.isEmpty())
-			return null;
-		else
-			return ((String) obj.get(0));
-	}
-
 	@Override
 	public SMDSearchResponse searchFileByDirectory(String directory, int first,
 			int pageSize) {
-		// TODO Auto-generated method stub
-		return null;
+		if (logger.isDebugEnabled())
+			logger.debug("searchFileByDirectory('{}', {}, {})", directory,
+					first, pageSize);
+
+		long totalHits = -1;
+		long took = -1;
+
+		SMDSearchResponse searchResponse = null;
+
+		BoolFilterBuilder filters = FilterBuilders.boolFilter()
+				.must(FilterBuilders.termFilter("pathDirectory", directory));
+		BoolQueryBuilder qb = QueryBuilders.boolQuery();
+		QueryBuilder query = QueryBuilders.filteredQuery(qb, filters);
+		
+		org.elasticsearch.action.search.SearchResponse searchHits = esClient
+				.prepareSearch().setIndices(SMDINDEX)
+				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(query)
+				.setFrom(first).setSize(pageSize).execute().actionGet();
+
+		totalHits = searchHits.getHits().totalHits();
+		took = searchHits.getTookInMillis();
+
+		List<SMDResponseDocument> documents = new ArrayList<SMDResponseDocument>();
+		for (SearchHit searchHit : searchHits.getHits()) {
+
+			Collection<String> highlights = null;
+			if (searchHit.getHighlightFields() != null) {
+				highlights = new ArrayList<String>();
+				for (HighlightField highlightField : searchHit
+						.getHighlightFields().values()) {
+
+					Text[] fragmentsBuilder = highlightField.getFragments();
+
+					for (Text fragment : fragmentsBuilder) {
+						highlights.add(fragment.string());
+					}
+				}
+			}
+
+			ObjectMapper mapper = new ObjectMapper();
+			SMDDocument smdDocument;
+			try {
+				smdDocument = mapper.readValue(
+						searchHit.getSource().toString(), SMDDocument.class);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+
+			SMDResponseDocument smdResponseDocument = new SMDResponseDocument(
+					smdDocument, highlights);
+			documents.add(smdResponseDocument);
+		}
+
+		searchResponse = new SMDSearchResponse(took, totalHits, documents);
+
+		if (logger.isDebugEnabled())
+			logger.debug("searchFileByDirectory('{}', {}, {})", directory,
+					first, pageSize);
+		return searchResponse;
+
 	}
 }
