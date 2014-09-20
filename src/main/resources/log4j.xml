@@ -40,7 +40,7 @@
 
 
 	<category name="org.elasticsearch">
-		<priority value="INFO" />
+		<priority value="ERROR" />
 	</category>
 
 	<category name="org.springframework">

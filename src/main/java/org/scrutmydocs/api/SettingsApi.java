@@ -21,18 +21,18 @@ package org.scrutmydocs.api;
 
 import java.util.HashMap;
 
-import javassist.NotFoundException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.contract.SMDSettings;
 import org.scrutmydocs.plugins.PluginsUtils;
 import org.scrutmydocs.plugins.SMDAbstractPlugin;
 import org.scrutmydocs.scan.ScanDocuments;
-import org.scrutmydocs.search.SMDSearchFactory;
 import org.scrutmydocs.settings.SMDSettingsFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller()
 @RequestMapping("/2/settings")
@@ -66,7 +66,9 @@ public class SettingsApi {
 		
 		for (SMDAbstractPlugin setting : settings.smdAbstractPlugins) {
 			if(plugins.get(setting.name()) == null){
-				throw new NotFoundException(" the plugin "+ setting.name()+"dosn't exite");
+				
+				//todo find exception 404 in spring 4
+				throw new IllegalArgumentException(" the plugin "+ setting.name()+"dosn't exite");
 			}
 			
 		}

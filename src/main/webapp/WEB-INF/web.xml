@@ -28,6 +28,12 @@
 	</servlet>
 
 	<servlet>
+		<servlet-name>ServletInit</servlet-name>
+		<servlet-class>org.scrutmydocs.servlet.ServletInit</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	
+	<servlet>
 		<servlet-name>DownloadServlet</servlet-name>
 		<servlet-class>org.scrutmydocs.servlet.DownloadServlet</servlet-class>
 	</servlet>
@@ -35,11 +41,6 @@
 	<servlet>
 		<servlet-name>UploadServlet</servlet-name>
 		<servlet-class>org.scrutmydocs.servlet.UploadServlet</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>ServletInit</servlet-name>
-		<servlet-class>org.scrutmydocs.servlet.ServletInit</servlet-class>
 	</servlet>
 
 
