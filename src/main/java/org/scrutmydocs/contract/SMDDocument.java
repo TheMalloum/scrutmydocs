@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URLConnection;
 import java.util.Date;
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FileUtils;
 
 public class SMDDocument {
@@ -32,6 +33,17 @@ public class SMDDocument {
 		this.date = new Date(
 				file.lastModified());
 		this.pathDirectory = file.getParent();
+	}
+	
+	public SMDDocument(FileItem file) throws FileNotFoundException, IOException {
+		super();
+		id = null;
+		this.url = file.getName();
+		this.name = file.getName();
+		this.contentType = file.getContentType();
+		this.content = file.get();
+		this.date = new Date();
+		this.pathDirectory = null;
 	}
 	
 	

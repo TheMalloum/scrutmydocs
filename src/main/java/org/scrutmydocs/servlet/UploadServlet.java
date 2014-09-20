@@ -16,7 +16,10 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.elasticsearch.ElasticSearchException;
+import org.apache.log4j.Logger;
+import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.plugins.upload.UploadSMDPlugin;
+import org.scrutmydocs.search.SMDSearchFactory;
 
 /**
  * Download Document Servlet
@@ -27,7 +30,10 @@ public class UploadServlet extends HttpServlet {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -6107374244490863440L;
+	
+	protected Logger logger = Logger.getLogger(getClass().getName());
 
+	
 	/** The upload. */
 	private ServletFileUpload upload;
 
@@ -43,45 +49,16 @@ public class UploadServlet extends HttpServlet {
 			resp.sendError(HttpServletResponse.SC_BAD_REQUEST,"Multipart content expected!");
 		}
 		try {
-			@SuppressWarnings("unchecked")
 			List<FileItem> files = this.upload.parseRequest(req);
 
-			String fileName;
-			String contentType;
-			byte[] content;
-			for(FileItem item : files) {
-				fileName = item.getName();
-				contentType = item.getContentType();
-				content = item.get();
-				this.indexDocument(fileName, contentType, content);
+			for(FileItem file : files) {
+				logger.info("Upload file : "+file.getName());
+				SMDSearchFactory.getInstance().index(new UploadSMDPlugin(), new SMDDocument(file));
 			}
 		} catch (FileUploadException e) {
+			logger.error("error when upload file",e);
 			throw new ServletException(e);
 		}
-	}
-
-	/**
-	 * Index document.
-	 * 
-	 * @param fileName
-	 *        the file name
-	 * @param contentType
-	 *        the content type
-	 * @param content
-	 *        the file content
-	 * @return the id of indexed document
-	 * @throws ElasticSearchException
-	 *         the elastic search exception
-	 * @throws IOException
-	 *         Signals that an I/O exception has occurred.
-	 */
-	private String indexDocument(String fileName, String contentType, byte[] content) throws ElasticSearchException, IOException {
-		
-		
-//		SMDSearchFactory.getInstance().index(new UploadSMDPlugin(), new SMDDocument(fileName, fileName, contentType, content, new Date()));
-		
-		
-		return "ok";
 	}
 
 	
