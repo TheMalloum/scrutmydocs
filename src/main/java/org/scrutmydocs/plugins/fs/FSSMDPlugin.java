@@ -118,10 +118,10 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 			
 			SMDSearchResponse searchResponse =  SMDSearchFactory.getInstance().searchFileByDirectory("*",first, page);
 			for (SMDResponseDocument smdResponseDocument : searchResponse.smdDocuments) {
-				if(!new File(smdResponseDocument.document.url).exists())
+				if(!new File(smdResponseDocument.url).exists())
 				{
-					logger.debug("remove file "+ smdResponseDocument.document.url + " ....");
-					 SMDSearchFactory.getInstance().delete(this,smdResponseDocument.document.url);
+					logger.debug("remove file "+ smdResponseDocument.url + " ....");
+					 SMDSearchFactory.getInstance().delete(this,smdResponseDocument.url);
 				}
 			}
 			

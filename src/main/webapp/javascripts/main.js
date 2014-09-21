@@ -97,11 +97,11 @@ var handleSearchResults = function(json) {
 		$.each(json.smdDocuments,function(index, hit) {
 			// TODO evaluate a Javascript Templating solution
 			// handle content type for icons
-            if (hit.document.contentType != null) {
-                if (hit.document.contentType.indexOf(";",0) > 0) {
-                    contentType = hit.document.contentType.substr(0,hit.document.contentType.indexOf(";",0));
+            if (hit.contentType != null) {
+                if (hit.contentType.indexOf(";",0) > 0) {
+                    contentType = hit.contentType.substr(0,hit.contentType.indexOf(";",0));
                 } else {
-                    contentType = hit.document.contentType;
+                    contentType = hit.contentType;
                 }
 
             } else {
@@ -130,25 +130,25 @@ var handleSearchResults = function(json) {
 			*/
 
 			// Create links
-			if (hit.document.name) {
-				title = hit.document.name;
+			if (hit.name) {
+				title = hit.name;
 			} else {
-				title = hit.document.id;
+				title = hit.id;
 			}
-			if (hit.document.type==="doc") {
-                link = '<a target="_blank" href="download?id='+hit.document.id+'&index='+hit.document.index+'&content_type=' +
+			if (hit.type==="doc") {
+                link = '<a target="_blank" href="download?id='+hit.id+'&index='+hit.index+'&content_type=' +
                     contentType +'">' +icon+ title+'</a>';
 			}
-			if (hit.document.type==="jira_issue") {
-				link = '<a target="_blank" href="'+hit.document.contentType+'">' +icon+ title+'</a>';
+			if (hit.type==="jira_issue") {
+				link = '<a target="_blank" href="'+hit.contentType+'">' +icon+ title+'</a>';
 			}
-			if (hit.document.type== null) {
-                link = '<a target="_blank" href="download?id='+hit.document.id+'&index='+hit.document.index+'&content_type=' +
+			if (hit.type== null) {
+                link = '<a target="_blank" href="download?id='+hit.id+'&index='+hit.index+'&content_type=' +
                     contentType +'">' +icon+ title+'</a>';
 			}
-			if (hit.document.highlights) {
+			if (hit.highlights) {
 				// add highlight
-				link += '<blockquote>' +hit.document.highlights.join('<br>')+ '</blockquote>';
+				link += '<blockquote>' +hit.highlights.join('<br>')+ '</blockquote>';
 			}
 			$("#results").append('<li>'+link+'</li>');
 		});

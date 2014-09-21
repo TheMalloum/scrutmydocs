@@ -143,19 +143,11 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 				}
 			}
 
-			ObjectMapper mapper = new ObjectMapper();
-			SMDDocument smdDocument;
-			try {
-				smdDocument = mapper.readValue(
-						searchHit.getSourceAsString(), SMDDocument.class);
-			} catch (Exception e) {
-				logger.error("");
-				throw new RuntimeException(e);
-			}
-
-			smdDocument.id = smdDocument.url;
 			SMDResponseDocument smdResponseDocument = new SMDResponseDocument(
-					smdDocument, highlights);
+					(String) searchHit.getSource().get("name"),
+					(String) searchHit.getSource().get("url"),
+					(String) searchHit.getSource().get("contentType"),
+					highlights);
 			documents.add(smdResponseDocument);
 		}
 
@@ -259,16 +251,12 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 				}
 			}
 
-			SMDDocument smdDocument;
-			try {
-				smdDocument = mapper.readValue(
-						searchHit.getSource().toString(), SMDDocument.class);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-
 			SMDResponseDocument smdResponseDocument = new SMDResponseDocument(
-					smdDocument, highlights);
+					(String) searchHit.getSource().get("name"),
+					(String) searchHit.getSource().get("url"),
+					(String) searchHit.getSource().get("contentType"),
+					highlights);
+			
 			documents.add(smdResponseDocument);
 		}
 
