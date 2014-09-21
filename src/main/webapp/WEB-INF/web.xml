@@ -23,7 +23,8 @@
 
 	<servlet>
 		<servlet-name>scrutmydocs-api</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<servlet-class>
+			org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
@@ -32,7 +33,7 @@
 		<servlet-class>org.scrutmydocs.servlet.ServletInit</servlet-class>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
-	
+
 	<servlet>
 		<servlet-name>DownloadServlet</servlet-name>
 		<servlet-class>org.scrutmydocs.servlet.DownloadServlet</servlet-class>
@@ -60,11 +61,19 @@
 		<url-pattern>/upload/*</url-pattern>
 	</servlet-mapping>
 
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-	<listener>
-		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
-	</listener>
+	<context-param>
+		<param-name>resteasy.scan</param-name>
+		<param-value>true</param-value>
+	</context-param>
 
+	<!-- this need same with resteasy servlet url-pattern -->
+	<context-param>
+		<param-name>resteasy.servlet.mapping.prefix</param-name>
+		<param-value>/api</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>
+			org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
+	</listener>
 </web-app>

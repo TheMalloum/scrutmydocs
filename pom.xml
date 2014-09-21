@@ -41,10 +41,9 @@
 
 	<properties>
 		<!-- Dependencies versions -->
-		<spring.version>4.0.6.RELEASE</spring.version>
+		<resteasy.version>3.0.5.Final</resteasy.version>
 		<cglib.version>2.2.2</cglib.version>
 		<elasticsearch.version>1.3.2</elasticsearch.version>
-		<spring.elasticsearch.version>1.3.0</spring.elasticsearch.version>
 		<jackson.version>2.2.0</jackson.version>
 		<guava.version>14.0.1</guava.version>
 		<commons.file-upload.version>1.3</commons.file-upload.version>
@@ -142,29 +141,36 @@
 			<artifactId>reflections</artifactId>
 			<version>0.9.9-RC1</version>
 		</dependency>
+		
+		<!-- Quartz -->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.2.1</version>
+		</dependency>
 
 
-		<!-- Spring 3 dependencies -->
+		<!-- RESTEASY dependencies -->
+
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>${resteasy.version}</version>
 		</dependency>
+
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${spring.version}</version>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson-provider</artifactId>
+			<version>${resteasy.version}</version>
+
 		</dependency>
+
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-multipart-provider</artifactId>
+			<version>${resteasy.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
+
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
@@ -176,11 +182,6 @@
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
 			<version>${elasticsearch.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.pilato.spring</groupId>
-			<artifactId>spring-elasticsearch</artifactId>
-			<version>${spring.elasticsearch.version}</version>
 		</dependency>
 		<!-- Standard dependencies -->
 		<dependency>
@@ -235,12 +236,6 @@
 		</dependency>
 
 		<!-- Tests -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

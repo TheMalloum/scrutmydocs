@@ -4,17 +4,24 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.quartz.Job;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.impl.StdSchedulerFactory;
 import org.scrutmydocs.plugins.SMDAbstractPlugin;
 import org.scrutmydocs.search.SMDSettingsFactory;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
-@Component
-public class ScanDocuments {
+public class ScanDocuments implements Job{
 	private Logger logger = LogManager.getLogger(ScanDocuments.class);
 
-    @Scheduled(cron="*/30 * * * * ?")
-	public void scan() {
+	@Override
+	public void execute(JobExecutionContext context)
+			throws JobExecutionException {
         logger.info("start scan()");
 
         List<SMDAbstractPlugin> settings = SMDSettingsFactory.getInstance().getSettings();
@@ -30,4 +37,34 @@ public class ScanDocuments {
 
         logger.info("end scan()");
 	}
+    
+    
+    
+    public static  void init() {
+
+		try {
+
+			// specify the job' s details..
+			JobDetail job = JobBuilder.newJob(ScanDocuments.class)
+					.withIdentity("ScanDocuments").build();
+			// specify the running period of the job
+			Trigger trigger = TriggerBuilder
+					.newTrigger()
+					.withSchedule(
+							SimpleScheduleBuilder.simpleSchedule()
+									.withIntervalInSeconds(30).repeatForever())
+					.build();
+
+			// schedule the job
+			StdSchedulerFactory.getDefaultScheduler().scheduleJob(job, trigger);
+			StdSchedulerFactory.getDefaultScheduler().start();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+
+
+
+
 }

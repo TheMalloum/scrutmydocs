@@ -40,24 +40,6 @@ public class TestSmdDocument {
 
 	}
 
-	@Test
-	public void testDocumentFromJson() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-
-		
-		String json= "{"
-				+ "\"id\":\"id\","
-				+ "\"url\":\"url\","
-				+ "\"pathDirectory\":\"pathDirectory\","
-				+ "\"name\":\"name\","
-				+ "\"contentType\":\"contentType\","
-				+ "\"content\":\"content\","
-				+ "\"date\":\"1929839\""
-						+ "}";
-
-		SMDDocument smdDocument = mapper.readValue(json, SMDDocument.class);
-		Assert.assertNotNull(smdDocument);
-
-	}
+	
 
 }

@@ -19,20 +19,20 @@
 
 package org.scrutmydocs.api;
 
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SearchQuery;
 import org.scrutmydocs.search.SMDSearchFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller(value = "SearchApiV2")
-@RequestMapping("/2/search")
-public class SearchApi  {
+//@Controller(value = "SearchApiV2")
+//@RequestMapping("/2/search")
+@Path("/2/search")
+public class SearchApi {
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	public Api[] helpApiList() {
@@ -51,15 +51,15 @@ public class SearchApi  {
 	 * @param query
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.POST)
-	public @ResponseBody
-    SMDSearchResponse term(@RequestBody SearchQuery query) {
+//	@RequestMapping(method = RequestMethod.POST)
+	@POST
+	public Response term(SearchQuery query) {
 		SMDSearchResponse results = null;
 
 		results = SMDSearchFactory.getInstance().search(query.getSearch(),
 				query.getFirst(), query.getPageSize());
 
-		return results;
+		return Response.ok(results).build();
 	}
 
 }

@@ -19,20 +19,17 @@
 
 package org.scrutmydocs.api;
 
+import javax.ws.rs.DELETE;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.plugins.upload.UploadSMDPlugin;
 import org.scrutmydocs.search.SMDSearchFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller
-@RequestMapping("/2/upload")
+@Path("/2/upload")
 public class UploadApi {
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -41,10 +38,10 @@ public class UploadApi {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.POST)
-	public @ResponseBody
-	void push(@RequestBody SMDDocument smdDocument) {
-		SMDSearchFactory.getInstance().index(new UploadSMDPlugin(), smdDocument);
+	@POST
+	public  void push(SMDDocument smdDocument) {
+		SMDSearchFactory.getInstance()
+				.index(new UploadSMDPlugin(), smdDocument);
 	}
 
 	/**
@@ -53,9 +50,8 @@ public class UploadApi {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-	public @ResponseBody
-	void delete(@PathVariable String id) {
+	@DELETE
+	public  void delete(String id) {
 		SMDSearchFactory.getInstance().delete(new UploadSMDPlugin(), id);
 	}
 }

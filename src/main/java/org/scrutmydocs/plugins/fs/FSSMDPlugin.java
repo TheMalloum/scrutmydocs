@@ -125,7 +125,7 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 		long total = 1;
 		while(first < total){
 			
-			SMDSearchResponse searchResponse =  SMDSearchFactory.getInstance().searchFileByDirectory("*",first, page);
+			SMDSearchResponse searchResponse =  SMDSearchFactory.getInstance().searchFileByDirectory(directory.getAbsolutePath(),first, page);
 			for (SMDResponseDocument smdResponseDocument : searchResponse.smdDocuments) {
 				if(!new File(smdResponseDocument.url).exists())
 				{
@@ -141,18 +141,4 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 		
 	}
 
-	public static void main(String[] args) {
-
-		File dir = new File("C:\\Users\\LAYA\\Downloads");
-		Date lastModified = new Date();
-		lastModified.setYear(0);
-
-		List<Path> paths = new FSSMDPlugin().parcourirDirectory(dir,
-				lastModified);
-
-		for (Path path : paths) {
-			System.out.println(path.toString());
-		}
-
-	}
 }

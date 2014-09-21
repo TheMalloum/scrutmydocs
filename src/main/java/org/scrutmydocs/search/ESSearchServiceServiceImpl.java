@@ -52,7 +52,6 @@ import org.scrutmydocs.contract.SMDSearchService;
 import org.scrutmydocs.contract.SMDSettingsService;
 import org.scrutmydocs.plugins.PluginsUtils;
 import org.scrutmydocs.plugins.SMDAbstractPlugin;
-import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -203,7 +202,7 @@ class ESSearchServiceServiceImpl implements SMDSearchService,
 		if (logger.isDebugEnabled())
 			logger.debug("delete({})", id);
 
-		if (StringUtils.isEmpty(id)) {
+		if (id==null || id.isEmpty()) {
 			throw new IllegalArgumentException(
 					"The id of document can't be null or empty");
 		}
@@ -327,9 +326,11 @@ class ESSearchServiceServiceImpl implements SMDSearchService,
 	public SMDAbstractPlugin getSetting(String id) {
 		try {
 			GetResponse response = esClient
-					.prepareGet(SMDADMIN, SMDADMIN_SETTINGS, "1")
+					.prepareGet(SMDADMIN, SMDADMIN_SETTINGS,id)
 					.setOperationThreaded(false).execute().actionGet();
 
+			if(!response.isExists()) return null;
+			
 			return mapper.readValue(response.getSourceAsString(), PluginsUtils
 					.getAll().get(response.getSource().get("name")).getClass());
 		} catch (Exception e) {

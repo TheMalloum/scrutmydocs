@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.plugins.upload.UploadSMDPlugin;
+import org.scrutmydocs.scan.ScanDocuments;
 import org.scrutmydocs.search.SMDSearchFactory;
 
 public class ServletInit extends HttpServlet {
@@ -33,6 +34,10 @@ public class ServletInit extends HttpServlet {
 			SMDSearchFactory.getInstance().index(new UploadSMDPlugin(), NOTICE);
 
 			logger.info("index NOTICE AND LICENCE .... OK");
+			
+			logger.info("Scan initialization .........");
+			ScanDocuments.init();
+			logger.info("Scan initialization ......... OK ");
 
 		} catch (Exception e) {
 			logger.error("NOTICE AND LICENCE can't be index", e);
