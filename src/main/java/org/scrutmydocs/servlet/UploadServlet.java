@@ -16,7 +16,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.plugins.upload.UploadSMDPlugin;
 import org.scrutmydocs.search.SMDSearchFactory;
@@ -31,7 +32,7 @@ public class UploadServlet extends HttpServlet {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -6107374244490863440L;
 	
-	protected Logger logger = Logger.getLogger(getClass().getName());
+	protected Logger logger =  LogManager.getLogger();
 
 	
 	/** The upload. */

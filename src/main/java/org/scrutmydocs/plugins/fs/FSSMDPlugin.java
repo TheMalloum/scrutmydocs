@@ -20,15 +20,12 @@
 package org.scrutmydocs.plugins.fs;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.net.URLConnection;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDResponseDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
@@ -45,7 +42,7 @@ import org.scrutmydocs.search.SMDSearchFactory;
 @SMDPlugin(name = "fsDataSource")
 public class FSSMDPlugin extends SMDAbstractPlugin {
 	
-	protected Logger logger = Logger.getLogger(getClass().getName());
+	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger(getClass().getName());
 
 
 	public FSSMDPlugin(String url) {

@@ -1,17 +1,17 @@
 package org.scrutmydocs.contract;
 
 import java.io.File;
-import java.net.URISyntaxException;
+import java.io.InputStream;
 import java.net.URL;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.servlet.ServletInit;
 
 public class TestSmdDocument {
 
 	@Test
-	public void testIndexSearch() throws Exception {
+	public void testDocumentfromFile() throws Exception {
 		
 		URL url = getClass().getClassLoader().getResource("es-test.properties");
         File file = new File(url.toURI());
@@ -25,4 +25,18 @@ public class TestSmdDocument {
 		Assert.assertEquals(file.getPath(), smdDocument.url);
 
 	}
+	
+	@Test
+	public void testDocumentfromInputstream() throws Exception {
+		
+		
+		InputStream is = ServletInit.class.getClassLoader().getResourceAsStream("LICENSE");
+		SMDDocument smdDocument = new SMDDocument(is, "LICENSE");
+		
+		Assert.assertNotNull(smdDocument);		
+		
+		
+		
+	}
+	
 }

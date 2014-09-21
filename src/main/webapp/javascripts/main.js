@@ -89,19 +89,19 @@ var handleSearchResults = function(json) {
 	
 	// Display hits
 	$("#results").empty();
-	if (json.hits) {
+	if (json) {
 		var link;
 		var icon;
 		var title;
 		var contentType;
-		$.each(json.hits,function(index, hit) {
+		$.each(json.smdDocuments,function(index, hit) {
 			// TODO evaluate a Javascript Templating solution
 			// handle content type for icons
-            if (hit.contentType != null) {
-                if (hit.contentType.indexOf(";",0) > 0) {
-                    contentType = hit.contentType.substr(0,hit.contentType.indexOf(";",0));
+            if (hit.document.contentType != null) {
+                if (hit.document.contentType.indexOf(";",0) > 0) {
+                    contentType = hit.document.contentType.substr(0,hit.document.contentType.indexOf(";",0));
                 } else {
-                    contentType = hit.contentType;
+                    contentType = hit.document.contentType;
                 }
 
             } else {
@@ -130,21 +130,25 @@ var handleSearchResults = function(json) {
 			*/
 
 			// Create links
-			if (hit.title) {
-				title = hit.title;
+			if (hit.document.name) {
+				title = hit.document.name;
 			} else {
-				title = hit.id;
+				title = hit.document.id;
 			}
-			if (hit.type==="doc") {
-                link = '<a target="_blank" href="download?id='+hit.id+'&index='+hit.index+'&content_type=' +
+			if (hit.document.type==="doc") {
+                link = '<a target="_blank" href="download?id='+hit.document.id+'&index='+hit.document.index+'&content_type=' +
                     contentType +'">' +icon+ title+'</a>';
 			}
-			if (hit.type==="jira_issue") {
-				link = '<a target="_blank" href="'+hit.contentType+'">' +icon+ title+'</a>';
+			if (hit.document.type==="jira_issue") {
+				link = '<a target="_blank" href="'+hit.document.contentType+'">' +icon+ title+'</a>';
 			}
-			if (hit.highlights) {
+			if (hit.document.type== null) {
+                link = '<a target="_blank" href="download?id='+hit.document.id+'&index='+hit.document.index+'&content_type=' +
+                    contentType +'">' +icon+ title+'</a>';
+			}
+			if (hit.document.highlights) {
 				// add highlight
-				link += '<blockquote>' +hit.highlights.join('<br>')+ '</blockquote>';
+				link += '<blockquote>' +hit.document.highlights.join('<br>')+ '</blockquote>';
 			}
 			$("#results").append('<li>'+link+'</li>');
 		});

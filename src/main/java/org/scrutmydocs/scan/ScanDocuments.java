@@ -1,17 +1,18 @@
 package org.scrutmydocs.scan;
 
-import org.apache.log4j.Logger;
+import java.util.Date;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.scrutmydocs.contract.SMDSettings;
 import org.scrutmydocs.plugins.SMDAbstractPlugin;
 import org.scrutmydocs.settings.SMDSettingsFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-
 @Component
 public class ScanDocuments {
-	private Logger logger = Logger.getLogger(ScanDocuments.class);
+	private Logger logger = LogManager.getLogger(ScanDocuments.class);
 
     @Scheduled(cron="*/30 * * * * ?")
 	public void scan() {

@@ -21,7 +21,8 @@ package org.scrutmydocs.plugins.upload;
 
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.scrutmydocs.plugins.SMDAbstractPlugin;
 import org.scrutmydocs.plugins.SMDPlugin;
 
@@ -34,7 +35,7 @@ import org.scrutmydocs.plugins.SMDPlugin;
 @SMDPlugin(name = "uploadDataSource")
 public class UploadSMDPlugin extends SMDAbstractPlugin {
 
-	protected Logger logger = Logger.getLogger(getClass().getName());
+	protected Logger logger = LogManager.getLogger(getClass().getName());
 
 	public UploadSMDPlugin() {
 		super();

@@ -19,7 +19,6 @@
 
 package org.scrutmydocs.search;
 
-import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.queryString;
 
@@ -27,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -34,8 +35,6 @@ import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.logging.ESLogger;
-import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolFilterBuilder;
@@ -57,14 +56,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 class ESSearchServiceServiceImpl implements SMDSearchService {
 
-	private ESLogger logger = Loggers
-			.getLogger(ESSearchServiceServiceImpl.class);
+	protected Logger logger = LogManager.getLogger();
 
 	final public static String SMDINDEX = "scrutmydocs-docs";
 
 	private Client esClient;
 
 	private BulkProcessor bulk;
+
+	ObjectMapper mapper = new ObjectMapper();
 
 	public ESSearchServiceServiceImpl() {
 
@@ -147,11 +147,13 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 			SMDDocument smdDocument;
 			try {
 				smdDocument = mapper.readValue(
-						searchHit.getSource().toString(), SMDDocument.class);
+						searchHit.getSourceAsString(), SMDDocument.class);
 			} catch (Exception e) {
+				logger.error("");
 				throw new RuntimeException(e);
 			}
 
+			smdDocument.id = smdDocument.url;
 			SMDResponseDocument smdResponseDocument = new SMDResponseDocument(
 					smdDocument, highlights);
 			documents.add(smdResponseDocument);
@@ -172,24 +174,12 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 		if (logger.isDebugEnabled())
 			logger.debug("index({})", document);
 
-		if (document == null || StringUtils.isEmpty(document.name == null)
-				|| StringUtils.isEmpty(document.url == null)) {
-			throw new IllegalArgumentException(
-					"The document can't be null and must have name or id");
-		}
-
 		try {
-			bulk.add(new IndexRequest(SMDINDEX, smdAbstractPlugin.url,
-					document.url)
-					.source(jsonBuilder().startObject()
-							.field("name", document.name)
-							.field("postDate", document.date)
-							.field("pathDirectory", document.pathDirectory)
-							.startObject("file")
-							.field("_content_type", document.contentType)
-							.field("_name", document.name)
-							.field("content", document.content).endObject()
-							.endObject()));
+
+			String json = mapper.writeValueAsString(document);
+
+			bulk.add(new IndexRequest(SMDINDEX, smdAbstractPlugin.name(),
+					document.url).source(json));
 		} catch (Exception e) {
 			logger.warn("Can not index document {}", document.name);
 			throw new RuntimeException("Can not index document : "
@@ -227,7 +217,6 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 
 	}
 
-
 	@Override
 	public SMDSearchResponse searchFileByDirectory(String directory, int first,
 			int pageSize) {
@@ -240,11 +229,11 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 
 		SMDSearchResponse searchResponse = null;
 
-		BoolFilterBuilder filters = FilterBuilders.boolFilter()
-				.must(FilterBuilders.termFilter("pathDirectory", directory));
+		BoolFilterBuilder filters = FilterBuilders.boolFilter().must(
+				FilterBuilders.termFilter("pathDirectory", directory));
 		BoolQueryBuilder qb = QueryBuilders.boolQuery();
 		QueryBuilder query = QueryBuilders.filteredQuery(qb, filters);
-		
+
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
 				.prepareSearch().setIndices(SMDINDEX)
 				.setSearchType(SearchType.DEFAULT).setQuery(query)
@@ -270,7 +259,6 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 				}
 			}
 
-			ObjectMapper mapper = new ObjectMapper();
 			SMDDocument smdDocument;
 			try {
 				smdDocument = mapper.readValue(
