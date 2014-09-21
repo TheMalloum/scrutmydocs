@@ -1,4 +1,4 @@
-package org.scrutmydocs.settings;
+package org.scrutmydocs.search;
 
 import org.scrutmydocs.contract.SMDSettingsService;
 
@@ -11,7 +11,7 @@ public class SMDSettingsFactory {
      */
 	public static synchronized SMDSettingsService getInstance() {
 		if (settingsService == null) {
-			settingsService = new SettingsServiceImpl();
+			settingsService = new ESSearchServiceServiceImpl();
 		}
 
 		return settingsService;

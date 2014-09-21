@@ -15,6 +15,9 @@ public abstract class SMDAbstractPlugin {
 		return myRegister.name();
 
 	}
+	
+	
+	public Date lastScan;
 
     public Long updateRate;
 
@@ -28,7 +31,7 @@ public abstract class SMDAbstractPlugin {
 
 	public boolean start;
 
-	public abstract void scrut(Date since);
+	public abstract void scrut();
 
 
 }

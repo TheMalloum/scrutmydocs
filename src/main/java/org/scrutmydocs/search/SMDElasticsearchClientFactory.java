@@ -1,4 +1,4 @@
-package org.scrutmydocs.elasticsearch;
+package org.scrutmydocs.search;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.logging.ESLogger;

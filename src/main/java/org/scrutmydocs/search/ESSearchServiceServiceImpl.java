@@ -32,6 +32,7 @@ import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
@@ -48,17 +49,21 @@ import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDResponseDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDSearchService;
-import org.scrutmydocs.elasticsearch.SMDElasticsearchClientFactory;
+import org.scrutmydocs.contract.SMDSettingsService;
+import org.scrutmydocs.plugins.PluginsUtils;
 import org.scrutmydocs.plugins.SMDAbstractPlugin;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-class ESSearchServiceServiceImpl implements SMDSearchService {
+class ESSearchServiceServiceImpl implements SMDSearchService,
+		SMDSettingsService {
 
 	protected Logger logger = LogManager.getLogger();
 
 	final public static String SMDINDEX = "scrutmydocs-docs";
+	final public static String SMDADMIN = "scrutmydocs-admin";
+	final public static String SMDADMIN_SETTINGS = "settings";
 
 	private Client esClient;
 
@@ -67,9 +72,18 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 	ObjectMapper mapper = new ObjectMapper();
 
 	public ESSearchServiceServiceImpl() {
+		SMDElasticsearchClientFactory.createIndex(SMDINDEX);
+		SMDElasticsearchClientFactory.createIndex(SMDADMIN);
 
 		this.esClient = SMDElasticsearchClientFactory.getInstance();
-		SMDElasticsearchClientFactory.createIndex(SMDINDEX);
+
+		Collection<SMDAbstractPlugin> all = PluginsUtils.getAll().values();
+
+		for (SMDAbstractPlugin plugin : all) {
+			mapper.addMixInAnnotations(plugin.getClass(),
+					SMDAbstractPlugin.class);
+			logger.info("  -> adding plugin {}", plugin.name());
+		}
 
 		this.bulk = new BulkProcessor.Builder(esClient,
 				new BulkProcessor.Listener() {
@@ -256,7 +270,7 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 					(String) searchHit.getSource().get("url"),
 					(String) searchHit.getSource().get("contentType"),
 					highlights);
-			
+
 			documents.add(smdResponseDocument);
 		}
 
@@ -268,4 +282,60 @@ class ESSearchServiceServiceImpl implements SMDSearchService {
 		return searchResponse;
 
 	}
+
+	// Settings
+
+	@Override
+	public List<SMDAbstractPlugin> getSettings() {
+		try {
+			org.elasticsearch.action.search.SearchResponse searchHits = esClient
+					.prepareSearch(SMDADMIN).setTypes(SMDADMIN_SETTINGS)
+					.execute().actionGet();
+
+			if (searchHits.getHits().totalHits() == 0) {
+				return null;
+			}
+
+			List<SMDAbstractPlugin> plugins = new ArrayList<SMDAbstractPlugin>();
+			for (SearchHit searchHit : searchHits.getHits()) {
+				plugins.add(mapper.readValue(
+						searchHit.getSourceAsString(),
+						PluginsUtils.getAll()
+								.get(searchHit.getSource().get("name"))
+								.getClass()));
+			}
+
+			return plugins;
+		} catch (Exception e) {
+			logger.error("Can not checkout the configuration.");
+			throw new RuntimeException("Can not checkout the configuration.");
+		}
+	}
+
+	@Override
+	public void saveSetting(SMDAbstractPlugin setting) {
+		try {
+			esClient.prepareIndex(SMDADMIN, SMDADMIN_SETTINGS, "settings")
+					.setSource(mapper.writeValueAsString(setting)).execute()
+					.actionGet();
+		} catch (Exception e) {
+			throw new RuntimeException("Can not save the configuration.");
+		}
+	}
+
+	@Override
+	public SMDAbstractPlugin getSetting(String id) {
+		try {
+			GetResponse response = esClient
+					.prepareGet(SMDADMIN, SMDADMIN_SETTINGS, "1")
+					.setOperationThreaded(false).execute().actionGet();
+
+			return mapper.readValue(response.getSourceAsString(), PluginsUtils
+					.getAll().get(response.getSource().get("name")).getClass());
+		} catch (Exception e) {
+			throw new RuntimeException("Can not save the configuration.");
+		}
+
+	}
+
 }

@@ -32,6 +32,7 @@ import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.plugins.SMDAbstractPlugin;
 import org.scrutmydocs.plugins.SMDPlugin;
 import org.scrutmydocs.search.SMDSearchFactory;
+import org.scrutmydocs.search.SMDSettingsFactory;
 
 /**
  * Implement the DropBox ScrutMyDocs Data Source
@@ -55,13 +56,17 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 
 	
 	@Override
-	public void scrut(Date lastModified) {
+	public void scrut() {
 		try {
 			
 			logger.info("we are scrutting your dyrectory "+ url + " ....");
 
+			
+			Date startScarn = new Date();
+			
+			
 			List<Path> paths = parcourirDirectory(new File(this.url),
-					lastModified);
+					this.lastScan);
 
 			for (Path path : paths) {
 
@@ -79,6 +84,10 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 				}
 
 			}
+			
+			this.lastScan = startScarn;
+			SMDSettingsFactory.getInstance().saveSetting(this);
+
 		} catch (Exception ex) {
 
 			throw new RuntimeException(

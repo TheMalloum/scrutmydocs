@@ -19,8 +19,6 @@
 
 package org.scrutmydocs.plugins.upload;
 
-import java.util.Date;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.scrutmydocs.plugins.SMDAbstractPlugin;
@@ -42,7 +40,7 @@ public class UploadSMDPlugin extends SMDAbstractPlugin {
 	}
 
 	@Override
-	public void scrut(Date date) {
+	public void scrut() {
 	}
 
 

@@ -20,14 +20,14 @@
 package org.scrutmydocs.api;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.scrutmydocs.contract.SMDSettings;
 import org.scrutmydocs.plugins.PluginsUtils;
 import org.scrutmydocs.plugins.SMDAbstractPlugin;
 import org.scrutmydocs.scan.ScanDocuments;
-import org.scrutmydocs.settings.SMDSettingsFactory;
+import org.scrutmydocs.search.SMDSettingsFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,10 +44,20 @@ public class SettingsApi {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody
-    SMDSettings get() throws Exception {
+	@RequestMapping(method = RequestMethod.GET,value = "/all")
+	public @ResponseBody List<SMDAbstractPlugin> getAll() throws Exception {
 		return SMDSettingsFactory.getInstance().getSettings();
+	}
+	
+	
+	/**
+	 * Get settings
+	 * 
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET)
+	public @ResponseBody SMDAbstractPlugin get(String id) throws Exception {
+		return SMDSettingsFactory.getInstance().getSetting(id);
 	}
 
 	/**
@@ -56,24 +66,19 @@ public class SettingsApi {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.PUT)
-	public @ResponseBody
-	void put(@RequestBody SMDSettings settings)
-			throws Exception {
-		
-		
-		// verification 
+	public @ResponseBody void addScrutation(
+			@RequestBody SMDAbstractPlugin setting) throws Exception {
+
+		// verification
 		HashMap<String, SMDAbstractPlugin> plugins = PluginsUtils.getAll();
-		
-		for (SMDAbstractPlugin setting : settings.smdAbstractPlugins) {
-			if(plugins.get(setting.name()) == null){
-				
-				//todo find exception 404 in spring 4
-				throw new IllegalArgumentException(" the plugin "+ setting.name()+"dosn't exite");
-			}
-			
+
+		if (plugins.get(setting.name()) == null) {
+			// todo find exception 404 in spring 4
+			throw new IllegalArgumentException(" the plugin " + setting.name()
+					+ "dosn't exite");
 		}
-		
-        SMDSettingsFactory.getInstance().saveSettings(settings);
+
+		SMDSettingsFactory.getInstance().saveSetting(setting);
 	}
 
 	/**
@@ -83,8 +88,7 @@ public class SettingsApi {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public @ResponseBody
-	void post() throws Exception {
+	public @ResponseBody void post() throws Exception {
 		new ScanDocuments().scan();
 
 	}
