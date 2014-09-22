@@ -11,7 +11,7 @@ public class SMDSearchFactory {
      */
 	public static synchronized SMDSearchService getInstance() {
 		if (SMDSearchService == null) {
-			SMDSearchService = new ESSearchServiceServiceImpl();
+			SMDSearchService = new ElasticSearchImpl();
 		}
 
 		return SMDSearchService;

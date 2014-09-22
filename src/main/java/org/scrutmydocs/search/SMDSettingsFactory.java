@@ -11,7 +11,7 @@ public class SMDSettingsFactory {
      */
 	public static synchronized SMDSettingsService getInstance() {
 		if (settingsService == null) {
-			settingsService = new ESSearchServiceServiceImpl();
+			settingsService = new ElasticSearchImpl();
 		}
 
 		return settingsService;

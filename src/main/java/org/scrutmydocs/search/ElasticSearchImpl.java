@@ -43,6 +43,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.highlight.HighlightField;
 import org.scrutmydocs.contract.SMDDocument;
@@ -55,8 +56,7 @@ import org.scrutmydocs.plugins.SMDAbstractPlugin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-class ESSearchServiceServiceImpl implements SMDSearchService,
-		SMDSettingsService {
+class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 
 	protected Logger logger = LogManager.getLogger();
 
@@ -70,11 +70,13 @@ class ESSearchServiceServiceImpl implements SMDSearchService,
 
 	ObjectMapper mapper = new ObjectMapper();
 
-	public ESSearchServiceServiceImpl() {
-		SMDElasticsearchClientFactory.createIndex(SMDINDEX);
-		SMDElasticsearchClientFactory.createIndex(SMDADMIN);
+	public ElasticSearchImpl() {
+		createIndex(SMDINDEX);
+		createIndex(SMDADMIN);
 
-		this.esClient = SMDElasticsearchClientFactory.getInstance();
+		esClient = NodeBuilder.nodeBuilder().node().client();
+		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus()
+				.execute().actionGet();
 
 		Collection<SMDAbstractPlugin> all = PluginsUtils.getAll().values();
 
@@ -108,6 +110,17 @@ class ESSearchServiceServiceImpl implements SMDSearchService,
 					}
 				}).setFlushInterval(TimeValue.timeValueSeconds(5))
 				.setBulkActions(100).build();
+	}
+
+
+	public void createIndex(String index) {
+		if (logger.isDebugEnabled())
+			logger.debug("createIndex({}, {}, {})", index);
+
+		if (!esClient.admin().indices().prepareExists(index).execute()
+				.actionGet().isExists()) {
+			esClient.admin().indices().prepareCreate(index).execute();
+		}
 	}
 
 	@Override
@@ -202,7 +215,7 @@ class ESSearchServiceServiceImpl implements SMDSearchService,
 		if (logger.isDebugEnabled())
 			logger.debug("delete({})", id);
 
-		if (id==null || id.isEmpty()) {
+		if (id == null || id.isEmpty()) {
 			throw new IllegalArgumentException(
 					"The id of document can't be null or empty");
 		}
@@ -223,57 +236,39 @@ class ESSearchServiceServiceImpl implements SMDSearchService,
 	}
 
 	@Override
-	public SMDSearchResponse searchFileByDirectory(SMDAbstractPlugin smdAbstractPlugin,String directory, int first,
+	public SMDSearchResponse searchFileByDirectory(
+			SMDAbstractPlugin smdAbstractPlugin, String directory, int first,
 			int pageSize) {
 		if (logger.isDebugEnabled())
 			logger.debug("searchFileByDirectory('{}', {}, {})", directory,
 					first, pageSize);
-
-		long totalHits = -1;
-		long took = -1;
 
 		SMDSearchResponse searchResponse = null;
 
 		BoolFilterBuilder filters = FilterBuilders.boolFilter().must(
 				FilterBuilders.termFilter("pathDirectory", directory));
 		BoolQueryBuilder qb = QueryBuilders.boolQuery();
+
 		QueryBuilder query = QueryBuilders.filteredQuery(qb, filters);
 
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
 				.prepareSearch().setIndices(SMDINDEX)
-				.setSearchType(smdAbstractPlugin.name()).setQuery(query)
+				.setTypes(smdAbstractPlugin.name()).setQuery(query)
 				.setFrom(first).setSize(pageSize).execute().actionGet();
-
-		totalHits = searchHits.getHits().totalHits();
-		took = searchHits.getTookInMillis();
 
 		List<SMDResponseDocument> documents = new ArrayList<SMDResponseDocument>();
 		for (SearchHit searchHit : searchHits.getHits()) {
 
-			Collection<String> highlights = null;
-			if (searchHit.getHighlightFields() != null) {
-				highlights = new ArrayList<String>();
-				for (HighlightField highlightField : searchHit
-						.getHighlightFields().values()) {
-
-					Text[] fragmentsBuilder = highlightField.getFragments();
-
-					for (Text fragment : fragmentsBuilder) {
-						highlights.add(fragment.string());
-					}
-				}
-			}
-
 			SMDResponseDocument smdResponseDocument = new SMDResponseDocument(
 					(String) searchHit.getSource().get("name"),
 					(String) searchHit.getSource().get("url"),
-					(String) searchHit.getSource().get("contentType"),
-					highlights);
+					(String) searchHit.getSource().get("contentType"), null);
 
 			documents.add(smdResponseDocument);
 		}
 
-		searchResponse = new SMDSearchResponse(took, totalHits, documents);
+		searchResponse = new SMDSearchResponse(searchHits.getTookInMillis(),
+				searchHits.getHits().totalHits(), documents);
 
 		if (logger.isDebugEnabled())
 			logger.debug("searchFileByDirectory('{}', {}, {})", directory,
@@ -326,11 +321,12 @@ class ESSearchServiceServiceImpl implements SMDSearchService,
 	public SMDAbstractPlugin getSetting(String id) {
 		try {
 			GetResponse response = esClient
-					.prepareGet(SMDADMIN, SMDADMIN_SETTINGS,id)
+					.prepareGet(SMDADMIN, SMDADMIN_SETTINGS, id)
 					.setOperationThreaded(false).execute().actionGet();
 
-			if(!response.isExists()) return null;
-			
+			if (!response.isExists())
+				return null;
+
 			return mapper.readValue(response.getSourceAsString(), PluginsUtils
 					.getAll().get(response.getSource().get("name")).getClass());
 		} catch (Exception e) {
