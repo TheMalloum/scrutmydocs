@@ -7,13 +7,17 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "class")
 public abstract class SMDAbstractPlugin {
 
-	public String id;
-
-	public String name() {
+	
+	
+	public SMDAbstractPlugin() {
 		SMDPlugin myRegister = this.getClass().getAnnotation(SMDPlugin.class);
-		return myRegister.name();
+		this.name = myRegister.name();
 
 	}
+	
+	public String id;
+
+	public final String name;
 
 	public void start() {
 		start=true;

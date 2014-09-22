@@ -30,13 +30,13 @@ public class PluginsUtils {
 			if (register instanceof SMDAbstractPlugin) {
 				SMDAbstractPlugin myDataSource = (SMDAbstractPlugin) register;
 
-				if (list.get(myDataSource.name()) != null) {
+				if (list.get(myDataSource.name) != null) {
 					logger.error("the DataSource  "
-							+ list.get(myDataSource.name()
+							+ list.get(myDataSource.name
 									+ " is early register"));
 				} else {
-					list.put(myDataSource.name(), myDataSource);
-                    logger.debug("adding plugins [" + myDataSource.name() +
+					list.put(myDataSource.name, myDataSource);
+                    logger.debug("adding plugins [" + myDataSource.name +
                             "], class [" + myDataSource.getClass().getName() + "]");
                 }
 			} else {

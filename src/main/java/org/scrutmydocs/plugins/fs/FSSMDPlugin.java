@@ -42,29 +42,31 @@ import org.scrutmydocs.search.SMDSettingsFactory;
  */
 @SMDPlugin(name = "fsDataSource")
 public class FSSMDPlugin extends SMDAbstractPlugin {
-	
-	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger(getClass().getName());
-
 
 	public FSSMDPlugin(String url) {
 		super();
 		this.url = url;
 	}
-
-	public FSSMDPlugin() {
-	}
-
 	
+	public FSSMDPlugin() {
+		super();
+	}
+	
+	
+	
+
+	protected org.apache.logging.log4j.Logger logger = LogManager
+			.getLogger(getClass().getName());
+
+
 	@Override
 	public void scrut() {
 		try {
-			
-			logger.info("we are scrutting your dyrectory "+ url + " ....");
 
-			
+			logger.info("we are scrutting your dyrectory " + url + " ....");
+
 			Date startScarn = new Date();
-			
-			
+
 			List<Path> paths = parcourirDirectory(new File(this.url),
 					this.lastScan);
 
@@ -72,19 +74,19 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 
 				File file = path.toFile();
 
-				if (!file.isDirectory()) {
+				if (file.isFile()) {
 
-					logger.debug("index  file "+ path);
+					logger.debug("index  file " + path);
 					SMDDocument smdDocument = new SMDDocument(file);
 
-					 SMDSearchFactory.getInstance().index(this,smdDocument);
+					SMDSearchFactory.getInstance().index(this, smdDocument);
 				} else {
-					logger.debug("cleanning directory "+ path + " ....");
+					logger.debug("cleanning directory " + path + " ....");
 					cleanDirectory(file);
 				}
 
 			}
-			
+
 			this.lastScan = startScarn;
 			SMDSettingsFactory.getInstance().saveSetting(this);
 
@@ -97,15 +99,25 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 
 	public List<Path> parcourirDirectory(File dir, Date lastModified) {
 
-		if (!dir.isDirectory()) {
+		if (dir.isFile()) {
 
 			throw new IllegalArgumentException(" dir must be a directory");
 		}
 
 		List<Path> paths = new ArrayList<Path>();
 
+		if (lastModified == null
+				|| new Date(dir.lastModified()).after(lastModified)) {
+			paths.add(dir.toPath());
+		}
+
 		for (File file : dir.listFiles()) {
-			paths.add(file.toPath());
+
+			if (lastModified == null
+					|| new Date(file.lastModified()).after(lastModified)) {
+				logger.trace("find one File to index : " + file.toPath());
+				paths.add(file.toPath());
+			}
 
 			if (file.isDirectory()) {
 				for (Path path : parcourirDirectory(file, lastModified)) {
@@ -119,26 +131,28 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 	}
 
 	public void cleanDirectory(File directory) {
-		
+
 		int first = 0;
-		int page =100;
+		int page = 100;
 		long total = 1;
-		while(first < total){
-			
-			SMDSearchResponse searchResponse =  SMDSearchFactory.getInstance().searchFileByDirectory(this,directory.getAbsolutePath(),first, page);
+		while (first < total) {
+
+			SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
+					.searchFileByDirectory(this, directory.getAbsolutePath(),
+							first, page);
 			for (SMDResponseDocument smdResponseDocument : searchResponse.smdDocuments) {
-				if(!new File(smdResponseDocument.url).exists())
-				{
-					logger.debug("remove file "+ smdResponseDocument.url + " ....");
-					 SMDSearchFactory.getInstance().delete(this,smdResponseDocument.url);
+				if (!new File(smdResponseDocument.url).exists()) {
+					logger.debug("remove file " + smdResponseDocument.url
+							+ " ....");
+					SMDSearchFactory.getInstance().delete(this,
+							smdResponseDocument.url);
 				}
 			}
-			
+
 			total = searchResponse.totalHits;
-			first =+ page;
+			first = +page;
 		}
-		
-		
+
 	}
 
 }

@@ -105,14 +105,14 @@ public class SettingsApi {
 	 */
 
 	@PUT
-	public void addScrutation(SMDAbstractPlugin setting) throws Exception {
+	public void put(SMDAbstractPlugin setting) throws Exception {
 
 		// verification
 		HashMap<String, SMDAbstractPlugin> plugins = PluginsUtils.getAll();
 
-		if (plugins.get(setting.name()) == null) {
+		if (plugins.get(setting.name) == null) {
 			// todo find exception 404 in spring 4
-			throw new IllegalArgumentException(" the plugin " + setting.name()
+			throw new IllegalArgumentException(" the plugin " + setting.name
 					+ " dosn't exite");
 		}
 

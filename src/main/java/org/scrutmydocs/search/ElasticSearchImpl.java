@@ -38,9 +38,6 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.index.query.BoolFilterBuilder;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.NodeBuilder;
@@ -86,7 +83,7 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 		for (SMDAbstractPlugin plugin : all) {
 			mapper.addMixInAnnotations(plugin.getClass(),
 					SMDAbstractPlugin.class);
-			logger.info("  -> adding plugin {}", plugin.name());
+			logger.info("  -> adding plugin {}", plugin.name);
 		}
 
 		this.bulk = new BulkProcessor.Builder(esClient,
@@ -199,7 +196,7 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 
 			String json = mapper.writeValueAsString(document);
 
-			bulk.add(new IndexRequest(SMDINDEX, smdAbstractPlugin.name(),
+			bulk.add(new IndexRequest(SMDINDEX, smdAbstractPlugin.name,
 					document.url).source(json));
 		} catch (Exception e) {
 			logger.warn("Can not index document {}", document.name);
@@ -248,15 +245,18 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 
 		SMDSearchResponse searchResponse = null;
 
-		BoolFilterBuilder filters = FilterBuilders.boolFilter().must(
-				FilterBuilders.termFilter("pathDirectory", directory));
-		BoolQueryBuilder qb = QueryBuilders.boolQuery();
+//		BoolFilterBuilder filters = FilterBuilders.boolFilter().must(
+//				FilterBuilders.termFilter("pathDirectory", directory));
+//		BoolQueryBuilder qb = QueryBuilders.boolQuery();
+//
+//		QueryBuilder query = QueryBuilders.filteredQuery(qb, filters);
 
-		QueryBuilder query = QueryBuilders.filteredQuery(qb, filters);
-
+		
+		QueryBuilder query = QueryBuilders.prefixQuery("pathDirectory", directory);
+		
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
 				.prepareSearch().setIndices(SMDINDEX)
-				.setTypes(smdAbstractPlugin.name()).setQuery(query)
+				.setTypes(smdAbstractPlugin.name).setQuery(query)
 				.setFrom(first).setSize(pageSize).execute().actionGet();
 
 		List<SMDResponseDocument> documents = new ArrayList<SMDResponseDocument>();
@@ -304,7 +304,7 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 
 			return plugins;
 		} catch (Exception e) {
-			logger.error("Can not checkout the configuration.");
+			logger.error("Can not checkout the configuration.",e);
 			throw new RuntimeException("Can not checkout the configuration.");
 		}
 	}
@@ -312,7 +312,7 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 	@Override
 	public void saveSetting(SMDAbstractPlugin setting) {
 		try {
-			esClient.prepareIndex(SMDADMIN, SMDADMIN_SETTINGS, "settings")
+			esClient.prepareIndex(SMDADMIN, SMDADMIN_SETTINGS)
 					.setSource(mapper.writeValueAsString(setting)).execute()
 					.actionGet();
 		} catch (Exception e) {
@@ -322,6 +322,11 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 
 	@Override
 	public SMDAbstractPlugin getSetting(String id) {
+		
+		if(id==null){
+			throw new IllegalArgumentException("you can't search settings with null id");
+		}
+		
 		try {
 			GetResponse response = esClient
 					.prepareGet(SMDADMIN, SMDADMIN_SETTINGS, id)
@@ -333,7 +338,7 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 			return mapper.readValue(response.getSourceAsString(), PluginsUtils
 					.getAll().get(response.getSource().get("name")).getClass());
 		} catch (Exception e) {
-			throw new RuntimeException("Can not save the configuration.");
+			throw new RuntimeException("Can not save the configuration.",e);
 		}
 
 	}

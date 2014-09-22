@@ -43,5 +43,4 @@ public class UploadSMDPlugin extends SMDAbstractPlugin {
 	public void scrut() {
 	}
 
-
 }
