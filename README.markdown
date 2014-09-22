@@ -15,36 +15,24 @@ Versions
         <tr>
             <td>Scrutmydocs</td>
             <td>ElasticSearch</td>
-            <td>FS River Plugin</td>
-            <td>Dropbox River Plugin</td>
-            <td>Jira River Plugin</td>
-            <td>Attachment Plugin</td>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>master (0.3.0-SNAPSHOT)</td>
+            <td>1.0.1</td>
+            <td>1.3.2</td>
+        </tr>
+        <tr>
+            <td>0.3.1</td>
             <td>0.90.3</td>
-            <td>0.3.0</td>
-            <td>0.2.0</td>
-            <td>1.3.0</td>
-            <td>1.8.0</td>
         </tr>
         <tr>
             <td>0.2.0</td>
             <td>0.19.9</td>
-            <td>0.0.2</td>
-            <td></td>
-            <td></td>
-            <td>1.4.0</td>
         </tr>
         <tr>
             <td>0.1.0</td>
             <td>0.19.8</td>
-            <td>0.0.2</td>
-            <td></td>
-            <td></td>
-            <td>1.4.0</td>
         </tr>
     </tbody>
 </table>
