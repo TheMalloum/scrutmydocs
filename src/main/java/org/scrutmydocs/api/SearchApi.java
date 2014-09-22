@@ -26,7 +26,7 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.contract.SearchQuery;
+import org.scrutmydocs.contract.SMDSearchQuery;
 import org.scrutmydocs.search.SMDSearchFactory;
 
 //@Controller(value = "SearchApiV2")
@@ -53,7 +53,7 @@ public class SearchApi {
 	 */
 //	@RequestMapping(method = RequestMethod.POST)
 	@POST
-	public Response term(SearchQuery query) {
+	public Response term(SMDSearchQuery query) {
 		SMDSearchResponse results = null;
 
 		results = SMDSearchFactory.getInstance().search(query.getSearch(),

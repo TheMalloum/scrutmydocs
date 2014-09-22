@@ -2,7 +2,7 @@ package org.scrutmydocs.contract;
 
 import java.io.Serializable;
 
-public class SearchQuery implements Serializable {
+public class SMDSearchQuery implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	protected String search;
