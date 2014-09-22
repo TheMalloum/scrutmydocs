@@ -141,7 +141,7 @@
 			<artifactId>reflections</artifactId>
 			<version>0.9.9-RC1</version>
 		</dependency>
-		
+
 		<!-- Quartz -->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
@@ -421,6 +421,32 @@
 					<template>es-announcement.vm</template>
 					<templateDirectory>changes</templateDirectory>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.enunciate</groupId>
+				<artifactId>maven-enunciate-plugin</artifactId>
+				<version>1.25</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>docs</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- the directory where to put the docs -->
+					<docsDir>${project.build.directory}/docs</docsDir>
+					<!-- <configFile>enunciate.xml</configFile> -->
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>com.sun</groupId>
+						<artifactId>tools</artifactId>
+						<version>${java.version}</version>
+						<scope>system</scope>
+						<systemPath>${java.home}/../lib/tools.jar</systemPath>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
