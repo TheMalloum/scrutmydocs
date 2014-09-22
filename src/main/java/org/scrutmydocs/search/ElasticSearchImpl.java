@@ -100,7 +100,7 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 					@Override
 					public void afterBulk(long l, BulkRequest bulkRequest,
 							BulkResponse bulkItemResponses) {
-						logger.debug("after bulking {} actions: failures: {}",
+						logger.debug("after bulking {} actions- has failure failures: {}",
 								bulkRequest.numberOfActions(),
 								bulkItemResponses.hasFailures());
 						// TODO check if errors

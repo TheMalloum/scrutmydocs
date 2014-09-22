@@ -47,7 +47,7 @@ public class TestIndexSearch {
 		SMDSearchFactory.getInstance().index(new FSSMDPlugin("url"), smdDocument);
 		
 		Thread.sleep(6000);
-		//TODO when we call the getinstance SMDSearchFactory we have to be sure that indexs are available
+
 		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance().searchFileByDirectory(new FSSMDPlugin("url"),smdDocument.pathDirectory, 0,1);
 		
 		Assert.assertEquals(1, searchResponse.totalHits);
