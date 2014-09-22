@@ -125,7 +125,7 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 		long total = 1;
 		while(first < total){
 			
-			SMDSearchResponse searchResponse =  SMDSearchFactory.getInstance().searchFileByDirectory(directory.getAbsolutePath(),first, page);
+			SMDSearchResponse searchResponse =  SMDSearchFactory.getInstance().searchFileByDirectory(this,directory.getAbsolutePath(),first, page);
 			for (SMDResponseDocument smdResponseDocument : searchResponse.smdDocuments) {
 				if(!new File(smdResponseDocument.url).exists())
 				{

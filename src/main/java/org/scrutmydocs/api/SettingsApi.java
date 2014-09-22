@@ -76,14 +76,8 @@ public class SettingsApi {
 	@DELETE
 	@Path("/{id}")
 	public void delete(@PathParam("id") String id) throws Exception {
-		SMDAbstractPlugin plugin = SMDSettingsFactory.getInstance().getSetting(
-				id);
-
-		if (plugin == null) {
-			// todo find exception 404 in spring 4
-			throw new IllegalArgumentException(" the plugin withe the id :  "
-					+ id + " doesn't exist");
-		}
+		
+		SMDAbstractPlugin plugin = getSettings(id);
 
 		int first = 0;
 		int page = 100;
@@ -91,7 +85,7 @@ public class SettingsApi {
 		while (first < total) {
 
 			SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
-					.searchFileByDirectory(plugin.url, first, page);
+					.searchFileByDirectory(plugin,plugin.url, first, page);
 			for (SMDResponseDocument smdResponseDocument : searchResponse.smdDocuments) {
 				logger.debug("remove file " + smdResponseDocument.url + " ....");
 				SMDSearchFactory.getInstance().delete(plugin,

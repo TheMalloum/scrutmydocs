@@ -49,7 +49,7 @@ public class TestIndexSearch {
 		
 		Thread.sleep(5000);
 		//TODO when we call the getinstance SMDSearchFactory we have to be sure that indexs are available
-		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance().searchFileByDirectory(smdDocument.pathDirectory, 1,1);
+		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance().searchFileByDirectory(new FSSMDPlugin("url"),smdDocument.pathDirectory, 1,1);
 		
 		Assert.assertEquals(1, searchResponse.totalHits);
 		

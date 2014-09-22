@@ -11,7 +11,7 @@ public interface SMDSearchService {
 	public SMDSearchResponse search(String search, int first, int pageSize);
 
 
-	public SMDSearchResponse searchFileByDirectory(String directory, int first,
+	public SMDSearchResponse searchFileByDirectory(SMDAbstractPlugin smdAbstractPlugin, String directory, int first,
 			int pageSize);
 
 }

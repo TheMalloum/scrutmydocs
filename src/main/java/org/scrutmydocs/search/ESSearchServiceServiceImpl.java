@@ -223,7 +223,7 @@ class ESSearchServiceServiceImpl implements SMDSearchService,
 	}
 
 	@Override
-	public SMDSearchResponse searchFileByDirectory(String directory, int first,
+	public SMDSearchResponse searchFileByDirectory(SMDAbstractPlugin smdAbstractPlugin,String directory, int first,
 			int pageSize) {
 		if (logger.isDebugEnabled())
 			logger.debug("searchFileByDirectory('{}', {}, {})", directory,
@@ -241,7 +241,7 @@ class ESSearchServiceServiceImpl implements SMDSearchService,
 
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
 				.prepareSearch().setIndices(SMDINDEX)
-				.setSearchType(SearchType.DEFAULT).setQuery(query)
+				.setSearchType(smdAbstractPlugin.name()).setQuery(query)
 				.setFrom(first).setSize(pageSize).execute().actionGet();
 
 		totalHits = searchHits.getHits().totalHits();
