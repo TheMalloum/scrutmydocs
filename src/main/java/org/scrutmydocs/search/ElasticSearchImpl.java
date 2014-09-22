@@ -71,12 +71,15 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 	ObjectMapper mapper = new ObjectMapper();
 
 	public ElasticSearchImpl() {
-		createIndex(SMDINDEX);
-		createIndex(SMDADMIN);
-
 		esClient = NodeBuilder.nodeBuilder().node().client();
 		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus()
 				.execute().actionGet();
+		
+		
+		createIndex(SMDINDEX);
+		createIndex(SMDADMIN);
+
+		
 
 		Collection<SMDAbstractPlugin> all = PluginsUtils.getAll().values();
 
