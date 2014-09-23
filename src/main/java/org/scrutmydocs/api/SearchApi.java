@@ -25,12 +25,16 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.resteasy.spi.NotImplementedYetException;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDSearchQuery;
+import org.scrutmydocs.plugins.SMDAbstractPlugin;
 import org.scrutmydocs.search.SMDSearchFactory;
-
-//@Controller(value = "SearchApiV2")
-//@RequestMapping("/2/search")
+/***
+ * This API provide access to the document search
+ * @author LAYA
+ *
+ */
 @Path("/2/search")
 public class SearchApi {
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -46,20 +50,32 @@ public class SearchApi {
 	}
 
 	/**
-	 * Search for documents
+	 * like google, Search for all documents with one word 
 	 * 
 	 * @param query
 	 * @return
 	 */
-//	@RequestMapping(method = RequestMethod.POST)
 	@POST
-	public Response term(SMDSearchQuery query) {
+	public Response search(SMDSearchQuery query) {
 		SMDSearchResponse results = null;
 
 		results = SMDSearchFactory.getInstance().search(query.getSearch(),
 				query.getFirst(), query.getPageSize());
 
 		return Response.ok(results).build();
+	}
+	
+	
+	/**
+	 * like google, Search for all documents with one word in a repository 
+	 * @param query
+	 * @return
+	 */
+	
+	@POST
+	public Response search(SMDSearchQuery query, SMDAbstractPlugin plugin) {
+
+		throw new NotImplementedYetException("This service is not yet available");
 	}
 
 }
