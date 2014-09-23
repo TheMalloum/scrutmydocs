@@ -20,6 +20,8 @@
 package org.scrutmydocs.plugins.fs;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
@@ -82,7 +84,13 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 					SMDSearchFactory.getInstance().index(this, smdDocument);
 				} else {
 					logger.debug("cleanning directory " + path + " ....");
+					//if the directory changes we must to find if documents were removed
 					cleanDirectory(file);
+					
+					
+					logger.debug("cleanning directory " + path + " ....");
+					//if the directory changes we must index all files. ( a old document can be moved without change a last modified date)
+					indexAllFiles(file);
 				}
 
 			}
@@ -130,15 +138,20 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 		return paths;
 	}
 
-	public void cleanDirectory(File directory) {
+	public void cleanDirectory(File dir) {
 
+		
+		if(dir.isFile()){
+			throw new IllegalArgumentException ("we can cleanDirectory just to a directory");
+		} 
+		
 		int first = 0;
 		int page = 100;
 		long total = 1;
 		while (first < total) {
 
 			SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
-					.searchFileByDirectory(this, directory.getAbsolutePath(),
+					.searchFileByDirectory(this, dir.getAbsolutePath(),
 							first, page);
 			for (SMDResponseDocument smdResponseDocument : searchResponse.smdDocuments) {
 				if (!new File(smdResponseDocument.url).exists()) {
@@ -154,5 +167,22 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 		}
 
 	}
+	
+	
+	private void indexAllFiles(File dir) throws FileNotFoundException, IOException  {
+
+		if(dir.isFile()){
+			throw new IllegalArgumentException ("we can indexAllFiles just to a directory");
+		}
+		
+		for (File file : dir.listFiles()) {
+			if (file.isFile()) {
+				SMDSearchFactory.getInstance().index(this,
+						new SMDDocument(file));
+			}
+		}
+
+	}
+
 
 }
