@@ -1,15 +1,15 @@
-package org.scrutmydocs.plugins;
+package org.scrutmydocs.repositories;
 
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "class")
-public abstract class SMDAbstractPlugin {
+public abstract class SMDAbstractRepository {
 
 	
 	
-	public SMDAbstractPlugin() {
+	public SMDAbstractRepository() {
 		SMDPlugin myRegister = this.getClass().getAnnotation(SMDPlugin.class);
 		this.name = myRegister.name();
 

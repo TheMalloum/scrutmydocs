@@ -26,7 +26,7 @@ import javax.ws.rs.Path;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.contract.SMDDocument;
-import org.scrutmydocs.plugins.upload.UploadSMDPlugin;
+import org.scrutmydocs.repositories.upload.UploadSMDPlugin;
 import org.scrutmydocs.search.SMDSearchFactory;
 
 @Path("/2/upload")

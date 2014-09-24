@@ -13,8 +13,8 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-import org.scrutmydocs.plugins.SMDAbstractPlugin;
-import org.scrutmydocs.search.SMDSettingsFactory;
+import org.scrutmydocs.repositories.SMDAbstractRepository;
+import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 
 public class ScanDocuments implements Job{
 	private Logger logger = LogManager.getLogger(ScanDocuments.class);
@@ -24,15 +24,20 @@ public class ScanDocuments implements Job{
 			throws JobExecutionException {
         logger.info("start scan()");
 
-        List<SMDAbstractPlugin> settings = SMDSettingsFactory.getInstance().getSettings();
-        if (settings == null) {
-            logger.info("No settings. Skipping...");
+        List<SMDAbstractRepository> repositories = SMDRepositoriesFactory.getInstance().getRepositories();
+        if (repositories == null) {
+            logger.info("No repositories found. Skipping...");
             return;
         }
 
-        for (SMDAbstractPlugin plugin : settings) {
-				logger.info("checking plugin " + plugin);
-				plugin.scrut();
+        for (SMDAbstractRepository repositorie : repositories) {
+
+        	
+        		logger.info("checking plugin " + repositorie.name +" active "+ repositorie.start );
+				if(repositorie.start)
+				{
+        		repositorie.scrut();
+				}
         }
 
         logger.info("end scan()");

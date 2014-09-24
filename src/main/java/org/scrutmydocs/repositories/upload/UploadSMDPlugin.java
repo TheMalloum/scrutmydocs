@@ -17,12 +17,12 @@
  * under the License.
  */
 
-package org.scrutmydocs.plugins.upload;
+package org.scrutmydocs.repositories.upload;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.scrutmydocs.plugins.SMDAbstractPlugin;
-import org.scrutmydocs.plugins.SMDPlugin;
+import org.scrutmydocs.repositories.SMDAbstractRepository;
+import org.scrutmydocs.repositories.SMDPlugin;
 
 /**
  * Implement the DropBox ScrutMyDocs Data Source
@@ -31,7 +31,7 @@ import org.scrutmydocs.plugins.SMDPlugin;
  * 
  */
 @SMDPlugin(name = "uploadDataSource")
-public class UploadSMDPlugin extends SMDAbstractPlugin {
+public class UploadSMDPlugin extends SMDAbstractRepository {
 
 	protected Logger logger = LogManager.getLogger(getClass().getName());
 

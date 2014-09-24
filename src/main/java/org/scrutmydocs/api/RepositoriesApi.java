@@ -34,25 +34,25 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.contract.SMDResponseDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.plugins.PluginsUtils;
-import org.scrutmydocs.plugins.SMDAbstractPlugin;
+import org.scrutmydocs.repositories.PluginsUtils;
+import org.scrutmydocs.repositories.SMDAbstractRepository;
+import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.scan.ScanDocuments;
 import org.scrutmydocs.search.SMDSearchFactory;
-import org.scrutmydocs.search.SMDSettingsFactory;
 
 @Path("/2/settings")
-public class SettingsApi {
+public class RepositoriesApi {
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	/**
-	 * Get settings
+	 * Get all repositoy scan bu scrutmydocs
 	 * 
 	 * @return
 	 */
 	@Path("/_all")
 	@GET
 	public Response getAll() throws Exception {
-		return Response.ok(SMDSettingsFactory.getInstance().getSettings())
+		return Response.ok(SMDRepositoriesFactory.getInstance().getRepositories())
 				.build();
 	}
 
@@ -77,7 +77,7 @@ public class SettingsApi {
 	@Path("/{id}")
 	public void delete(@PathParam("id") String id) throws Exception {
 		
-		SMDAbstractPlugin plugin = getSettings(id);
+		SMDAbstractRepository plugin = getSettings(id);
 
 		int first = 0;
 		int page = 100;
@@ -105,10 +105,10 @@ public class SettingsApi {
 	 */
 
 	@PUT
-	public void put(SMDAbstractPlugin setting) throws Exception {
+	public void put(SMDAbstractRepository setting) throws Exception {
 
 		// verification
-		HashMap<String, SMDAbstractPlugin> plugins = PluginsUtils.getAll();
+		HashMap<String, SMDAbstractRepository> plugins = PluginsUtils.getAll();
 
 		if (plugins.get(setting.name) == null) {
 			// todo find exception 404 in spring 4
@@ -116,7 +116,7 @@ public class SettingsApi {
 					+ " dosn't exite");
 		}
 
-		SMDSettingsFactory.getInstance().saveSetting(setting);
+		SMDRepositoriesFactory.getInstance().save(setting);
 	}
 
 	/**
@@ -128,10 +128,10 @@ public class SettingsApi {
 	@Path("/start/{id}")
 	public void start(@PathParam("id") String id) throws Exception {
 
-		SMDAbstractPlugin setting = getSettings(id);
+		SMDAbstractRepository setting = getSettings(id);
 
 		setting.start();
-		SMDSettingsFactory.getInstance().saveSetting(setting);
+		SMDRepositoriesFactory.getInstance().save(setting);
 	}
 
 	/**
@@ -143,10 +143,10 @@ public class SettingsApi {
 	@Path("/stop/{id}")
 	public void stop(@PathParam("id") String id) throws Exception {
 
-		SMDAbstractPlugin setting = getSettings(id);
+		SMDAbstractRepository setting = getSettings(id);
 
 		setting.start();
-		SMDSettingsFactory.getInstance().saveSetting(setting);
+		SMDRepositoriesFactory.getInstance().save(setting);
 	}
 
 	/**
@@ -164,8 +164,8 @@ public class SettingsApi {
 	
 	
 	
-	private SMDAbstractPlugin getSettings(String id) {
-		SMDAbstractPlugin plugin = SMDSettingsFactory.getInstance().getSetting(
+	private SMDAbstractRepository getSettings(String id) {
+		SMDAbstractRepository plugin = SMDRepositoriesFactory.getInstance().get(
 				id);
 
 		if (plugin == null) {

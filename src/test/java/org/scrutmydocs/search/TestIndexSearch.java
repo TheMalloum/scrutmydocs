@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.plugins.fs.FSSMDPlugin;
+import org.scrutmydocs.repositories.fs.FSSMDPlugin;
 
 public class TestIndexSearch {
 

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.scrutmydocs.plugins.fs;
+package org.scrutmydocs.repositories.fs;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,10 +31,10 @@ import org.apache.logging.log4j.LogManager;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDResponseDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.plugins.SMDAbstractPlugin;
-import org.scrutmydocs.plugins.SMDPlugin;
+import org.scrutmydocs.repositories.SMDAbstractRepository;
+import org.scrutmydocs.repositories.SMDPlugin;
+import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.search.SMDSearchFactory;
-import org.scrutmydocs.search.SMDSettingsFactory;
 
 /**
  * Implement the DropBox ScrutMyDocs Data Source
@@ -43,7 +43,7 @@ import org.scrutmydocs.search.SMDSettingsFactory;
  * 
  */
 @SMDPlugin(name = "fsDataSource")
-public class FSSMDPlugin extends SMDAbstractPlugin {
+public class FSSMDPlugin extends SMDAbstractRepository {
 
 	public FSSMDPlugin(String url) {
 		super();
@@ -96,7 +96,7 @@ public class FSSMDPlugin extends SMDAbstractPlugin {
 			}
 
 			this.lastScan = startScarn;
-			SMDSettingsFactory.getInstance().saveSetting(this);
+			SMDRepositoriesFactory.getInstance().save(this);
 
 		} catch (Exception ex) {
 

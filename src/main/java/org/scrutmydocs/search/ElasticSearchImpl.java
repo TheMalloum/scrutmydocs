@@ -47,19 +47,19 @@ import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDResponseDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDSearchService;
-import org.scrutmydocs.contract.SMDSettingsService;
-import org.scrutmydocs.plugins.PluginsUtils;
-import org.scrutmydocs.plugins.SMDAbstractPlugin;
+import org.scrutmydocs.contract.SMDRepositoriesService;
+import org.scrutmydocs.repositories.PluginsUtils;
+import org.scrutmydocs.repositories.SMDAbstractRepository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
+public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesService {
 
 	protected Logger logger = LogManager.getLogger();
 
 	final public static String SMDINDEX = "scrutmydocs-docs";
 	final public static String SMDADMIN = "scrutmydocs-admin";
-	final public static String SMDADMIN_SETTINGS = "settings";
+	final public static String SMDADMIN_REPOSITORIES = "repositories";
 
 	private Client esClient;
 
@@ -78,11 +78,11 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 
 		
 
-		Collection<SMDAbstractPlugin> all = PluginsUtils.getAll().values();
+		Collection<SMDAbstractRepository> all = PluginsUtils.getAll().values();
 
-		for (SMDAbstractPlugin plugin : all) {
+		for (SMDAbstractRepository plugin : all) {
 			mapper.addMixInAnnotations(plugin.getClass(),
-					SMDAbstractPlugin.class);
+					SMDAbstractRepository.class);
 			logger.info("  -> adding plugin {}", plugin.name);
 		}
 
@@ -187,7 +187,7 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 	}
 
 	@Override
-	public void index(SMDAbstractPlugin smdAbstractPlugin, SMDDocument document) {
+	public void index(SMDAbstractRepository smdAbstractPlugin, SMDDocument document) {
 
 		if (logger.isDebugEnabled())
 			logger.debug("index({})", document);
@@ -210,7 +210,7 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 	}
 
 	@Override
-	public void delete(SMDAbstractPlugin smdAbstractPlugin, String id) {
+	public void delete(SMDAbstractRepository smdAbstractPlugin, String id) {
 
 		if (logger.isDebugEnabled())
 			logger.debug("delete({})", id);
@@ -237,7 +237,7 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 
 	@Override
 	public SMDSearchResponse searchFileByDirectory(
-			SMDAbstractPlugin smdAbstractPlugin, String directory, int first,
+			SMDAbstractRepository smdAbstractPlugin, String directory, int first,
 			int pageSize) {
 		if (logger.isDebugEnabled())
 			logger.debug("searchFileByDirectory('{}', {}, {})", directory,
@@ -283,17 +283,17 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 	// Settings
 
 	@Override
-	public List<SMDAbstractPlugin> getSettings() {
+	public List<SMDAbstractRepository> getRepositories() {
 		try {
 			org.elasticsearch.action.search.SearchResponse searchHits = esClient
-					.prepareSearch(SMDADMIN).setTypes(SMDADMIN_SETTINGS)
+					.prepareSearch(SMDADMIN).setTypes(SMDADMIN_REPOSITORIES)
 					.execute().actionGet();
 
 			if (searchHits.getHits().totalHits() == 0) {
 				return null;
 			}
 
-			List<SMDAbstractPlugin> plugins = new ArrayList<SMDAbstractPlugin>();
+			List<SMDAbstractRepository> plugins = new ArrayList<SMDAbstractRepository>();
 			for (SearchHit searchHit : searchHits.getHits()) {
 				plugins.add(mapper.readValue(
 						searchHit.getSourceAsString(),
@@ -310,10 +310,10 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 	}
 
 	@Override
-	public void saveSetting(SMDAbstractPlugin setting) {
+	public void save(SMDAbstractRepository repository) {
 		try {
-			esClient.prepareIndex(SMDADMIN, SMDADMIN_SETTINGS)
-					.setSource(mapper.writeValueAsString(setting)).execute()
+			esClient.prepareIndex(SMDADMIN, SMDADMIN_REPOSITORIES)
+					.setSource(mapper.writeValueAsString(repository)).execute()
 					.actionGet();
 		} catch (Exception e) {
 			throw new RuntimeException("Can not save the configuration.");
@@ -321,15 +321,15 @@ class ElasticSearchImpl implements SMDSearchService, SMDSettingsService {
 	}
 
 	@Override
-	public SMDAbstractPlugin getSetting(String id) {
+	public SMDAbstractRepository get(String id) {
 		
 		if(id==null){
-			throw new IllegalArgumentException("you can't search settings with null id");
+			throw new IllegalArgumentException("you can't search a repository with null id");
 		}
 		
 		try {
 			GetResponse response = esClient
-					.prepareGet(SMDADMIN, SMDADMIN_SETTINGS, id)
+					.prepareGet(SMDADMIN, SMDADMIN_REPOSITORIES, id)
 					.setOperationThreaded(false).execute().actionGet();
 
 			if (!response.isExists())

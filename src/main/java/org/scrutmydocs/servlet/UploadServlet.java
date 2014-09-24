@@ -19,7 +19,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.scrutmydocs.contract.SMDDocument;
-import org.scrutmydocs.plugins.upload.UploadSMDPlugin;
+import org.scrutmydocs.repositories.upload.UploadSMDPlugin;
 import org.scrutmydocs.search.SMDSearchFactory;
 
 /**

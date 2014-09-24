@@ -11,7 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.plugins.fs.FSSMDPlugin;
+import org.scrutmydocs.repositories.fs.FSSMDPlugin;
 import org.scrutmydocs.search.SMDSearchFactory;
 
 public class TestScan {

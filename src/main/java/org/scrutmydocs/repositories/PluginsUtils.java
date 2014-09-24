@@ -1,4 +1,4 @@
-package org.scrutmydocs.plugins;
+package org.scrutmydocs.repositories;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -11,8 +11,8 @@ public class PluginsUtils {
 
 	private static ESLogger logger = Loggers.getLogger(PluginsUtils.class);
 
-	public static HashMap<String, SMDAbstractPlugin> getAll() {
-		HashMap<String, SMDAbstractPlugin> list = new HashMap<String, SMDAbstractPlugin>();
+	public static HashMap<String, SMDAbstractRepository> getAll() {
+		HashMap<String, SMDAbstractRepository> list = new HashMap<String, SMDAbstractRepository>();
 		Reflections reflections = new Reflections("org.scrutmydocs");
 
 		Set<Class<?>> annotated = reflections
@@ -27,8 +27,8 @@ public class PluginsUtils {
 				throw new RuntimeException(e);
 			}
 
-			if (register instanceof SMDAbstractPlugin) {
-				SMDAbstractPlugin myDataSource = (SMDAbstractPlugin) register;
+			if (register instanceof SMDAbstractRepository) {
+				SMDAbstractRepository myDataSource = (SMDAbstractRepository) register;
 
 				if (list.get(myDataSource.name) != null) {
 					logger.error("the DataSource  "
@@ -41,7 +41,7 @@ public class PluginsUtils {
                 }
 			} else {
 				logger.warn(register.getClass().getName()
-						+ " class must extend " + SMDAbstractPlugin.class.getName());
+						+ " class must extend " + SMDAbstractRepository.class.getName());
 			}
 		}
 
