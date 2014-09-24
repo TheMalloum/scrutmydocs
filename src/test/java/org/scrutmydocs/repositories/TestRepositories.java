@@ -10,7 +10,7 @@ public class TestRepositories {
 
 	
 	@Test
-	public void testIndexSetting() throws Exception {
+	public void testIndexRepository() throws Exception {
 		
 		FSSMDPlugin repository = new FSSMDPlugin("url");
 				
@@ -28,7 +28,7 @@ public class TestRepositories {
 			 
 			Assert.assertEquals(plugin.url, repository.url);
 			Assert.assertEquals(plugin.id, repository.id);
-			Assert.assertEquals(plugin.name, repository.name);
+			Assert.assertEquals(plugin.type, repository.type);
 			 
 			return;
 			

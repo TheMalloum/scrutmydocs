@@ -11,13 +11,13 @@ public abstract class SMDAbstractRepository {
 	
 	public SMDAbstractRepository() {
 		SMDPlugin myRegister = this.getClass().getAnnotation(SMDPlugin.class);
-		this.name = myRegister.name();
+		this.type = myRegister.name();
 
 	}
 	
 	public String id;
 
-	public final String name;
+	public final String type;
 
 	public void start() {
 		start=true;

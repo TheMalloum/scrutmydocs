@@ -19,8 +19,6 @@
 
 package org.scrutmydocs.api;
 
-import java.util.HashMap;
-
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -34,13 +32,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.contract.SMDResponseDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.repositories.PluginsUtils;
 import org.scrutmydocs.repositories.SMDAbstractRepository;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
-import org.scrutmydocs.scan.ScanDocuments;
 import org.scrutmydocs.search.SMDSearchFactory;
 
-@Path("/2/settings")
+@Path("/2/repositories")
 public class RepositoriesApi {
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -69,7 +65,7 @@ public class RepositoriesApi {
 	}
 
 	/**
-	 * DELETE settings
+	 * DELETE repositoy by id
 	 * 
 	 * @return
 	 */
@@ -99,31 +95,26 @@ public class RepositoriesApi {
 	}
 
 	/**
-	 * Put settings
+	 * add a repositoy to scan on scrutmydocs
 	 * 
 	 * @return
 	 */
 
 	@PUT
-	public void put(SMDAbstractRepository setting) throws Exception {
+	public void put(SMDAbstractRepository newRepository) throws Exception {
 
 		// verification
-		HashMap<String, SMDAbstractRepository> plugins = PluginsUtils.getAll();
-
-		if (plugins.get(setting.name) == null) {
-			// todo find exception 404 in spring 4
-			throw new IllegalArgumentException(" the plugin " + setting.name
-					+ " dosn't exite");
-		}
-
-		SMDRepositoriesFactory.getInstance().save(setting);
+		SMDAbstractRepository repository = getSettings(newRepository.id);
+		
+		newRepository.id = repository.id;
+		
+		SMDRepositoriesFactory.getInstance().save(newRepository);
 	}
-
-	/**
-	 * start scan settings
-	 * 
-	 * @return
-	 */
+/**
+ * 
+ * @param stop scan one repository
+ * @throws Exception
+ */
 	@POST
 	@Path("/start/{id}")
 	public void start(@PathParam("id") String id) throws Exception {
@@ -134,11 +125,13 @@ public class RepositoriesApi {
 		SMDRepositoriesFactory.getInstance().save(setting);
 	}
 
-	/**
-	 * start scan settings
-	 * 
-	 * @return
+
+	/***
+	 * stop scan one repository
+	 * @param id
+	 * @throws Exception
 	 */
+	
 	@POST
 	@Path("/stop/{id}")
 	public void stop(@PathParam("id") String id) throws Exception {
@@ -149,29 +142,17 @@ public class RepositoriesApi {
 		SMDRepositoriesFactory.getInstance().save(setting);
 	}
 
-	/**
-	 * 
-	 * force to Scan All repositories
-	 * 
-	 * @return
-	 */
-	@POST
-	public void post() throws Exception {
-		new ScanDocuments().init();
-
-	}
-	
-	
-	
+		
 	
 	private SMDAbstractRepository getSettings(String id) {
 		SMDAbstractRepository plugin = SMDRepositoriesFactory.getInstance().get(
 				id);
 
 		if (plugin == null) {
-			// todo find exception 404 in spring 4
-			throw new NotFoundException(" the plugin withe the id :  "
+			throw new NotFoundException(" the repository  with the id :  "
 					+ id + " doesn't exist");
+			
+			
 		}
 
 		return plugin;

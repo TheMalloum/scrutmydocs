@@ -13,7 +13,7 @@ public class SMDResponseDocument {
 			Collection<String> highlights) {
 		if (name == null) {
 			throw new IllegalArgumentException(
-					"name can't be null for a SMDResponseDocument");
+					"type can't be null for a SMDResponseDocument");
 		}
 		this.name = name;
 		this.url = url;

@@ -33,7 +33,7 @@ public class ScanDocuments implements Job{
         for (SMDAbstractRepository repositorie : repositories) {
 
         	
-        		logger.info("checking plugin " + repositorie.name +" active "+ repositorie.start );
+        		logger.info("checking plugin " + repositorie.type +" active "+ repositorie.start );
 				if(repositorie.start)
 				{
         		repositorie.scrut();

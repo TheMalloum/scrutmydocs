@@ -26,7 +26,7 @@ var initRiverS3 = function(){
 	$("#btnS3RiverUpdate").click(doUpdateS3River);
 
 	// Load rivers
-	$.getJSON("api/2/settings/rivers/s3",function(json) {
+	$.getJSON("api/2/repositories/rivers/s3",function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -105,7 +105,7 @@ var openS3River = function(id) {
 	$("#"+id).addClass("active");
 
 	var riverId = id.substring("river-s3-".length);
-	$.getJSON("api/2/settings/rivers/s3/" + riverId, function(json) {
+	$.getJSON("api/2/repositories/rivers/s3/" + riverId, function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -194,7 +194,7 @@ var doCreateS3River = function(e) {
 
 	var data = getS3River();
 	data.start = false;
-	$.postJSON("api/2/settings/rivers/s3/", data, function(json) {
+	$.postJSON("api/2/repositories/rivers/s3/", data, function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -224,7 +224,7 @@ var doCreateS3River = function(e) {
 var doDeleteS3River = function(e) {
 	var data = getS3River();
 	$.ajax({
-		url: "api/2/settings/rivers/s3/" + data.id,
+		url: "api/2/repositories/rivers/s3/" + data.id,
 		type: "DELETE",
 		success: function(json) {
 			// Handle errors
@@ -257,7 +257,7 @@ var doUpdateS3River = function(e) {
 	}
 	
 	var data = getS3River();
-	$.postJSON("api/2/settings/rivers/s3/", data, function(json) {
+	$.postJSON("api/2/repositories/rivers/s3/", data, function(json) {
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -283,7 +283,7 @@ var doStartS3River = function(e) {
 	$("#btnS3RiverStart").button("loading");
 	var data = getS3River();
 	data.start = true;
-	$.getJSON("api/2/settings/rivers/s3/" + data.id + "/start", null, function (json){
+	$.getJSON("api/2/repositories/rivers/s3/" + data.id + "/start", null, function (json){
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);
@@ -310,7 +310,7 @@ var doStopS3River = function(e) {
 	$("#btnS3RiverStop").button("loading");
 	var data = getS3River();
 	data.start = false;
-	$.getJSON("api/2/settings/rivers/s3/" + data.id + "/stop", null, function (json){
+	$.getJSON("api/2/repositories/rivers/s3/" + data.id + "/stop", null, function (json){
 		// Handle errors
 		if (!json.ok) {
 			showRestError(json);

@@ -83,7 +83,7 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 		for (SMDAbstractRepository plugin : all) {
 			mapper.addMixInAnnotations(plugin.getClass(),
 					SMDAbstractRepository.class);
-			logger.info("  -> adding plugin {}", plugin.name);
+			logger.info("  -> adding plugin {}", plugin.type);
 		}
 
 		this.bulk = new BulkProcessor.Builder(esClient,
@@ -143,7 +143,7 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
 				.prepareSearch().setIndices(SMDINDEX)
 				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(qb)
-				.setFrom(first).setSize(pageSize).addHighlightedField("name")
+				.setFrom(first).setSize(pageSize).addHighlightedField("type")
 				.addHighlightedField("file")
 				.setHighlighterPreTags("<span class='badge badge-info'>")
 				.setHighlighterPostTags("</span>").addFields("*", "_source")
@@ -170,7 +170,7 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 			}
 
 			SMDResponseDocument smdResponseDocument = new SMDResponseDocument(
-					(String) searchHit.getSource().get("name"),
+					(String) searchHit.getSource().get("type"),
 					(String) searchHit.getSource().get("url"),
 					(String) searchHit.getSource().get("contentType"),
 					highlights);
@@ -187,7 +187,7 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 	}
 
 	@Override
-	public void index(SMDAbstractRepository smdAbstractPlugin, SMDDocument document) {
+	public void index(SMDAbstractRepository repository, SMDDocument document) {
 
 		if (logger.isDebugEnabled())
 			logger.debug("index({})", document);
@@ -196,7 +196,7 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 
 			String json = mapper.writeValueAsString(document);
 
-			bulk.add(new IndexRequest(SMDINDEX, smdAbstractPlugin.name,
+			bulk.add(new IndexRequest(SMDINDEX, repository.type,
 					document.url).source(json));
 		} catch (Exception e) {
 			logger.warn("Can not index document {}", document.name);
@@ -210,7 +210,7 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 	}
 
 	@Override
-	public void delete(SMDAbstractRepository smdAbstractPlugin, String id) {
+	public void delete(SMDAbstractRepository repository, String id) {
 
 		if (logger.isDebugEnabled())
 			logger.debug("delete({})", id);
@@ -221,12 +221,12 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 		}
 
 		try {
-			bulk.add(new DeleteRequest(SMDINDEX, smdAbstractPlugin.url, id));
+			bulk.add(new DeleteRequest(SMDINDEX, repository.url, id));
 		} catch (Exception e) {
 			logger.warn("Can not delete document {} of type  {}", id,
-					smdAbstractPlugin.url);
+					repository.url);
 			throw new RuntimeException("Can not delete document : " + id
-					+ "whith type " + smdAbstractPlugin.url + ": "
+					+ "whith type " + repository.url + ": "
 					+ e.getMessage());
 		}
 
@@ -256,14 +256,14 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 		
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
 				.prepareSearch().setIndices(SMDINDEX)
-				.setTypes(smdAbstractPlugin.name).setQuery(query)
+				.setTypes(smdAbstractPlugin.type).setQuery(query)
 				.setFrom(first).setSize(pageSize).execute().actionGet();
 
 		List<SMDResponseDocument> documents = new ArrayList<SMDResponseDocument>();
 		for (SearchHit searchHit : searchHits.getHits()) {
 
 			SMDResponseDocument smdResponseDocument = new SMDResponseDocument(
-					(String) searchHit.getSource().get("name"),
+					(String) searchHit.getSource().get("type"),
 					(String) searchHit.getSource().get("url"),
 					(String) searchHit.getSource().get("contentType"), null);
 
@@ -280,7 +280,6 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 
 	}
 
-	// Settings
 
 	@Override
 	public List<SMDAbstractRepository> getRepositories() {
@@ -298,7 +297,7 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 				plugins.add(mapper.readValue(
 						searchHit.getSourceAsString(),
 						PluginsUtils.getAll()
-								.get(searchHit.getSource().get("name"))
+								.get(searchHit.getSource().get("type"))
 								.getClass()));
 			}
 
@@ -336,7 +335,7 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 				return null;
 
 			return mapper.readValue(response.getSourceAsString(), PluginsUtils
-					.getAll().get(response.getSource().get("name")).getClass());
+					.getAll().get(response.getSource().get("type")).getClass());
 		} catch (Exception e) {
 			throw new RuntimeException("Can not save the configuration.",e);
 		}

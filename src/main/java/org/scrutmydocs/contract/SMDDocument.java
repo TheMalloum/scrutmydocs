@@ -65,7 +65,7 @@ public class SMDDocument {
 		super();
 
 		if (name == null) {
-			throw new IllegalArgumentException("A document must have a name");
+			throw new IllegalArgumentException("A document must have a type");
 		}
 
 		if (is == null) {
