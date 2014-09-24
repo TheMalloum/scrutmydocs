@@ -28,11 +28,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
+import org.scrutmydocs.contract.SMDRepository;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDResponseDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.repositories.SMDAbstractRepository;
-import org.scrutmydocs.repositories.SMDPlugin;
+import org.scrutmydocs.repositories.SMDRepositoryRegister;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.search.SMDSearchFactory;
 
@@ -42,20 +42,15 @@ import org.scrutmydocs.search.SMDSearchFactory;
  * @author Malloum LAYA
  * 
  */
-@SMDPlugin(name = "fsDataSource")
-public class FSSMDPlugin extends SMDAbstractRepository {
+@SMDRepositoryRegister(name = "fsDataSource")
+public class FSSMDPlugin extends SMDRepository {
 
 	public FSSMDPlugin(String url) {
 		super();
 		this.url = url;
 	}
 	
-	public FSSMDPlugin() {
-		super();
-	}
-	
-	
-	
+
 
 	protected org.apache.logging.log4j.Logger logger = LogManager
 			.getLogger(getClass().getName());
