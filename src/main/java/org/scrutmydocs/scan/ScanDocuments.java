@@ -13,7 +13,7 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-import org.scrutmydocs.repositories.SMDAbstractRepository;
+import org.scrutmydocs.contract.SMDRepository;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 
 public class ScanDocuments implements Job{
@@ -24,13 +24,13 @@ public class ScanDocuments implements Job{
 			throws JobExecutionException {
         logger.info("start scan()");
 
-        List<SMDAbstractRepository> repositories = SMDRepositoriesFactory.getInstance().getRepositories();
+        List<SMDRepository> repositories = SMDRepositoriesFactory.getInstance().getRepositories();
         if (repositories == null) {
             logger.info("No repositories found. Skipping...");
             return;
         }
 
-        for (SMDAbstractRepository repositorie : repositories) {
+        for (SMDRepository repositorie : repositories) {
 
         	
         		logger.info("checking plugin " + repositorie.type +" active "+ repositorie.start );

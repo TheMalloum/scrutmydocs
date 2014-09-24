@@ -30,9 +30,9 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.scrutmydocs.contract.SMDRepository;
 import org.scrutmydocs.contract.SMDResponseDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.repositories.SMDAbstractRepository;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.search.SMDSearchFactory;
 
@@ -73,7 +73,7 @@ public class RepositoriesApi {
 	@Path("/{id}")
 	public void delete(@PathParam("id") String id) throws Exception {
 		
-		SMDAbstractRepository plugin = getSettings(id);
+		SMDRepository plugin = getSettings(id);
 
 		int first = 0;
 		int page = 100;
@@ -101,10 +101,10 @@ public class RepositoriesApi {
 	 */
 
 	@PUT
-	public void put(SMDAbstractRepository newRepository) throws Exception {
+	public void put(SMDRepository newRepository) throws Exception {
 
 		// verification
-		SMDAbstractRepository repository = getSettings(newRepository.id);
+		SMDRepository repository = getSettings(newRepository.id);
 		
 		newRepository.id = repository.id;
 		
@@ -119,7 +119,7 @@ public class RepositoriesApi {
 	@Path("/start/{id}")
 	public void start(@PathParam("id") String id) throws Exception {
 
-		SMDAbstractRepository setting = getSettings(id);
+		SMDRepository setting = getSettings(id);
 
 		setting.start();
 		SMDRepositoriesFactory.getInstance().save(setting);
@@ -136,7 +136,7 @@ public class RepositoriesApi {
 	@Path("/stop/{id}")
 	public void stop(@PathParam("id") String id) throws Exception {
 
-		SMDAbstractRepository setting = getSettings(id);
+		SMDRepository setting = getSettings(id);
 
 		setting.start();
 		SMDRepositoriesFactory.getInstance().save(setting);
@@ -144,8 +144,8 @@ public class RepositoriesApi {
 
 		
 	
-	private SMDAbstractRepository getSettings(String id) {
-		SMDAbstractRepository plugin = SMDRepositoriesFactory.getInstance().get(
+	private SMDRepository getSettings(String id) {
+		SMDRepository plugin = SMDRepositoriesFactory.getInstance().get(
 				id);
 
 		if (plugin == null) {

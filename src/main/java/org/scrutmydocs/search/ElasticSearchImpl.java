@@ -43,13 +43,13 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.highlight.HighlightField;
+import org.scrutmydocs.contract.SMDRepository;
 import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.contract.SMDRepositoriesService;
 import org.scrutmydocs.contract.SMDResponseDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDSearchService;
-import org.scrutmydocs.contract.SMDRepositoriesService;
-import org.scrutmydocs.repositories.PluginsUtils;
-import org.scrutmydocs.repositories.SMDAbstractRepository;
+import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -78,11 +78,11 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 
 		
 
-		Collection<SMDAbstractRepository> all = PluginsUtils.getAll().values();
+		Collection<SMDRepository> all = SMDRepositoriesFactory.getAllRepositories().values();
 
-		for (SMDAbstractRepository plugin : all) {
+		for (SMDRepository plugin : all) {
 			mapper.addMixInAnnotations(plugin.getClass(),
-					SMDAbstractRepository.class);
+					SMDRepository.class);
 			logger.info("  -> adding plugin {}", plugin.type);
 		}
 
@@ -187,7 +187,7 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 	}
 
 	@Override
-	public void index(SMDAbstractRepository repository, SMDDocument document) {
+	public void index(SMDRepository repository, SMDDocument document) {
 
 		if (logger.isDebugEnabled())
 			logger.debug("index({})", document);
@@ -210,7 +210,7 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 	}
 
 	@Override
-	public void delete(SMDAbstractRepository repository, String id) {
+	public void delete(SMDRepository repository, String id) {
 
 		if (logger.isDebugEnabled())
 			logger.debug("delete({})", id);
@@ -237,7 +237,7 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 
 	@Override
 	public SMDSearchResponse searchFileByDirectory(
-			SMDAbstractRepository smdAbstractPlugin, String directory, int first,
+			SMDRepository smdAbstractPlugin, String directory, int first,
 			int pageSize) {
 		if (logger.isDebugEnabled())
 			logger.debug("searchFileByDirectory('{}', {}, {})", directory,
@@ -282,7 +282,7 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 
 
 	@Override
-	public List<SMDAbstractRepository> getRepositories() {
+	public List<SMDRepository> getRepositories() {
 		try {
 			org.elasticsearch.action.search.SearchResponse searchHits = esClient
 					.prepareSearch(SMDADMIN).setTypes(SMDADMIN_REPOSITORIES)
@@ -292,11 +292,11 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 				return null;
 			}
 
-			List<SMDAbstractRepository> plugins = new ArrayList<SMDAbstractRepository>();
+			List<SMDRepository> plugins = new ArrayList<SMDRepository>();
 			for (SearchHit searchHit : searchHits.getHits()) {
 				plugins.add(mapper.readValue(
 						searchHit.getSourceAsString(),
-						PluginsUtils.getAll()
+						SMDRepositoriesFactory.getAllRepositories()
 								.get(searchHit.getSource().get("type"))
 								.getClass()));
 			}
@@ -309,7 +309,7 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 	}
 
 	@Override
-	public void save(SMDAbstractRepository repository) {
+	public void save(SMDRepository repository) {
 		try {
 			esClient.prepareIndex(SMDADMIN, SMDADMIN_REPOSITORIES)
 					.setSource(mapper.writeValueAsString(repository)).execute()
@@ -320,7 +320,7 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 	}
 
 	@Override
-	public SMDAbstractRepository get(String id) {
+	public SMDRepository get(String id) {
 		
 		if(id==null){
 			throw new IllegalArgumentException("you can't search a repository with null id");
@@ -334,8 +334,8 @@ public class ElasticSearchImpl implements SMDSearchService, SMDRepositoriesServi
 			if (!response.isExists())
 				return null;
 
-			return mapper.readValue(response.getSourceAsString(), PluginsUtils
-					.getAll().get(response.getSource().get("type")).getClass());
+			return mapper.readValue(response.getSourceAsString(), SMDRepositoriesFactory
+					.getAllRepositories().get(response.getSource().get("type")).getClass());
 		} catch (Exception e) {
 			throw new RuntimeException("Can not save the configuration.",e);
 		}

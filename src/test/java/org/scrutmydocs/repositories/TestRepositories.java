@@ -2,7 +2,7 @@ package org.scrutmydocs.repositories;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.scrutmydocs.repositories.SMDAbstractRepository;
+import org.scrutmydocs.contract.SMDRepository;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.repositories.fs.FSSMDPlugin;
 
@@ -18,7 +18,7 @@ public class TestRepositories {
 		
 		Thread.sleep(6*1000);
 		
-		for(SMDAbstractRepository plugin : SMDRepositoriesFactory.getInstance().getRepositories()){
+		for(SMDRepository plugin : SMDRepositoriesFactory.getInstance().getRepositories()){
 			
 			Assert.assertEquals(plugin.url, repository.url);
 			
