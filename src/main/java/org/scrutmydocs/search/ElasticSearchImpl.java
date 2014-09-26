@@ -46,10 +46,10 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.highlight.HighlightField;
-import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.contract.SMDFileDocument;
 import org.scrutmydocs.contract.SMDRepositoriesService;
 import org.scrutmydocs.contract.SMDRepository;
-import org.scrutmydocs.contract.SMDResponseDocument;
+import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDSearchService;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
@@ -153,7 +153,7 @@ public class ElasticSearchImpl implements SMDSearchService,
 		totalHits = searchHits.getHits().totalHits();
 		took = searchHits.getTookInMillis();
 
-		List<SMDResponseDocument> documents = new ArrayList<SMDResponseDocument>();
+		List<SMDDocument> documents = new ArrayList<SMDDocument>();
 		for (SearchHit searchHit : searchHits.getHits()) {
 
 			Collection<String> highlights = null;
@@ -170,7 +170,7 @@ public class ElasticSearchImpl implements SMDSearchService,
 				}
 			}
 
-			SMDResponseDocument smdResponseDocument = new SMDResponseDocument(
+			SMDDocument smdResponseDocument = new SMDDocument(
 					(String) searchHit.getSource().get("type"),
 					(String) searchHit.getSource().get("url"),
 					(String) searchHit.getSource().get("contentType"),
@@ -188,7 +188,7 @@ public class ElasticSearchImpl implements SMDSearchService,
 	}
 
 	@Override
-	public void index(SMDRepository repository, SMDDocument document) {
+	public void index(SMDRepository repository, SMDFileDocument document) {
 
 		if (logger.isDebugEnabled())
 			logger.debug("index({})", document);
@@ -256,10 +256,10 @@ public class ElasticSearchImpl implements SMDSearchService,
 				.setTypes(smdAbstractPlugin.type).setQuery(query)
 				.setFrom(first).setSize(pageSize).execute().actionGet();
 
-		List<SMDResponseDocument> documents = new ArrayList<SMDResponseDocument>();
+		List<SMDDocument> documents = new ArrayList<SMDDocument>();
 		for (SearchHit searchHit : searchHits.getHits()) {
 
-			SMDResponseDocument smdResponseDocument = new SMDResponseDocument(
+			SMDDocument smdResponseDocument = new SMDDocument(
 					(String) searchHit.getSource().get("type"),
 					(String) searchHit.getSource().get("url"),
 					(String) searchHit.getSource().get("contentType"), null);

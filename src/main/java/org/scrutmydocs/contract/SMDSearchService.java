@@ -3,7 +3,7 @@ package org.scrutmydocs.contract;
 
 public interface SMDSearchService {
 
-	public void index(SMDRepository smdAbstractPlugin, SMDDocument smdDocument);
+	public void index(SMDRepository smdAbstractPlugin, SMDFileDocument smdDocument);
 
     public void delete(SMDRepository smdAbstractPlugin, String id);
 

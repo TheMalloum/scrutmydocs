@@ -29,8 +29,8 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.scrutmydocs.contract.SMDRepository;
+import org.scrutmydocs.contract.SMDFileDocument;
 import org.scrutmydocs.contract.SMDDocument;
-import org.scrutmydocs.contract.SMDResponseDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.repositories.SMDRepositoryRegister;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
@@ -72,9 +72,9 @@ public class FSSMDRepository extends SMDRepository {
 
 					logger.debug("index  file " + path);
 
-					SMDDocument smdDocument;
+					SMDFileDocument smdDocument;
 					try {
-						smdDocument = new SMDDocument(file);
+						smdDocument = new SMDFileDocument(file);
 					} catch (FileNotFoundException e) {
 						continue;
 					}
@@ -153,7 +153,7 @@ public class FSSMDRepository extends SMDRepository {
 			SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
 					.searchFileByDirectory(this, dir.getAbsolutePath(), first,
 							page);
-			for (SMDResponseDocument smdResponseDocument : searchResponse.smdDocuments) {
+			for (SMDDocument smdResponseDocument : searchResponse.smdDocuments) {
 				if (!new File(smdResponseDocument.url).exists()) {
 					logger.debug("remove file " + smdResponseDocument.url
 							+ " ....");
@@ -179,7 +179,7 @@ public class FSSMDRepository extends SMDRepository {
 			if (file.isFile()) {
 				try {
 					SMDSearchFactory.getInstance().index(this,
-							new SMDDocument(file));
+							new SMDFileDocument(file));
 				} catch (FileNotFoundException e) {
 					continue;
 				}

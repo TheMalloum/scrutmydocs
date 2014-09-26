@@ -18,7 +18,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.contract.SMDFileDocument;
 import org.scrutmydocs.repositories.upload.UploadSMDPlugin;
 import org.scrutmydocs.search.SMDSearchFactory;
 
@@ -54,7 +54,7 @@ public class UploadServlet extends HttpServlet {
 
 			for(FileItem file : files) {
 				logger.info("Upload file : "+file.getName());
-				SMDSearchFactory.getInstance().index(new UploadSMDPlugin(), new SMDDocument(file));
+				SMDSearchFactory.getInstance().index(new UploadSMDPlugin(), new SMDFileDocument(file));
 			}
 		} catch (FileUploadException e) {
 			logger.error("error when upload file",e);

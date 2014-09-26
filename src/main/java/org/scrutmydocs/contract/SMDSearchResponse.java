@@ -24,9 +24,9 @@ import java.util.List;
 public class SMDSearchResponse  {
 	public final long took;
     public final long totalHits;
-    public final List<SMDResponseDocument> smdDocuments;
+    public final List<SMDDocument> smdDocuments;
 
-	public SMDSearchResponse(long took, long totalHits, List<SMDResponseDocument> smdDocuments) {
+	public SMDSearchResponse(long took, long totalHits, List<SMDDocument> smdDocuments) {
 		super();
 		this.took = took;
 		this.totalHits = totalHits;

@@ -32,7 +32,7 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.contract.SMDRepository;
-import org.scrutmydocs.contract.SMDResponseDocument;
+import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.search.SMDSearchFactory;
@@ -83,7 +83,7 @@ public class RepositoriesApi {
 
 			SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
 					.searchFileByDirectory(plugin, plugin.url, first, page);
-			for (SMDResponseDocument smdResponseDocument : searchResponse.smdDocuments) {
+			for (SMDDocument smdResponseDocument : searchResponse.smdDocuments) {
 				logger.debug("remove file " + smdResponseDocument.url + " ....");
 				SMDSearchFactory.getInstance().delete(plugin,
 						smdResponseDocument.url);

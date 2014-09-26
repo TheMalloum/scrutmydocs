@@ -5,7 +5,7 @@ import java.net.URL;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.contract.SMDFileDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.repositories.fs.FSSMDRepository;
 
@@ -18,7 +18,7 @@ public class TestIndexSearch {
         File file = new File(url.toURI());
 		Assert.assertTrue("The test file doesn't existe",file.exists());
 		
-		SMDDocument smdDocument = new SMDDocument(file);
+		SMDFileDocument smdDocument = new SMDFileDocument(file);
 
 		Thread.sleep(5000);
 
@@ -41,7 +41,7 @@ public class TestIndexSearch {
         File file = new File(url.toURI());
 		Assert.assertTrue("The test file doesn't existe",file.exists());
 		
-		SMDDocument smdDocument = new SMDDocument(file);
+		SMDFileDocument smdDocument = new SMDFileDocument(file);
 
 
 		SMDSearchFactory.getInstance().index(new FSSMDRepository("url"), smdDocument);
@@ -65,7 +65,7 @@ public class TestIndexSearch {
         File file = new File(url.toURI());
 		Assert.assertTrue("The test file doesn't existe",file.exists());
 		
-		SMDDocument smdDocument = new SMDDocument(file);
+		SMDFileDocument smdDocument = new SMDFileDocument(file);
 
 		Thread.sleep(5000);
 

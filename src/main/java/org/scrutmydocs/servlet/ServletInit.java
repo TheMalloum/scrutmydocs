@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServlet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.contract.SMDFileDocument;
 import org.scrutmydocs.repositories.upload.UploadSMDPlugin;
 import org.scrutmydocs.scan.ScanDocuments;
 import org.scrutmydocs.search.SMDSearchFactory;
@@ -27,8 +27,8 @@ public class ServletInit extends HttpServlet {
 			logger.info("index NOTICE AND LICENCE ....");
 
 			
-			SMDDocument LICENCE = new SMDDocument(ServletInit.class.getClassLoader().getResourceAsStream("LICENSE"),"LICENCE");
-			SMDDocument NOTICE  = new SMDDocument(ServletInit.class.getClassLoader().getResourceAsStream("NOTICE"),"NOTICE");
+			SMDFileDocument LICENCE = new SMDFileDocument(ServletInit.class.getClassLoader().getResourceAsStream("LICENSE"),"LICENCE");
+			SMDFileDocument NOTICE  = new SMDFileDocument(ServletInit.class.getClassLoader().getResourceAsStream("NOTICE"),"NOTICE");
 
 			SMDSearchFactory.getInstance().index(new UploadSMDPlugin(), LICENCE);
 			SMDSearchFactory.getInstance().index(new UploadSMDPlugin(), NOTICE);

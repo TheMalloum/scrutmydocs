@@ -21,7 +21,7 @@ public class TestSmdDocument {
 
 		Assert.assertTrue("The test file doesn't existe", file.exists());
 
-		SMDDocument smdDocument = new SMDDocument(file);
+		SMDFileDocument smdDocument = new SMDFileDocument(file);
 
 		Assert.assertEquals(file.getName(), smdDocument.name);
 		Assert.assertEquals(file.getParent(), smdDocument.pathDirectory);
@@ -34,7 +34,7 @@ public class TestSmdDocument {
 
 		InputStream is = ServletInit.class.getClassLoader()
 				.getResourceAsStream("LICENSE");
-		SMDDocument smdDocument = new SMDDocument(is, "LICENSE");
+		SMDFileDocument smdDocument = new SMDFileDocument(is, "LICENSE");
 
 		Assert.assertNotNull(smdDocument);
 

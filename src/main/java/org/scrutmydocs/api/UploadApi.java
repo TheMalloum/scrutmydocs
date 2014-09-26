@@ -25,7 +25,7 @@ import javax.ws.rs.Path;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.contract.SMDFileDocument;
 import org.scrutmydocs.repositories.upload.UploadSMDPlugin;
 import org.scrutmydocs.search.SMDSearchFactory;
 
@@ -39,7 +39,7 @@ public class UploadApi {
 	 * @return
 	 */
 	@POST
-	public  void push(SMDDocument smdDocument) {
+	public  void push(SMDFileDocument smdDocument) {
 		SMDSearchFactory.getInstance()
 				.index(new UploadSMDPlugin(), smdDocument);
 	}
