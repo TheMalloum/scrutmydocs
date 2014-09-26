@@ -34,10 +34,18 @@ public class FSSMDRepositoryData extends SMDRepositoryData {
 	public FSSMDRepositoryData(String absolutePath) {
 		this.url = absolutePath;
 	}
-	
+
 	public FSSMDRepositoryData() {
 	}
 
 	public String id;
+
+	public String url;
+
+	public String includes;
+
+	public String excludes;
+
+	public String analyzer;
 
 }

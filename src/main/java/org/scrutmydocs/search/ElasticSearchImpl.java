@@ -172,7 +172,7 @@ public class ElasticSearchImpl implements SMDSearchService,
 			}
 
 			SMDDocument smdResponseDocument = new SMDDocument(
-					(String) searchHit.getSource().get("type"),
+					(String) searchHit.getSource().get("name"),
 					(String) searchHit.getSource().get("url"),
 					(String) searchHit.getSource().get("contentType"),
 					highlights);
@@ -223,12 +223,12 @@ public class ElasticSearchImpl implements SMDSearchService,
 		}
 
 		try {
-			bulk.add(new DeleteRequest(SMDINDEX, repository.url, id));
+			bulk.add(new DeleteRequest(SMDINDEX, repository.type, id));
 		} catch (Exception e) {
 			logger.warn("Can not delete document {} of type  {}", id,
-					repository.url);
+					repository.type);
 			throw new RuntimeException("Can not delete document : " + id
-					+ "whith type " + repository.url + ": " + e.getMessage());
+					+ "whith type " + repository.type + ": " + e.getMessage());
 		}
 
 		if (logger.isDebugEnabled())

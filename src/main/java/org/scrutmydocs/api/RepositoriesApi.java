@@ -19,6 +19,9 @@
 
 package org.scrutmydocs.api;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -27,12 +30,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.scrutmydocs.contract.SMDDocument;
-import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.repositories.SMDRepositoryData;
 import org.scrutmydocs.search.SMDSearchFactory;
@@ -66,39 +69,58 @@ public class RepositoriesApi {
 	}
 
 	/**
+	 * Get settings
+	 * 
+	 * @return
+	 */
+	@GET
+	@Path("field/{type}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response filedStructure(@PathParam("type") String type)
+			throws Exception {
+
+		String tab[][];
+
+		Class<? extends SMDRepositoryData> repo = SMDRepositoriesFactory
+				.getAllTypeRepositories().get(type);
+
+		if (repo == null) {
+
+		}
+		tab = new String[repo.getDeclaredFields().length][2];
+
+		int i = 0;
+		for (Field field : repo.getDeclaredFields()) {
+			tab[i][0] = field.getName();
+			tab[i][1] = field.getType().toString();
+			i++;
+		}
+
+		return Response.ok(tab).build();
+	}
+
+	public static void main(String[] args) throws Exception {
+		new RepositoriesApi().filedStructure("fs");
+	}
+
+	/**
 	 * DELETE repositoy by id
 	 * 
 	 * @return
 	 */
 	@DELETE
 	@Path("/{id}")
-	public void delete(@PathParam("id") String id) throws Exception {
+	public void delete(@PathParam("id") String id,
+			SMDRepositoryData repositoryData) throws Exception {
 
-		SMDRepositoryData plugin = getSettings(id);
-
-		int first = 0;
-		int page = 100;
-		long total = 1;
-		while (first < total) {
-
-			SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
-					.searchFileByDirectory(plugin, plugin.url, first, page);
-			for (SMDDocument smdResponseDocument : searchResponse.smdDocuments) {
-				logger.debug("remove file " + smdResponseDocument.url + " ....");
-				SMDSearchFactory.getInstance().delete(plugin,
-						smdResponseDocument.url);
-			}
-
-			total = searchResponse.totalHits;
-			first = +page;
-		}
+		SMDSearchFactory.getInstance().delete(repositoryData, id);
 
 	}
 
 	/**
 	 * add a repositoy to scan on scrutmydocs
 	 * 
-	 * @param newRepository 
+	 * @param newRepository
 	 * @throws Exception
 	 */
 	@PUT

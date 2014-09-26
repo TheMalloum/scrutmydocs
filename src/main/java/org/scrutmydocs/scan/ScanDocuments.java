@@ -79,7 +79,7 @@ public class ScanDocuments implements Job {
 					.newTrigger()
 					.withSchedule(
 							SimpleScheduleBuilder.simpleSchedule()
-									.withIntervalInSeconds(30).repeatForever())
+									.withIntervalInMinutes(5).repeatForever())
 					.build();
 
 			// schedule the job

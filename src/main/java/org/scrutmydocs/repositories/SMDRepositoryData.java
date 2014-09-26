@@ -20,17 +20,9 @@ public abstract class SMDRepositoryData {
 
 	public String id;
 	
-	public String url;
 	
 	public Date lastScan;
 	
-	public String includes;
-
-	public String excludes;
-
-	public String analyzer;
-
-
 	public boolean start;
 	
 	public void start() {

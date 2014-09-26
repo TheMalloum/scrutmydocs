@@ -18,13 +18,13 @@ public class TestRepositories {
 		
 		for(SMDRepositoryData plugin : SMDRepositoriesFactory.getInstance().getRepositories()){
 			
-			Assert.assertEquals(plugin.url, repository.url);
+			Assert.assertEquals(plugin.type, repository.type);
 			
 			
 			
 			repository = (FSSMDRepositoryData) SMDRepositoriesFactory.getInstance().get(plugin.id);
 			 
-			Assert.assertEquals(plugin.url, repository.url);
+//			Assert.assertEquals(plugin.url, repository.url);
 			Assert.assertEquals(plugin.id, repository.id);
 			Assert.assertEquals(plugin.type, repository.type);
 			 
@@ -36,7 +36,7 @@ public class TestRepositories {
 		Assert.fail();
 		
 	}
-	
-	
-	
+//	
+//	
+//	
 }
