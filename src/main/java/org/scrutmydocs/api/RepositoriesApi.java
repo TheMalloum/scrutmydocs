@@ -98,16 +98,16 @@ public class RepositoriesApi {
 	/**
 	 * add a repositoy to scan on scrutmydocs
 	 * 
-	 * @return
+	 * @param newRepository 
+	 * @throws Exception
 	 */
-
 	@PUT
 	public void put(SMDRepository newRepository) throws Exception {
 
-		if(newRepository.id!=null){
-			throw new BadRequestException("You can't repository with an id"); 
+		if (newRepository.id != null) {
+			throw new BadRequestException("You can't repository with an id");
 		}
-		
+
 		SMDRepositoriesFactory.getInstance().save(newRepository);
 	}
 

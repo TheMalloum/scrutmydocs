@@ -72,7 +72,7 @@ public class JsonMarshaller implements MessageBodyWriter<Object>,
 			Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
-		SMDRepository obj = null;
+		Class<? extends SMDRepository> obj = null;
 
 		StringWriter writer = new StringWriter();
 		IOUtils.copy(entityStream, writer, "UTF-8");
@@ -90,10 +90,11 @@ public class JsonMarshaller implements MessageBodyWriter<Object>,
 				jsonNode.findValue("type").textValue());
 
 		if (obj != null) {
-			return obj;
+			return mapper.readValue(str, obj);
 		} else {
-			throw new BadRequestException(
-					"the field 'type'  ("+ jsonNode.findValue("type").textValue()+ " ) is not a repository available in scrutmydocs");
+			throw new BadRequestException("the field 'type'  ("
+					+ jsonNode.findValue("type").textValue()
+					+ " ) is not a repository available in scrutmydocs");
 		}
 
 	}

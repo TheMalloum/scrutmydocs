@@ -49,16 +49,9 @@ public class FSSMDRepository extends SMDRepository {
 		super();
 		this.url = url;
 	}
-	
-	public FSSMDRepository() {
-		super();
-	}
-	
-
 
 	protected org.apache.logging.log4j.Logger logger = LogManager
 			.getLogger(getClass().getName());
-
 
 	@Override
 	public void scrut() {
@@ -78,17 +71,25 @@ public class FSSMDRepository extends SMDRepository {
 				if (file.isFile()) {
 
 					logger.debug("index  file " + path);
-					SMDDocument smdDocument = new SMDDocument(file);
+
+					SMDDocument smdDocument;
+					try {
+						smdDocument = new SMDDocument(file);
+					} catch (FileNotFoundException e) {
+						continue;
+					}
 
 					SMDSearchFactory.getInstance().index(this, smdDocument);
 				} else {
 					logger.debug("cleanning directory " + path + " ....");
-					//if the directory changes we must to find if documents were removed
+					// if the directory changes we must to find if documents
+					// were removed
 					cleanDirectory(file);
-					
-					
+
 					logger.debug("cleanning directory " + path + " ....");
-					//if the directory changes we must index all files. ( a old document can be moved without change a last modified date)
+					// if the directory changes we must index all files. ( a old
+					// document can be moved without change a last modified
+					// date)
 					indexAllFiles(file);
 				}
 
@@ -120,11 +121,11 @@ public class FSSMDRepository extends SMDRepository {
 
 		for (File file : dir.listFiles()) {
 
-			if (lastModified == null
-					|| new Date(file.lastModified()).after(lastModified)) {
-				logger.trace("find one File to index : " + file.toPath());
-				paths.add(file.toPath());
-			}
+			// if (lastModified == null
+			// || new Date(file.lastModified()).after(lastModified)) {
+			// logger.trace("find one File to index : " + file.toPath());
+			// paths.add(file.toPath());
+			// }
 
 			if (file.isDirectory()) {
 				for (Path path : parcourirDirectory(file, lastModified)) {
@@ -139,19 +140,19 @@ public class FSSMDRepository extends SMDRepository {
 
 	public void cleanDirectory(File dir) {
 
-		
-		if(dir.isFile()){
-			throw new IllegalArgumentException ("we can cleanDirectory just to a directory");
-		} 
-		
+		if (dir.isFile()) {
+			throw new IllegalArgumentException(
+					"we can cleanDirectory just to a directory");
+		}
+
 		int first = 0;
 		int page = 100;
 		long total = 1;
 		while (first < total) {
 
 			SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
-					.searchFileByDirectory(this, dir.getAbsolutePath(),
-							first, page);
+					.searchFileByDirectory(this, dir.getAbsolutePath(), first,
+							page);
 			for (SMDResponseDocument smdResponseDocument : searchResponse.smdDocuments) {
 				if (!new File(smdResponseDocument.url).exists()) {
 					logger.debug("remove file " + smdResponseDocument.url
@@ -166,22 +167,25 @@ public class FSSMDRepository extends SMDRepository {
 		}
 
 	}
-	
-	
-	private void indexAllFiles(File dir) throws FileNotFoundException, IOException  {
 
-		if(dir.isFile()){
-			throw new IllegalArgumentException ("we can indexAllFiles just to a directory");
+	private void indexAllFiles(File dir) throws IOException {
+
+		if (dir.isFile()) {
+			throw new IllegalArgumentException(
+					"we can indexAllFiles just to a directory");
 		}
-		
+
 		for (File file : dir.listFiles()) {
 			if (file.isFile()) {
-				SMDSearchFactory.getInstance().index(this,
-						new SMDDocument(file));
+				try {
+					SMDSearchFactory.getInstance().index(this,
+							new SMDDocument(file));
+				} catch (FileNotFoundException e) {
+					continue;
+				}
 			}
 		}
 
 	}
-
 
 }
