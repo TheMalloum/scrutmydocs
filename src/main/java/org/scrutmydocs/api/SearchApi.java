@@ -25,10 +25,8 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.resteasy.spi.NotImplementedYetException;
-import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDSearchQuery;
-import org.scrutmydocs.repositories.SMDRepositoryScan;
+import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.search.SMDSearchFactory;
 /***
  * This API provide access to the document search
@@ -39,15 +37,6 @@ import org.scrutmydocs.search.SMDSearchFactory;
 public class SearchApi {
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	public Api[] helpApiList() {
-		Api[] apis = new Api[1];
-		apis[0] = new Api("/1/search", "POST", "Search for documents");
-		return apis;
-	}
-
-	public String helpMessage() {
-		return "The /1/search API helps you to search your documents.";
-	}
 
 	/**
 	 * like google, Search for all documents with one word 

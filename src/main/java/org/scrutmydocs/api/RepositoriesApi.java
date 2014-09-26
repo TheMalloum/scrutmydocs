@@ -35,7 +35,6 @@ import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.repositories.SMDRepositoryData;
-import org.scrutmydocs.repositories.SMDRepositoryScan;
 import org.scrutmydocs.search.SMDSearchFactory;
 
 @Path("/2/repositories")

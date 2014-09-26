@@ -8,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.scrutmydocs.contract.SMDFileDocument;
 import org.scrutmydocs.repositories.upload.UploadSMDData;
-import org.scrutmydocs.repositories.upload.UploadSMDScan;
 import org.scrutmydocs.scan.ScanDocuments;
 import org.scrutmydocs.search.SMDSearchFactory;
 
