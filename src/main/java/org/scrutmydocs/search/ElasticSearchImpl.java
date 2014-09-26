@@ -53,10 +53,8 @@ import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDSearchService;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.repositories.SMDRepositoryData;
-import org.scrutmydocs.repositories.SMDRepositoryScan;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-//import org.scrutmydocs.repositories.SMDRepositoryScan;
 
 public class ElasticSearchImpl implements SMDSearchService,
 		SMDRepositoriesService {
@@ -295,7 +293,7 @@ public class ElasticSearchImpl implements SMDSearchService,
 			for (SearchHit searchHit : searchHits.getHits()) {
 				plugins.add(mapper.readValue(
 						searchHit.getSourceAsString(),
-						SMDRepositoriesFactory.getAllDataRepositories().get(
+						SMDRepositoriesFactory.getAllTypeRepositories().get(
 								searchHit.getSource().get("type"))));
 			}
 
@@ -335,7 +333,7 @@ public class ElasticSearchImpl implements SMDSearchService,
 
 			return mapper.readValue(
 					response.getSourceAsString(),
-					SMDRepositoriesFactory.getAllDataRepositories().get(
+					SMDRepositoriesFactory.getAllTypeRepositories().get(
 							response.getSource().get("type")));
 		} catch (Exception e) {
 			throw new RuntimeException("Can not save the configuration.", e);

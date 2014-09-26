@@ -19,8 +19,6 @@
 
 package org.scrutmydocs.repositories.upload;
 
-import java.util.Date;
-
 import org.scrutmydocs.repositories.SMDRegisterRepositoryData;
 import org.scrutmydocs.repositories.SMDRepositoryData;
 

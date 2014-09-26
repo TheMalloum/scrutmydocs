@@ -85,7 +85,7 @@ public class JsonMarshaller implements MessageBodyWriter<Object>,
 					"the field 'type' must not be null to a repository");
 		}
 
-		obj = SMDRepositoriesFactory.getAllDataRepositories().get(
+		obj = SMDRepositoriesFactory.getAllTypeRepositories().get(
 				jsonNode.findValue("type").textValue());
 
 		if (obj != null) {
