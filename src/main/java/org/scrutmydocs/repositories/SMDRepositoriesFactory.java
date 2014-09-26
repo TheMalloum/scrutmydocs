@@ -96,7 +96,7 @@ public class SMDRepositoriesFactory {
 				if (SMDRepositoryData.class.isAssignableFrom(class1)) {
 
 					
-					if (list.get(class1) != null) {
+					if (listData.get(class1) != null) {
 						logger.error("the DataSource  "
 								+ list.get(class1.getName()
 										+ " is early register"));
