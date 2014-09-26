@@ -50,6 +50,9 @@ public class FSSMDRepository extends SMDRepository {
 		this.url = url;
 	}
 
+	public FSSMDRepository() {
+	}
+
 	protected org.apache.logging.log4j.Logger logger = LogManager
 			.getLogger(getClass().getName());
 
