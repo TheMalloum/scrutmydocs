@@ -31,10 +31,11 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.scrutmydocs.contract.SMDRepository;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
+import org.scrutmydocs.repositories.SMDRepositoryData;
+import org.scrutmydocs.repositories.SMDRepositoryScan;
 import org.scrutmydocs.search.SMDSearchFactory;
 
 @Path("/2/repositories")
@@ -74,7 +75,7 @@ public class RepositoriesApi {
 	@Path("/{id}")
 	public void delete(@PathParam("id") String id) throws Exception {
 
-		SMDRepository plugin = getSettings(id);
+		SMDRepositoryData plugin = getSettings(id);
 
 		int first = 0;
 		int page = 100;
@@ -102,7 +103,7 @@ public class RepositoriesApi {
 	 * @throws Exception
 	 */
 	@PUT
-	public void put(SMDRepository newRepository) throws Exception {
+	public void put(SMDRepositoryData newRepository) throws Exception {
 
 		if (newRepository.id != null) {
 			throw new BadRequestException("You can't repository with an id");
@@ -118,10 +119,10 @@ public class RepositoriesApi {
 	 */
 
 	@PUT
-	public Response update(SMDRepository newRepository) throws Exception {
+	public Response update(SMDRepositoryData newRepository) throws Exception {
 
 		// verification
-		SMDRepository repository = getSettings(newRepository.id);
+		SMDRepositoryData repository = getSettings(newRepository.id);
 
 		newRepository.id = repository.id;
 		SMDRepositoriesFactory.getInstance().save(newRepository);
@@ -139,7 +140,7 @@ public class RepositoriesApi {
 	@Path("/start/{id}")
 	public void start(@PathParam("id") String id) throws Exception {
 
-		SMDRepository setting = getSettings(id);
+		SMDRepositoryData setting = getSettings(id);
 
 		setting.start();
 		SMDRepositoriesFactory.getInstance().save(setting);
@@ -156,14 +157,14 @@ public class RepositoriesApi {
 	@Path("/stop/{id}")
 	public void stop(@PathParam("id") String id) throws Exception {
 
-		SMDRepository setting = getSettings(id);
+		SMDRepositoryData setting = getSettings(id);
 
 		setting.start();
 		SMDRepositoriesFactory.getInstance().save(setting);
 	}
 
-	private SMDRepository getSettings(String id) {
-		SMDRepository plugin = SMDRepositoriesFactory.getInstance().get(id);
+	private SMDRepositoryData getSettings(String id) {
+		SMDRepositoryData plugin = SMDRepositoriesFactory.getInstance().get(id);
 
 		if (plugin == null) {
 			throw new NotFoundException(" the repository  with the id :  " + id

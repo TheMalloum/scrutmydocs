@@ -28,12 +28,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
-import org.scrutmydocs.contract.SMDRepository;
-import org.scrutmydocs.contract.SMDFileDocument;
 import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.contract.SMDFileDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.repositories.SMDRepositoryRegister;
+import org.scrutmydocs.repositories.SMDRegisterRepositoryScan;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
+import org.scrutmydocs.repositories.SMDRepositoryData;
+import org.scrutmydocs.repositories.SMDRepositoryScan;
 import org.scrutmydocs.search.SMDSearchFactory;
 
 /**
@@ -42,30 +43,28 @@ import org.scrutmydocs.search.SMDSearchFactory;
  * @author Malloum LAYA
  * 
  */
-@SMDRepositoryRegister(name = "fsDataSource")
-public class FSSMDRepository extends SMDRepository {
-
-	public FSSMDRepository(String url) {
-		super();
-		this.url = url;
-	}
-
-	public FSSMDRepository() {
-	}
+@SMDRegisterRepositoryScan(name = "fs")
+public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
 	protected org.apache.logging.log4j.Logger logger = LogManager
 			.getLogger(getClass().getName());
 
 	@Override
-	public void scrut() {
+	public void scrut(SMDRepositoryData data) {
+		
+		
+		if(! (data instanceof FSSMDRepositoryData)) throw new IllegalArgumentException("SMDRepositoryData is not a FSSMDRepositoryData");
+		FSSMDRepositoryData fssmdRepositoryData = (FSSMDRepositoryData)data;
+		
+		
 		try {
 
-			logger.info("we are scrutting your dyrectory " + url + " ....");
+			logger.info("we are scrutting your dyrectory " + fssmdRepositoryData.url + " ....");
 
 			Date startScarn = new Date();
 
-			List<Path> paths = parcourirDirectory(new File(this.url),
-					this.lastScan);
+			List<Path> paths = parcourirDirectory(new File(fssmdRepositoryData.url),
+					fssmdRepositoryData.lastScan);
 
 			for (Path path : paths) {
 
@@ -82,29 +81,29 @@ public class FSSMDRepository extends SMDRepository {
 						continue;
 					}
 
-					SMDSearchFactory.getInstance().index(this, smdDocument);
+					SMDSearchFactory.getInstance().index(fssmdRepositoryData, smdDocument);
 				} else {
 					logger.debug("cleanning directory " + path + " ....");
 					// if the directory changes we must to find if documents
 					// were removed
-					cleanDirectory(file);
+					cleanDirectory(file,fssmdRepositoryData);
 
 					logger.debug("cleanning directory " + path + " ....");
 					// if the directory changes we must index all files. ( a old
 					// document can be moved without change a last modified
 					// date)
-					indexAllFiles(file);
+					indexAllFiles(file,fssmdRepositoryData);
 				}
 
 			}
 
-			this.lastScan = startScarn;
-			SMDRepositoriesFactory.getInstance().save(this);
+			fssmdRepositoryData.lastScan = startScarn;
+			SMDRepositoriesFactory.getInstance().save(fssmdRepositoryData);
 
 		} catch (Exception ex) {
 
 			throw new RuntimeException(
-					"can't checkout changes in the directory " + this.url, ex);
+					"can't checkout changes in the directory " + fssmdRepositoryData.url, ex);
 		}
 	}
 
@@ -141,7 +140,7 @@ public class FSSMDRepository extends SMDRepository {
 		return paths;
 	}
 
-	public void cleanDirectory(File dir) {
+	public void cleanDirectory(File dir,FSSMDRepositoryData fssmdRepositoryData) {
 
 		if (dir.isFile()) {
 			throw new IllegalArgumentException(
@@ -154,13 +153,13 @@ public class FSSMDRepository extends SMDRepository {
 		while (first < total) {
 
 			SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
-					.searchFileByDirectory(this, dir.getAbsolutePath(), first,
+					.searchFileByDirectory(fssmdRepositoryData, dir.getAbsolutePath(), first,
 							page);
 			for (SMDDocument smdResponseDocument : searchResponse.smdDocuments) {
 				if (!new File(smdResponseDocument.url).exists()) {
 					logger.debug("remove file " + smdResponseDocument.url
 							+ " ....");
-					SMDSearchFactory.getInstance().delete(this,
+					SMDSearchFactory.getInstance().delete(fssmdRepositoryData,
 							smdResponseDocument.url);
 				}
 			}
@@ -171,7 +170,7 @@ public class FSSMDRepository extends SMDRepository {
 
 	}
 
-	private void indexAllFiles(File dir) throws IOException {
+	private void indexAllFiles(File dir,FSSMDRepositoryData fssmdRepositoryData) throws IOException {
 
 		if (dir.isFile()) {
 			throw new IllegalArgumentException(
@@ -181,7 +180,7 @@ public class FSSMDRepository extends SMDRepository {
 		for (File file : dir.listFiles()) {
 			if (file.isFile()) {
 				try {
-					SMDSearchFactory.getInstance().index(this,
+					SMDSearchFactory.getInstance().index(fssmdRepositoryData,
 							new SMDFileDocument(file));
 				} catch (FileNotFoundException e) {
 					continue;

@@ -2,13 +2,17 @@ package org.scrutmydocs.contract;
 
 import java.util.List;
 
+import org.scrutmydocs.repositories.SMDRepositoryScan;
+import org.scrutmydocs.repositories.SMDRepositoryData;
+import org.scrutmydocs.repositories.fs.FSSMDRepositoryData;
+
 
 public interface SMDRepositoriesService {
 
-	public void save(SMDRepository repository);
+	public void save(SMDRepositoryData repository);
 
-	public List<SMDRepository>  getRepositories();
+	public List<SMDRepositoryData>  getRepositories();
 
-	public SMDRepository get(String id);
+	public SMDRepositoryData get(String id);
 	
 }

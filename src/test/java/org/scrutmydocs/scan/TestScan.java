@@ -2,16 +2,15 @@ package org.scrutmydocs.scan;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.repositories.fs.FSSMDRepository;
+import org.scrutmydocs.repositories.fs.FSSMDRepositoryData;
+import org.scrutmydocs.repositories.fs.FSSMDRepositoryScan;
 import org.scrutmydocs.search.SMDSearchFactory;
 
 public class TestScan {
@@ -22,13 +21,13 @@ public class TestScan {
 
 		dir = new File(Files.createTempDirectory("srutmydocs").toUri());
 	}
-	
+
 	@Test
 	public void testScanAdd() throws InterruptedException, IOException, URISyntaxException {
 
-		FSSMDRepository fssmdPlugin = new FSSMDRepository(dir.getAbsolutePath());
+		FSSMDRepositoryData fssmdPlugin = new FSSMDRepositoryData(dir.getAbsolutePath());
 
-		fssmdPlugin.scrut();
+		new FSSMDRepositoryScan().scrut(fssmdPlugin);
 
 		Thread.sleep(6 * 1000);
 
@@ -43,7 +42,7 @@ public class TestScan {
 		
 		File tmp = File.createTempFile("add-file", "tmp", dir);
 		
-		fssmdPlugin.scrut();
+		new FSSMDRepositoryScan().scrut(fssmdPlugin);
 
 		Thread.sleep(6 * 1000);
 
@@ -54,7 +53,7 @@ public class TestScan {
 		// remove file
 		tmp.delete();
 
-		fssmdPlugin.scrut();
+		new FSSMDRepositoryScan().scrut(fssmdPlugin);
 
 		Thread.sleep(6 * 1000);
 

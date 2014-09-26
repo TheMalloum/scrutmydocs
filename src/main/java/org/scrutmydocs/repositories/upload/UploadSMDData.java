@@ -19,10 +19,10 @@
 
 package org.scrutmydocs.repositories.upload;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.scrutmydocs.contract.SMDRepository;
-import org.scrutmydocs.repositories.SMDRepositoryRegister;
+import java.util.Date;
+
+import org.scrutmydocs.repositories.SMDRegisterRepositoryData;
+import org.scrutmydocs.repositories.SMDRepositoryData;
 
 /**
  * Implement the DropBox ScrutMyDocs Data Source
@@ -30,17 +30,9 @@ import org.scrutmydocs.repositories.SMDRepositoryRegister;
  * @author Malloum LAYA
  * 
  */
-@SMDRepositoryRegister(name = "uploadDataSource")
-public class UploadSMDPlugin extends SMDRepository {
+@SMDRegisterRepositoryData(name = "upload")
+public class UploadSMDData extends SMDRepositoryData {
 
-	protected Logger logger = LogManager.getLogger(getClass().getName());
-
-	public UploadSMDPlugin() {
-		super();
-	}
-
-	@Override
-	public void scrut() {
-	}
+	public String id;
 
 }

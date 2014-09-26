@@ -9,7 +9,6 @@ import java.lang.reflect.Type;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -19,8 +18,8 @@ import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
-import org.scrutmydocs.contract.SMDRepository;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
+import org.scrutmydocs.repositories.SMDRepositoryData;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -64,7 +63,7 @@ public class JsonMarshaller implements MessageBodyWriter<Object>,
 	public boolean isReadable(Class<?> type, Type genericType,
 			Annotation[] annotations, MediaType mediaType) {
 
-		return SMDRepository.class.isAssignableFrom(type);
+		return SMDRepositoryData.class.isAssignableFrom(type);
 	}
 
 	@Override
@@ -72,7 +71,7 @@ public class JsonMarshaller implements MessageBodyWriter<Object>,
 			Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
-		Class<? extends SMDRepository> obj = null;
+		Class<? extends SMDRepositoryData> obj = null;
 
 		StringWriter writer = new StringWriter();
 		IOUtils.copy(entityStream, writer, "UTF-8");
@@ -86,7 +85,7 @@ public class JsonMarshaller implements MessageBodyWriter<Object>,
 					"the field 'type' must not be null to a repository");
 		}
 
-		obj = SMDRepositoriesFactory.getAllRepositories().get(
+		obj = SMDRepositoriesFactory.getAllDataRepositories().get(
 				jsonNode.findValue("type").textValue());
 
 		if (obj != null) {

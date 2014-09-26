@@ -13,8 +13,9 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-import org.scrutmydocs.contract.SMDRepository;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
+import org.scrutmydocs.repositories.SMDRepositoryData;
+import org.scrutmydocs.repositories.SMDRepositoryScan;
 
 public class ScanDocuments implements Job{
 	private Logger logger = LogManager.getLogger(ScanDocuments.class);
@@ -24,19 +25,20 @@ public class ScanDocuments implements Job{
 			throws JobExecutionException {
         logger.info("start scan()");
 
-        List<SMDRepository> repositories = SMDRepositoriesFactory.getInstance().getRepositories();
+        List<SMDRepositoryData> repositories = SMDRepositoriesFactory.getInstance().getRepositories();
         if (repositories == null) {
             logger.info("No repositories found. Skipping...");
             return;
         }
 
-        for (SMDRepository repositorie : repositories) {
+        for (SMDRepositoryData repositorie : repositories) {
 
         	
+        	SMDRepositoryScan repository = SMDRepositoriesFactory.getAllRepositories().get(repositorie.type);
         		logger.info("checking plugin " + repositorie.type +" active "+ repositorie.start );
 				if(repositorie.start)
 				{
-        		repositorie.scrut();
+					repository.scrut(repositorie);
 				}
         }
 
