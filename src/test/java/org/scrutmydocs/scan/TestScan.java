@@ -11,7 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.repositories.fs.FSSMDPlugin;
+import org.scrutmydocs.repositories.fs.FSSMDRepository;
 import org.scrutmydocs.search.SMDSearchFactory;
 
 public class TestScan {
@@ -26,7 +26,7 @@ public class TestScan {
 	@Test
 	public void testScanAdd() throws InterruptedException, IOException, URISyntaxException {
 
-		FSSMDPlugin fssmdPlugin = new FSSMDPlugin(dir.getAbsolutePath());
+		FSSMDRepository fssmdPlugin = new FSSMDRepository(dir.getAbsolutePath());
 
 		fssmdPlugin.scrut();
 

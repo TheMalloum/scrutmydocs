@@ -3,6 +3,8 @@ package org.scrutmydocs.repositories;
 import java.util.HashMap;
 import java.util.Set;
 
+import javax.ws.rs.NotFoundException;
+
 import org.apache.logging.log4j.LogManager;
 import org.reflections.Reflections;
 import org.scrutmydocs.contract.SMDRepository;
@@ -49,7 +51,7 @@ public class SMDRepositoriesFactory {
 				} catch (Exception e) {
 					logger.error(class1.getName()
 							+ " doesn't have default constructor");
-					throw new RuntimeException(e);
+					throw new RuntimeException("doesn't have default constructor : " +e);
 				}
 
 				if (register instanceof SMDRepository) {
@@ -74,6 +76,21 @@ public class SMDRepositoriesFactory {
 		}
 
 		return list;
+	}
+	
+	
+	public static SMDRepository getSettings(String id) {
+		SMDRepository plugin = SMDRepositoriesFactory.getInstance().get(
+				id);
+
+		if (plugin == null) {
+			throw new NotFoundException(" the repository  with the id :  "
+					+ id + " doesn't exist");
+			
+			
+		}
+
+		return plugin;
 	}
 	
 }

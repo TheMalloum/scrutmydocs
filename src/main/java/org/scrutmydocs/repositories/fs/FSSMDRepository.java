@@ -43,11 +43,15 @@ import org.scrutmydocs.search.SMDSearchFactory;
  * 
  */
 @SMDRepositoryRegister(name = "fsDataSource")
-public class FSSMDPlugin extends SMDRepository {
+public class FSSMDRepository extends SMDRepository {
 
-	public FSSMDPlugin(String url) {
+	public FSSMDRepository(String url) {
 		super();
 		this.url = url;
+	}
+	
+	public FSSMDRepository() {
+		super();
 	}
 	
 

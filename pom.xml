@@ -428,6 +428,7 @@
 				<version>1.25</version>
 				<executions>
 					<execution>
+						<phase>install</phase>
 						<goals>
 							<goal>docs</goal>
 						</goals>

@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.scrutmydocs.contract.SMDRepository;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
-import org.scrutmydocs.repositories.fs.FSSMDPlugin;
+import org.scrutmydocs.repositories.fs.FSSMDRepository;
 
 public class TestRepositories {
 
@@ -12,7 +12,7 @@ public class TestRepositories {
 	@Test
 	public void testIndexRepository() throws Exception {
 		
-		FSSMDPlugin repository = new FSSMDPlugin("url");
+		FSSMDRepository repository = new FSSMDRepository("url");
 				
 		SMDRepositoriesFactory.getInstance().save(repository);
 		
@@ -24,7 +24,7 @@ public class TestRepositories {
 			
 			
 			
-			repository = (FSSMDPlugin) SMDRepositoriesFactory.getInstance().get(plugin.id);
+			repository = (FSSMDRepository) SMDRepositoriesFactory.getInstance().get(plugin.id);
 			 
 			Assert.assertEquals(plugin.url, repository.url);
 			Assert.assertEquals(plugin.id, repository.id);

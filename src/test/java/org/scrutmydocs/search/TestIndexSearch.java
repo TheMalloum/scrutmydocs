@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.repositories.fs.FSSMDPlugin;
+import org.scrutmydocs.repositories.fs.FSSMDRepository;
 
 public class TestIndexSearch {
 
@@ -22,7 +22,7 @@ public class TestIndexSearch {
 
 		Thread.sleep(5000);
 
-		SMDSearchFactory.getInstance().index(new FSSMDPlugin("url"), smdDocument);
+		SMDSearchFactory.getInstance().index(new FSSMDRepository("url"), smdDocument);
 		
 		Thread.sleep(5000);
 		//TODO when we call the getinstance SMDSearchFactory we have to be sure that indexs are available
@@ -44,11 +44,11 @@ public class TestIndexSearch {
 		SMDDocument smdDocument = new SMDDocument(file);
 
 
-		SMDSearchFactory.getInstance().index(new FSSMDPlugin("url"), smdDocument);
+		SMDSearchFactory.getInstance().index(new FSSMDRepository("url"), smdDocument);
 		
 		Thread.sleep(6000);
 
-		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance().searchFileByDirectory(new FSSMDPlugin("url"),smdDocument.pathDirectory, 0,1);
+		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance().searchFileByDirectory(new FSSMDRepository("url"),smdDocument.pathDirectory, 0,1);
 		
 		Assert.assertEquals(1, searchResponse.totalHits);
 		
@@ -69,11 +69,11 @@ public class TestIndexSearch {
 
 		Thread.sleep(5000);
 
-		SMDSearchFactory.getInstance().index(new FSSMDPlugin("url"), smdDocument);
+		SMDSearchFactory.getInstance().index(new FSSMDRepository("url"), smdDocument);
 		
 		Thread.sleep(5000);
 		//TODO when we call the getinstance SMDSearchFactory we have to be sure that indexs are available
-		SMDSearchFactory.getInstance().index(new FSSMDPlugin("url"), smdDocument);
+		SMDSearchFactory.getInstance().index(new FSSMDRepository("url"), smdDocument);
 		
 		Thread.sleep(5000);
 		//TODO when we call the getinstance SMDSearchFactory we have to be sure that indexs are available

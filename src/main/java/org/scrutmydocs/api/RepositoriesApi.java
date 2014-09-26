@@ -19,6 +19,7 @@
 
 package org.scrutmydocs.api;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -48,8 +49,8 @@ public class RepositoriesApi {
 	@Path("/_all")
 	@GET
 	public Response getAll() throws Exception {
-		return Response.ok(SMDRepositoriesFactory.getInstance().getRepositories())
-				.build();
+		return Response.ok(
+				SMDRepositoriesFactory.getInstance().getRepositories()).build();
 	}
 
 	/**
@@ -72,7 +73,7 @@ public class RepositoriesApi {
 	@DELETE
 	@Path("/{id}")
 	public void delete(@PathParam("id") String id) throws Exception {
-		
+
 		SMDRepository plugin = getSettings(id);
 
 		int first = 0;
@@ -81,7 +82,7 @@ public class RepositoriesApi {
 		while (first < total) {
 
 			SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
-					.searchFileByDirectory(plugin,plugin.url, first, page);
+					.searchFileByDirectory(plugin, plugin.url, first, page);
 			for (SMDResponseDocument smdResponseDocument : searchResponse.smdDocuments) {
 				logger.debug("remove file " + smdResponseDocument.url + " ....");
 				SMDSearchFactory.getInstance().delete(plugin,
@@ -103,18 +104,37 @@ public class RepositoriesApi {
 	@PUT
 	public void put(SMDRepository newRepository) throws Exception {
 
-		// verification
-		SMDRepository repository = getSettings(newRepository.id);
-		
-		newRepository.id = repository.id;
+		if(newRepository.id!=null){
+			throw new BadRequestException("You can't repository with an id"); 
+		}
 		
 		SMDRepositoriesFactory.getInstance().save(newRepository);
 	}
-/**
- * 
- * @param stop scan one repository
- * @throws Exception
- */
+
+	/**
+	 * update a repositoy to scan on scrutmydocs
+	 * 
+	 * @return
+	 */
+
+	@PUT
+	public Response update(SMDRepository newRepository) throws Exception {
+
+		// verification
+		SMDRepository repository = getSettings(newRepository.id);
+
+		newRepository.id = repository.id;
+		SMDRepositoriesFactory.getInstance().save(newRepository);
+
+		return Response.ok(newRepository).build();
+	}
+
+	/**
+	 * 
+	 * @param stop
+	 *            scan one repository
+	 * @throws Exception
+	 */
 	@POST
 	@Path("/start/{id}")
 	public void start(@PathParam("id") String id) throws Exception {
@@ -125,13 +145,13 @@ public class RepositoriesApi {
 		SMDRepositoriesFactory.getInstance().save(setting);
 	}
 
-
 	/***
 	 * stop scan one repository
+	 * 
 	 * @param id
 	 * @throws Exception
 	 */
-	
+
 	@POST
 	@Path("/stop/{id}")
 	public void stop(@PathParam("id") String id) throws Exception {
@@ -142,17 +162,13 @@ public class RepositoriesApi {
 		SMDRepositoriesFactory.getInstance().save(setting);
 	}
 
-		
-	
 	private SMDRepository getSettings(String id) {
-		SMDRepository plugin = SMDRepositoriesFactory.getInstance().get(
-				id);
+		SMDRepository plugin = SMDRepositoriesFactory.getInstance().get(id);
 
 		if (plugin == null) {
-			throw new NotFoundException(" the repository  with the id :  "
-					+ id + " doesn't exist");
-			
-			
+			throw new NotFoundException(" the repository  with the id :  " + id
+					+ " doesn't exist");
+
 		}
 
 		return plugin;
