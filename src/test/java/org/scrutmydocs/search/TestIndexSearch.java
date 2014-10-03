@@ -18,7 +18,7 @@ public class TestIndexSearch {
         File file = new File(url.toURI());
 		Assert.assertTrue("The test file doesn't existe",file.exists());
 		
-		SMDFileDocument smdDocument = new SMDFileDocument(file);
+		SMDFileDocument smdDocument = new SMDFileDocument(file,null);
 
 		Thread.sleep(5000);
 
@@ -41,7 +41,7 @@ public class TestIndexSearch {
         File file = new File(url.toURI());
 		Assert.assertTrue("The test file doesn't existe",file.exists());
 		
-		SMDFileDocument smdDocument = new SMDFileDocument(file);
+		SMDFileDocument smdDocument = new SMDFileDocument(file,null);
 
 
 		SMDSearchFactory.getInstance().index(new FSSMDRepositoryData("url"), smdDocument);
@@ -65,7 +65,7 @@ public class TestIndexSearch {
         File file = new File(url.toURI());
 		Assert.assertTrue("The test file doesn't existe",file.exists());
 		
-		SMDFileDocument smdDocument = new SMDFileDocument(file);
+		SMDFileDocument smdDocument = new SMDFileDocument(file,null);
 
 		Thread.sleep(5000);
 

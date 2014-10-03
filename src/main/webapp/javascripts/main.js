@@ -130,22 +130,35 @@ var handleSearchResults = function(json) {
 			*/
 
 			// Create links
-			if (hit.name) {
-				title = hit.name;
-			} else {
-				title = hit.id;
+//			if (hit.name) {
+//				title = hit.name;
+//			} else {
+//				title = hit.id;
+//			}
+			
+			
+			
+//			if (hit.type==="doc") {
+//                link = '<a target="_blank" href="download?id='+hit.id+'&index='+hit.index+'&content_type=' +
+//                    contentType +'">' +icon+ title+'</a>';
+//			}
+//			if (hit.type==="jira_issue") {
+//				link = '<a target="_blank" href="'+hit.contentType+'">' +icon+ title+'</a>';
+//			}
+//			if (hit.type== null) {
+//                link = '<a target="_blank" href="download?id='+hit.id+'&index='+hit.index+'&content_type=' +
+//                    contentType +'">' +icon+ title+'</a>';
+//			}
+			
+			if(hit.path){
+				 link = "<a target=_blank href="+hit.path+">"+icon + hit.name+"</a>";
+				
+			}else{
+				
+				 link = "<a href='#' >"+icon + hit.name+"</a>";
 			}
-			if (hit.type==="doc") {
-                link = '<a target="_blank" href="download?id='+hit.id+'&index='+hit.index+'&content_type=' +
-                    contentType +'">' +icon+ title+'</a>';
-			}
-			if (hit.type==="jira_issue") {
-				link = '<a target="_blank" href="'+hit.contentType+'">' +icon+ title+'</a>';
-			}
-			if (hit.type== null) {
-                link = '<a target="_blank" href="download?id='+hit.id+'&index='+hit.index+'&content_type=' +
-                    contentType +'">' +icon+ title+'</a>';
-			}
+			
+			 
 			if (hit.highlights) {
 				// add highlight
 				link += '<blockquote>' +hit.highlights.join('<br>')+ '</blockquote>';

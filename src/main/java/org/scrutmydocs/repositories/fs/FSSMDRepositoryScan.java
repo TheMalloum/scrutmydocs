@@ -51,20 +51,21 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
 	@Override
 	public void scrut(SMDRepositoryData data) {
-		
-		
-		if(! (data instanceof FSSMDRepositoryData)) throw new IllegalArgumentException("SMDRepositoryData is not a FSSMDRepositoryData");
-		FSSMDRepositoryData fssmdRepositoryData = (FSSMDRepositoryData)data;
-		
-		
+
+		if (!(data instanceof FSSMDRepositoryData))
+			throw new IllegalArgumentException(
+					"SMDRepositoryData is not a FSSMDRepositoryData");
+		FSSMDRepositoryData fssmdRepositoryData = (FSSMDRepositoryData) data;
+
 		try {
 
-			logger.info("we are scrutting your dyrectory " + fssmdRepositoryData.url + " ....");
+			logger.info("we are scrutting your dyrectory "
+					+ fssmdRepositoryData.url + " ....");
 
 			Date startScarn = new Date();
 
-			List<Path> paths = parcourirDirectory(new File(fssmdRepositoryData.url),
-					fssmdRepositoryData.lastScan);
+			List<Path> paths = parcourirDirectory(new File(
+					fssmdRepositoryData.url), fssmdRepositoryData.lastScan);
 
 			for (Path path : paths) {
 
@@ -76,23 +77,24 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
 					SMDFileDocument smdDocument;
 					try {
-						smdDocument = new SMDFileDocument(file);
+						smdDocument = new SMDFileDocument(file,getpath(file));
 					} catch (FileNotFoundException e) {
 						continue;
 					}
 
-					SMDSearchFactory.getInstance().index(fssmdRepositoryData, smdDocument);
+					SMDSearchFactory.getInstance().index(fssmdRepositoryData,
+							smdDocument);
 				} else {
 					logger.debug("cleanning directory " + path + " ....");
 					// if the directory changes we must to find if documents
 					// were removed
-					cleanDirectory(file,fssmdRepositoryData);
+					cleanDirectory(file, fssmdRepositoryData);
 
 					logger.debug("cleanning directory " + path + " ....");
 					// if the directory changes we must index all files. ( a old
 					// document can be moved without change a last modified
 					// date)
-					indexAllFiles(file,fssmdRepositoryData);
+					indexAllFiles(file, fssmdRepositoryData);
 				}
 
 			}
@@ -103,7 +105,8 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 		} catch (Exception ex) {
 
 			throw new RuntimeException(
-					"can't checkout changes in the directory " + fssmdRepositoryData.url, ex);
+					"can't checkout changes in the directory "
+							+ fssmdRepositoryData.url, ex);
 		}
 	}
 
@@ -140,7 +143,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 		return paths;
 	}
 
-	public void cleanDirectory(File dir,FSSMDRepositoryData fssmdRepositoryData) {
+	public void cleanDirectory(File dir, FSSMDRepositoryData fssmdRepositoryData) {
 
 		if (dir.isFile()) {
 			throw new IllegalArgumentException(
@@ -153,13 +156,14 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 		while (first < total) {
 
 			SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
-					.searchFileByDirectory(fssmdRepositoryData, dir.getAbsolutePath(), first,
-							page);
+					.searchFileByDirectory(fssmdRepositoryData,
+							dir.getAbsolutePath(), first, page);
 			for (SMDDocument smdResponseDocument : searchResponse.smdDocuments) {
 				if (!new File(smdResponseDocument.url).exists()) {
 					logger.debug("remove file " + smdResponseDocument.url
 							+ " ....");
-					SMDSearchFactory.getInstance().delete(fssmdRepositoryData,smdResponseDocument);
+					SMDSearchFactory.getInstance().delete(fssmdRepositoryData,
+							smdResponseDocument);
 				}
 			}
 
@@ -169,7 +173,8 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
 	}
 
-	private void indexAllFiles(File dir,FSSMDRepositoryData fssmdRepositoryData) throws IOException {
+	private void indexAllFiles(File dir, FSSMDRepositoryData fssmdRepositoryData)
+			throws IOException {
 
 		if (dir.isFile()) {
 			throw new IllegalArgumentException(
@@ -180,13 +185,17 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 			if (file.isFile()) {
 				try {
 					SMDSearchFactory.getInstance().index(fssmdRepositoryData,
-							new SMDFileDocument(file));
+							new SMDFileDocument(file,getpath(file)));
 				} catch (FileNotFoundException e) {
 					continue;
 				}
 			}
 		}
 
+	}
+
+	public String getpath(File file) {
+		return "file://" + file.getAbsolutePath();
 	}
 
 }

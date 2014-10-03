@@ -164,6 +164,7 @@ public class ElasticSearchImpl implements SMDSearchService
 					(String) searchHit.getSource().get("name"),
 					(String) searchHit.getSource().get("url"),
 					(String) searchHit.getSource().get("contentType"),
+					(String) searchHit.getSource().get("path"),
 					highlights);
 			documents.add(smdResponseDocument);
 		}

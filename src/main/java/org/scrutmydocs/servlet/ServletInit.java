@@ -27,8 +27,8 @@ public class ServletInit extends HttpServlet {
 			logger.info("index NOTICE AND LICENCE ....");
 
 			
-			SMDFileDocument LICENCE = new SMDFileDocument(ServletInit.class.getClassLoader().getResourceAsStream("LICENSE"),"LICENCE");
-			SMDFileDocument NOTICE  = new SMDFileDocument(ServletInit.class.getClassLoader().getResourceAsStream("NOTICE"),"NOTICE");
+			SMDFileDocument LICENCE = new SMDFileDocument(ServletInit.class.getClassLoader().getResourceAsStream("LICENSE"),"LICENCE",null);
+			SMDFileDocument NOTICE  = new SMDFileDocument(ServletInit.class.getClassLoader().getResourceAsStream("NOTICE"),"NOTICE",null);
 
 			SMDSearchFactory.getInstance().index(new UploadSMDData(), LICENCE);
 			SMDSearchFactory.getInstance().index(new UploadSMDData(), NOTICE);
