@@ -112,12 +112,12 @@ var openFSRiver = function(id) {
 	$("#"+id).addClass("active");
 
 	var riverId = id.substring("river-fs-".length);
-	$.getJSON("api/2/repositories/rivers/fs/" + riverId, function(json) {
+	$.getJSON("api/2/repositories/" + riverId, function(json) {
 		// Handle errors
-		if (!json.ok) {
-			showRestError(json);
-			return;
-		}
+//		if (!json.ok) {
+//			showRestError(json);
+//			return;
+//		}
 
 		$("#river-detail").children().each(function(index, elt) {
 			$(elt).hide();
@@ -128,7 +128,7 @@ var openFSRiver = function(id) {
 		$("#btnFSRiverDelete").show();
 		$("#btnFSRiverUpdate").show();
 
-		showFSRiver(json.object);
+		showFSRiver(json);
 
 		// Display
 		$("#river-fs-detail").show();
@@ -151,23 +151,23 @@ var showFSRiver = function(fsriver) {
 	}
 
 	// Fields
-	$("#river-fs-detail h3").text(fsriver.name);
+//	$("#river-fs-detail h3").text(fsriver.name);
 	$("#river-fs-id").val(fsriver.id);
-	$("#river-fs-name").val(fsriver.name);
-    $("#river-fs-protocol").val(fsriver.protocol);
-    $("#river-fs-server").val(fsriver.server);
+//	$("#river-fs-name").val(fsriver.name);
+//    $("#river-fs-protocol").val(fsriver.protocol);
+//    $("#river-fs-server").val(fsriver.server);
 //    $("#river-fs-username").val(fsriver.username);
 //    $("#river-fs-password").val(fsriver.password);
-    if (fsriver.protocol == "ssh") {
-        $("#river-fs-ssh").show();
-    } else {
+//    if (fsriver.protocol == "ssh") {
+//        $("#river-fs-ssh").show();
+//    } else {
         $("#river-fs-ssh").hide();
-    }
+//    }
 	$("#river-fs-path").val(fsriver.url);
-	$("#river-fs-rates").val(fsriver.updateRate);
+//	$("#river-fs-rates").val(fsriver.updateRate);
 
 //	$("#river-fs-index").val(fsriver.indexname);
-	$("#river-fs-type").val(fsriver.typename);
+//	$("#river-fs-type").val(fsriver.typename);
 	$("#river-fs-analyser").val(fsriver.analyzer);
 	$("#river-fs-includes").val(fsriver.includes);
 	$("#river-fs-excludes").val(fsriver.excludes);
@@ -182,7 +182,7 @@ var getFSRiver = function() {
 
 	return {
 		type : "fs",
-//		name: $("#river-fs-name").val(),
+		id: id,
 //        protocol: $("#river-fs-protocol").val(),
 //        server: $("#river-fs-server").val(),
 //        username: $("#river-fs-username").val(),
@@ -233,7 +233,7 @@ var doCreateFSRiver = function(e) {
 			showNotices([{
 				type: "alert-success",
 				title: data.name + " created",
-				message : "The file system river '"+data.name+"' have been created."
+				message : "The file system river  have been created."
 			}]);
 			
 			
@@ -249,21 +249,21 @@ var doCreateFSRiver = function(e) {
 var doDeleteFSRiver = function(e) {
 	var data = getFSRiver();
 	$.ajax({
-		url: "api/2/repositories/rivers/fs/" + data.id,
+		url: "api/2/repositories/" + data.id,
 		type: "DELETE",
 		success: function(json) {
 			// Handle errors
-			if (!json.ok) {
-				showRestError(json);
-				return;
-			}
+//			if (!json.ok) {
+//				showRestError(json);
+//				return;
+//			}
 			$("#river-fs-"+data.id).remove();
 			$("#river-fs-detail").hide();
 
 			showNotices([{
 				type: "alert-success",
-				title: data.name + " deleted",
-				message : "The file system river '"+data.name+"' have been deleted."
+				title: data.url + " deleted",
+				message : "The file system river have been deleted."
 			}]);
 		}
 	});
@@ -282,20 +282,28 @@ var doUpdateFSRiver = function(e) {
 	}
 	
 	var data = getFSRiver();
-	$.postJSON("api/2/repositories/rivers/fs/", data, function(json) {
+	
+
+	$.ajax({
+	    type: "PUT",
+	    url: "api/2/repositories/",
+	    contentType: "application/json",
+	    data: JSON.stringify(data),
+	    succes : function(json) {
 		// Handle errors
-		if (!json.ok) {
-			showRestError(json);
-			return;
-		}
+//		if (!json.ok) {
+//			showRestError(json);
+//			return;
+//		}
 
 		updateFSRiverMenu(data);
 
 		showNotices([{
 			type: "alert-success",
-			title: data.name + " updated",
-			message : "The file system river '"+data.name+"' have been updated."
+			title: data.url + " updated",
+			message : "The file system river  have been updated."
 		}]);
+		}
 	});
 
 	// Stop Event
@@ -308,20 +316,20 @@ var doStartFSRiver = function(e) {
 	$("#btnFSRiverStart").button("loading");
 	var data = getFSRiver();
 	data.start = true;
-	$.getJSON("api/2/repositories/rivers/fs/" + data.id + "/start", null, function (json){
+	$.postJSON("api/2/repositories/" + data.id + "/start", null, function (json){
 		// Handle errors
-		if (!json.ok) {
-			showRestError(json);
-			return;
-		}
+//		if (!json.ok) {
+//			showRestError(json);
+//			return;
+//		}
 
 		showFSRiver(data);
 		updateFSRiverMenu(data);
 
 		showNotices([{
 			type: "alert-success",
-			title: data.name + " started",
-			message : "The file system river '"+data.name+"' have been started."
+			title: data.url + " started",
+			message : "The file system river have been started."
 		}]);
 	});
 	
@@ -335,20 +343,20 @@ var doStopFSRiver = function(e) {
 	$("#btnFSRiverStop").button("loading");
 	var data = getFSRiver();
 	data.start = false;
-	$.getJSON("api/2/repositories/rivers/fs/" + data.id + "/stop", null, function (json){
+	$.postJSON("api/2/repositories/" + data.id + "/stop", null, function (json){
 		// Handle errors
-		if (!json.ok) {
-			showRestError(json);
-			return;
-		}
+//		if (!json.ok) {
+//			showRestError(json);
+//			return;
+//		}
 	
 		showFSRiver(data);
 		updateFSRiverMenu(data);
 
 		showNotices([{
 			type: "alert-success",
-			title: data.name + " stopped",
-			message : "The file system river '"+data.name+"' have been stopped."
+			title: data.url + " stopped",
+			message : "The file system river have been stopped."
 		}]);
 	});
 	

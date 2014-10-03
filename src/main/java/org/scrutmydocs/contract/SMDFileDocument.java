@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 @JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
 public class SMDFileDocument extends SMDDocument {
 
-	public final String id;
 	public final String pathDirectory;
 	public final String content;
 	public final Date date;
@@ -28,7 +27,6 @@ public class SMDFileDocument extends SMDDocument {
 		super(file.getName(), file.getAbsolutePath(), URLConnection
 				.guessContentTypeFromStream(new FileInputStream(file)));
 
-		id = null;
 		this.content = FileUtils.readFileToString(file, "UTF-8");
 		this.date = new Date(file.lastModified());
 		this.pathDirectory = file.getParent();
@@ -38,7 +36,6 @@ public class SMDFileDocument extends SMDDocument {
 			IOException {
 		super(file.getName(), file.getName(), file.getContentType());
 
-		id = null;
 		this.content = IOUtils.toString(file.get(), "UTF-8");
 		this.date = new Date();
 		this.pathDirectory = null;
@@ -55,7 +52,6 @@ public class SMDFileDocument extends SMDDocument {
 		if (is == null) {
 			throw new IllegalArgumentException("A document can't be null");
 		}
-		id = null;
 		this.content = IOUtils.toString(is, "UTF-8");
 		this.date = new Date();
 		this.pathDirectory = null;

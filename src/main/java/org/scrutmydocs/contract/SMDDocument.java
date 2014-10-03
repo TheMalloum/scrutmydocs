@@ -4,6 +4,7 @@ import java.util.Collection;
 
 public class SMDDocument {
 
+	public final String id;
 	public final String name;
 	public final String url;
 	public final String contentType;
@@ -15,6 +16,7 @@ public class SMDDocument {
 			throw new IllegalArgumentException(
 					"type can't be null for a SMDResponseDocument");
 		}
+		this.id = null;
 		this.name = name;
 		this.url = url;
 		this.contentType = contentType;
@@ -26,6 +28,7 @@ public class SMDDocument {
 			throw new IllegalArgumentException(
 					"type can't be null for a SMDResponseDocument");
 		}
+		this.id = null;
 		this.name = name;
 		this.url = url;
 		this.contentType = contentType;

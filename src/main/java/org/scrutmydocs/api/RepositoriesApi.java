@@ -22,6 +22,7 @@ package org.scrutmydocs.api;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
@@ -96,7 +97,7 @@ public class RepositoriesApi {
 	 * @return
 	 */
 	@GET
-	@Path("/{url}")
+	@Path("/{id}")
 	public Response get(@PathParam("id") String url) throws Exception {
 
 		return Response.ok(getSettings(url)).build();
@@ -148,15 +149,14 @@ public class RepositoriesApi {
 	 */
 	@DELETE
 	@Path("/{id}")
-	public void delete(@PathParam("id") String id,
-			SMDRepositoryData repositoryData) throws Exception {
+	public void delete(@PathParam("id") String id) throws Exception {
 
-		SMDSearchFactory.getInstance().delete(repositoryData, id);
+		SMDRepositoriesFactory.getInstance().deleteRepository(getSettings(id));
 
 	}
 
 	/**
-	 * add a repositoy to scan on scrutmydocs
+	 * add or update a repositoy to scan on scrutmydocs
 	 * 
 	 * @param newRepository
 	 * @throws Exception
@@ -165,30 +165,14 @@ public class RepositoriesApi {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void put(SMDRepositoryData newRepository) throws Exception {
 
-		if (newRepository.id != null) {
-			throw new BadRequestException("You can't repository with an id");
+		if (newRepository.id == null) {
+			newRepository.id = UUID.randomUUID().toString();
 		}
-
+		
 		SMDRepositoriesFactory.getInstance().save(newRepository);
 	}
 
-	/**
-	 * update a repositoy to scan on scrutmydocs
-	 * 
-	 * @return
-	 */
-
-	@PUT
-	public Response update(SMDRepositoryData newRepository) throws Exception {
-
-		// verification
-		SMDRepositoryData repository = getSettings(newRepository.id);
-
-		newRepository.id = repository.id;
-		SMDRepositoriesFactory.getInstance().save(newRepository);
-
-		return Response.ok(newRepository).build();
-	}
+	
 
 	/**
 	 * 
@@ -197,7 +181,7 @@ public class RepositoriesApi {
 	 * @throws Exception
 	 */
 	@POST
-	@Path("/start/{id}")
+	@Path("{id}/start")
 	public void start(@PathParam("id") String id) throws Exception {
 
 		SMDRepositoryData setting = getSettings(id);
@@ -214,12 +198,12 @@ public class RepositoriesApi {
 	 */
 
 	@POST
-	@Path("/stop/{id}")
+	@Path("/{id}/stop")
 	public void stop(@PathParam("id") String id) throws Exception {
 
 		SMDRepositoryData setting = getSettings(id);
 
-		setting.start();
+		setting.stop();
 		SMDRepositoriesFactory.getInstance().save(setting);
 	}
 

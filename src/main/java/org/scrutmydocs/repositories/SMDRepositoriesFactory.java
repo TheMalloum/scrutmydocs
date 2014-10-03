@@ -28,7 +28,7 @@ public class SMDRepositoriesFactory {
      */
 	public static synchronized SMDRepositoriesService getInstance() {
 		if (repositoriesService == null) {
-			repositoriesService = new ElasticSearchImpl();
+			repositoriesService = new ElasticRepositoryImpl();
 		}
 
 		return repositoriesService;

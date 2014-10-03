@@ -56,14 +56,12 @@ import org.scrutmydocs.repositories.SMDRepositoryData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ElasticSearchImpl implements SMDSearchService,
-		SMDRepositoriesService {
+public class ElasticSearchImpl implements SMDSearchService
+		 {
 
 	protected Logger logger = LogManager.getLogger();
 
 	final public static String SMDINDEX = "scrutmydocs-docs";
-	final public static String SMDADMIN = "scrutmydocs-admin";
-	final public static String SMDADMIN_REPOSITORIES = "repositories";
 
 	private Client esClient;
 
@@ -77,16 +75,7 @@ public class ElasticSearchImpl implements SMDSearchService,
 				.execute().actionGet();
 
 		createIndex(SMDINDEX);
-		createIndex(SMDADMIN);
 
-//		Collection<SMDRepositoryScan> all = SMDRepositoriesFactory
-//				.getAllRepositories().values();
-//
-//		for (SMDRepositoryScan plugin : all) {
-//			mapper.addMixInAnnotations(plugin.getClass(),
-//					SMDRepositoryScan.class);
-//			logger.info("  -> adding plugin {}", plugin);
-//		}
 
 		this.bulk = new BulkProcessor.Builder(esClient,
 				new BulkProcessor.Listener() {
@@ -211,28 +200,26 @@ public class ElasticSearchImpl implements SMDSearchService,
 
 	}
 
+	
 	@Override
-	public void delete(SMDRepositoryData repository, String id) {
+	public void delete(SMDRepositoryData repository,SMDDocument document) {
 
 		if (logger.isDebugEnabled())
-			logger.debug("delete({})", id);
+			logger.debug("delete({})", document.url);
 
-		if (id == null || id.isEmpty()) {
-			throw new IllegalArgumentException(
-					"The id of document can't be null or empty");
-		}
+		
 
 		try {
-			bulk.add(new DeleteRequest(SMDINDEX, repository.type, id));
+			bulk.add(new DeleteRequest(SMDINDEX, repository.type,document.id));
 		} catch (Exception e) {
-			logger.warn("Can not delete document {} of type  {}", id,
+			logger.warn("Can not delete document {} of type  {}", repository.id,
 					repository.type);
-			throw new RuntimeException("Can not delete document : " + id
+			throw new RuntimeException("Can not delete document : " + repository.id
 					+ "whith type " + repository.type + ": " + e.getMessage());
 		}
 
 		if (logger.isDebugEnabled())
-			logger.debug("/delete()={}", id);
+			logger.debug("/delete()={}", repository.id);
 
 	}
 
@@ -278,67 +265,7 @@ public class ElasticSearchImpl implements SMDSearchService,
 
 	}
 
-	@Override
-	public List<SMDRepositoryData> getRepositories() {
-		try {
-			org.elasticsearch.action.search.SearchResponse searchHits = esClient
-					.prepareSearch(SMDADMIN).setTypes(SMDADMIN_REPOSITORIES)
-					.execute().actionGet();
+	
 
-			if (searchHits.getHits().totalHits() == 0) {
-				return null;
-			}
-
-			List<SMDRepositoryData> plugins = new ArrayList<SMDRepositoryData>();
-			for (SearchHit searchHit : searchHits.getHits()) {
-				plugins.add(mapper.readValue(
-						searchHit.getSourceAsString(),
-						SMDRepositoriesFactory.getAllTypeRepositories().get(
-								searchHit.getSource().get("type"))));
-			}
-
-			return plugins;
-		} catch (Exception e) {
-			logger.error("Can not checkout the configuration.", e);
-			throw new RuntimeException("Can not checkout the configuration.");
-		}
-	}
-
-	@Override
-	public void save(SMDRepositoryData repository) {
-		try {
-			esClient.prepareIndex(SMDADMIN, SMDADMIN_REPOSITORIES)
-					.setSource(mapper.writeValueAsString(repository)).execute()
-					.actionGet();
-		} catch (Exception e) {
-			throw new RuntimeException("Can not save the configuration.");
-		}
-	}
-
-	@Override
-	public SMDRepositoryData get(String id) {
-
-		if (id == null) {
-			throw new IllegalArgumentException(
-					"you can't search a repository with null id");
-		}
-
-		try {
-			GetResponse response = esClient
-					.prepareGet(SMDADMIN, SMDADMIN_REPOSITORIES, id)
-					.setOperationThreaded(false).execute().actionGet();
-
-			if (!response.isExists())
-				return null;
-
-			return mapper.readValue(
-					response.getSourceAsString(),
-					SMDRepositoriesFactory.getAllTypeRepositories().get(
-							response.getSource().get("type")));
-		} catch (Exception e) {
-			throw new RuntimeException("Can not save the configuration.", e);
-		}
-
-	}
 
 }

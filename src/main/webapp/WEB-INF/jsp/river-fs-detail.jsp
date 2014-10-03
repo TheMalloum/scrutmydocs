@@ -17,13 +17,13 @@
             <fieldset class="span6">
                 <legend>General</legend>
                 <input id="river-fs-id" type="hidden" value=""/>
-                <div class="control-group">
-                    <label class="control-label" for="river-fs-name">Name</label>
-                    <div class="controls">
-                        <input class="input" id="river-fs-name" type="text" placeholder="Name" required/>
-                        <span class="help-inline"></span>
-                    </div>
-                </div>
+<!--                 <div class="control-group"> -->
+<!--                     <label class="control-label" for="river-fs-name">Name</label> -->
+<!--                     <div class="controls"> -->
+<!--                         <input class="input" id="river-fs-name" type="text" placeholder="Name" required/> -->
+<!--                         <span class="help-inline"></span> -->
+<!--                     </div> -->
+<!--                 </div> -->
 <!--                 <div class="control-group"> -->
 <!--                     <label class="control-label" for="river-fs-protocol">Protocol</label> -->
 <!--                     <div class="controls"> -->

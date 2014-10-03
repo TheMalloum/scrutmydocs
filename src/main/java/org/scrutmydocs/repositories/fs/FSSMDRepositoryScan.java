@@ -159,8 +159,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 				if (!new File(smdResponseDocument.url).exists()) {
 					logger.debug("remove file " + smdResponseDocument.url
 							+ " ....");
-					SMDSearchFactory.getInstance().delete(fssmdRepositoryData,
-							smdResponseDocument.url);
+					SMDSearchFactory.getInstance().delete(fssmdRepositoryData,smdResponseDocument);
 				}
 			}
 

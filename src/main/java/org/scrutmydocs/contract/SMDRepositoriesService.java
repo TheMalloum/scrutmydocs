@@ -12,5 +12,7 @@ public interface SMDRepositoriesService {
 	public List<SMDRepositoryData>  getRepositories();
 
 	public SMDRepositoryData get(String id);
-	
+
+	public void deleteRepository(SMDRepositoryData repository);
+
 }
