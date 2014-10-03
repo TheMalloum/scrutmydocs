@@ -19,8 +19,10 @@
 
 package org.scrutmydocs.repositories.fs;
 
-import org.scrutmydocs.repositories.SMDRegisterRepositoryData;
 import org.scrutmydocs.repositories.SMDRepositoryData;
+import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryData;
+
+import com.sun.istack.NotNull;
 
 /**
  * Implement the DropBox ScrutMyDocs Data Source
@@ -33,13 +35,15 @@ public class FSSMDRepositoryData extends SMDRepositoryData {
 
 	public FSSMDRepositoryData(String absolutePath) {
 		this.url = absolutePath;
+		this.type="fs";
 	}
 
 	public FSSMDRepositoryData() {
+		this.type="fs";
 	}
 
-	public String id;
 
+	@NotNull
 	public String url;
 
 	public String includes;

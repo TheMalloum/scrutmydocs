@@ -24,39 +24,39 @@
                         <span class="help-inline"></span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="river-fs-protocol">Protocol</label>
-                    <div class="controls">
-                        <select id="river-fs-protocol" required>
-                            <option value="local">Local</option>
-                            <option value="ssh">SSH</option>
-                        </select>
-                        <span class="help-inline"></span>
-                    </div>
-                </div>
-                <div id="river-fs-ssh">
-                    <div class="control-group">
-                        <label class="control-label" for="river-fs-server">Server</label>
-                        <div class="controls">
-                            <input class="input" id="river-fs-server" type="text" placeholder="localhost" />
-                            <span class="help-inline"></span>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="river-fs-username">Login</label>
-                        <div class="controls">
-                            <input class="input" id="river-fs-username" type="text" placeholder="login" />
-                            <span class="help-inline"></span>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="river-fs-password">Password</label>
-                        <div class="controls">
-                            <input class="input" id="river-fs-password" type="password" />
-                            <span class="help-inline"></span>
-                        </div>
-                    </div>
-                </div>
+<!--                 <div class="control-group"> -->
+<!--                     <label class="control-label" for="river-fs-protocol">Protocol</label> -->
+<!--                     <div class="controls"> -->
+<!--                         <select id="river-fs-protocol" required> -->
+<!--                             <option value="local">Local</option> -->
+<!--                             <option value="ssh">SSH</option> -->
+<!--                         </select> -->
+<!--                         <span class="help-inline"></span> -->
+<!--                     </div> -->
+<!--                 </div> -->
+<!--                 <div id="river-fs-ssh"> -->
+<!--                     <div class="control-group"> -->
+<!--                         <label class="control-label" for="river-fs-server">Server</label> -->
+<!--                         <div class="controls"> -->
+<!--                             <input class="input" id="river-fs-server" type="text" placeholder="localhost" /> -->
+<!--                             <span class="help-inline"></span> -->
+<!--                         </div> -->
+<!--                     </div> -->
+<!--                     <div class="control-group"> -->
+<!--                         <label class="control-label" for="river-fs-username">Login</label> -->
+<!--                         <div class="controls"> -->
+<!--                             <input class="input" id="river-fs-username" type="text" placeholder="login" /> -->
+<!--                             <span class="help-inline"></span> -->
+<!--                         </div> -->
+<!--                     </div> -->
+<!--                     <div class="control-group"> -->
+<!--                         <label class="control-label" for="river-fs-password">Password</label> -->
+<!--                         <div class="controls"> -->
+<!--                             <input class="input" id="river-fs-password" type="password" /> -->
+<!--                             <span class="help-inline"></span> -->
+<!--                         </div> -->
+<!--                     </div> -->
+<!--                 </div> -->
                 <div class="control-group">
                     <label class="control-label" for="river-fs-path">Path</label>
                     <div class="controls">
@@ -64,37 +64,37 @@
                         <span class="help-inline"></span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="river-fs-rates">Update Rates</label>
-                    <div class="controls">
-                        <div class="input-append">
-                            <%-- <input class="input" id="river-fs-rates" type="range" value="60" min="1" max="600" required/> --%>
+<!--                 <div class="control-group"> -->
+<!--                     <label class="control-label" for="river-fs-rates">Update Rates</label> -->
+<!--                     <div class="controls"> -->
+<!--                         <div class="input-append"> -->
+<%--                             <input class="input" id="river-fs-rates" type="range" value="60" min="1" max="600" required/> --%>
 
-                            <input class="input" id="river-fs-rates" type="text" value="60" required/>
-                            <span class="add-on">min.</span>
-                        </div>
-                        <div id="river-fs-rates-slider"></div>
-                        <span class="help-inline"></span>
-                    </div>
-                </div>
+<!--                             <input class="input" id="river-fs-rates" type="text" value="60" required/> -->
+<!--                             <span class="add-on">min.</span> -->
+<!--                         </div> -->
+<!--                         <div id="river-fs-rates-slider"></div> -->
+<!--                         <span class="help-inline"></span> -->
+<!--                     </div> -->
+<!--                 </div> -->
             </fieldset>
             <%-- Advanced --%>
             <fieldset class="span6">
                 <legend>Advanced</legend>
-                <div class="control-group">
-                    <label class="control-label" for="river-fs-index">Index</label>
-                    <div class="controls">
-                        <input class="input" id="river-fs-index" type="text" placeholder="Index" required/>
-                        <span class="help-inline"></span>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="river-fs-type">Type</label>
-                    <div class="controls">
-                        <input class="input" id="river-fs-type" type="text" placeholder="Type" required/>
-                        <span class="help-inline"></span>
-                    </div>
-                </div>
+<!--                 <div class="control-group"> -->
+<!--                     <label class="control-label" for="river-fs-index">Index</label> -->
+<!--                     <div class="controls"> -->
+<!--                         <input class="input" id="river-fs-index" type="text" placeholder="Index" required/> -->
+<!--                         <span class="help-inline"></span> -->
+<!--                     </div> -->
+<!--                 </div> -->
+<!--                 <div class="control-group"> -->
+<!--                     <label class="control-label" for="river-fs-type">Type</label> -->
+<!--                     <div class="controls"> -->
+<!--                         <input class="input" id="river-fs-type" type="text" placeholder="Type" required/> -->
+<!--                         <span class="help-inline"></span> -->
+<!--                     </div> -->
+<!--                 </div> -->
                 <div class="control-group">
                     <label class="control-label" for="river-fs-analyser">Analyser</label>
                     <div class="controls">

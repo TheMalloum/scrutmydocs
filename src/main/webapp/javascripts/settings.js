@@ -10,23 +10,23 @@ $(function() {
 	initRiverFS();
 
     // River Jira
-	initRiverJira();
+//	initRiverJira();
 
 	// River DropBox
-	initRiverDropBox();
+//	initRiverDropBox();
 	
 	// River Google Drive
-	initRiverDrive();
+//	initRiverDrive();
 	
 	// River S3
-	initRiverS3();
+//	initRiverS3();
 
 	// Create Rivers button
-	$(".dropdown-toggle").dropdown();
+//	$(".dropdown-toggle").dropdown();
 	$("#btnAddFSRiver").click(addFSRiver);
-	$("#btnAddJiraRiver").click(addJiraRiver);	
-	$("#btnAddDropBoxRiver").click(addDropBoxRiver);
-	$("#btnAddDriveRiver").click(addDriveRiver);
-	$("#btnAddS3River").click(addS3River);
+//	$("#btnAddJiraRiver").click(addJiraRiver);	
+//	$("#btnAddDropBoxRiver").click(addDropBoxRiver);
+//	$("#btnAddDriveRiver").click(addDriveRiver);
+//	$("#btnAddS3River").click(addS3River);
 });
 

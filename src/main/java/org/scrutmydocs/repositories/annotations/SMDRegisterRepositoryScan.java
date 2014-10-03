@@ -1,4 +1,4 @@
-package org.scrutmydocs.repositories;
+package org.scrutmydocs.repositories.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface SMDRegisterRepositoryData {
+public @interface SMDRegisterRepositoryScan {
 
 	public String name();
 

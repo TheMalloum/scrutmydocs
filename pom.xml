@@ -160,10 +160,18 @@
 
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jackson-provider</artifactId>
+			<artifactId>resteasy-client</artifactId>
 			<version>${resteasy.version}</version>
-
+			<scope>junit</scope>
 		</dependency>
+
+
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.jboss.resteasy</groupId> -->
+<!-- 			<artifactId>resteasy-jackson-provider</artifactId> -->
+<!-- 			<version>${resteasy.version}</version> -->
+
+<!-- 		</dependency> -->
 
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>

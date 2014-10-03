@@ -15,10 +15,10 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.reflections.Reflections;
-import org.scrutmydocs.repositories.SMDRegisterRepositoryScan;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.repositories.SMDRepositoryData;
 import org.scrutmydocs.repositories.SMDRepositoryScan;
+import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryScan;
 
 public class ScanDocuments implements Job {
 	private Logger logger = LogManager.getLogger(ScanDocuments.class);

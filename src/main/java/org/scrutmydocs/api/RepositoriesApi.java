@@ -20,9 +20,11 @@
 package org.scrutmydocs.api;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -39,6 +41,8 @@ import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.repositories.SMDRepositoryData;
 import org.scrutmydocs.search.SMDSearchFactory;
+
+import com.sun.istack.NotNull;
 
 @Path("/2/repositories")
 public class RepositoriesApi {
@@ -57,15 +61,45 @@ public class RepositoriesApi {
 	}
 
 	/**
+	 * Get all repositoy scan bu scrutmydocs
+	 * 
+	 * @return
+	 */
+	@Path("/_all_by_type/{type}")
+	@GET
+	public Response getAllByType(@PathParam("type") String type) throws Exception {
+		
+		List<SMDRepositoryData> reposytoriesType = new ArrayList<SMDRepositoryData>();
+		
+		List<SMDRepositoryData> reposytories = SMDRepositoriesFactory.getInstance().getRepositories();
+		
+		
+		
+		if(reposytories==null || reposytories.size() == 0){
+			return Response.ok(reposytoriesType).build(); 
+		}
+		
+		for (SMDRepositoryData reposytory : reposytories) {
+			if(reposytory.type.equals(type)){
+
+				reposytoriesType.add(reposytory);
+			
+			}	}
+		
+		
+		return Response.ok(reposytoriesType).build();
+	}
+
+	/**
 	 * Get settings
 	 * 
 	 * @return
 	 */
 	@GET
-	@Path("/{id}")
-	public Response get(@PathParam("id") String id) throws Exception {
+	@Path("/{url}")
+	public Response get(@PathParam("id") String url) throws Exception {
 
-		return Response.ok(getSettings(id)).build();
+		return Response.ok(getSettings(url)).build();
 	}
 
 	/**
@@ -86,13 +120,17 @@ public class RepositoriesApi {
 
 		if (repo == null) {
 
+			throw new NotFoundException("the repository doesn't existe ("
+					+ type + ")");
 		}
-		tab = new String[repo.getDeclaredFields().length][2];
+		tab = new String[repo.getDeclaredFields().length][3];
 
 		int i = 0;
 		for (Field field : repo.getDeclaredFields()) {
 			tab[i][0] = field.getName();
 			tab[i][1] = field.getType().toString();
+			tab[i][2] = field.isAnnotationPresent(NotNull.class) ? "required"
+					: "not required";
 			i++;
 		}
 
@@ -124,6 +162,7 @@ public class RepositoriesApi {
 	 * @throws Exception
 	 */
 	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
 	public void put(SMDRepositoryData newRepository) throws Exception {
 
 		if (newRepository.id != null) {
@@ -195,4 +234,5 @@ public class RepositoriesApi {
 
 		return plugin;
 	}
+
 }

@@ -1,5 +1,7 @@
 package org.scrutmydocs.repositories;
 
+import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryScan;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "class")

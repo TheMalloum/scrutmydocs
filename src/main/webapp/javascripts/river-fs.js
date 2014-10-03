@@ -17,8 +17,8 @@ var addFSRiver = function() {
 		name: "FS river",
         protocol: "local",
 		updateRate: 60,
-		indexname: "docs",
-		typename: "doc",
+//		indexname: "docs",
+//		typename: "doc",
 		analyzer: "standard"
 	});
 
@@ -73,14 +73,14 @@ var initRiverFS = function(){
 	$("#btnFSRiverUpdate").click(doUpdateFSRiver);
 
 	// Load rivers
-	$.getJSON("api/2/repositories/rivers/fs",function(json) {
+	$.getJSON("api/2/repositories/_all_by_type/fs",function(json) {
 		// Handle errors
-		if (!json.ok) {
-			showRestError(json);
-			return;
-		}
+//		if (!json.ok) {
+//			showRestError(json);
+//			return;
+//		}
 		// Update rivers-fs Menu
-		$.each(json.object, function(index, fsriver) {
+		$.each(json, function(index, fsriver) {
 			insertFSRiver(fsriver);
 		});
 	});
@@ -91,7 +91,7 @@ var insertFSRiver = function(fsriver) {
 	if (fsriver.start===true) {
 		status = '&nbsp;<span class="badge badge-success"></span>';
 	}
-	$('<li id="river-fs-'+fsriver.id+'"><a href="#"><i class="icon-folder-open"></i> '+fsriver.name+status+'</a></li>')
+	$('<li id="river-fs-'+fsriver.id+'"><a href="#"><i class="icon-folder-open"></i> '+fsriver.url+'</a></li>')
 		.insertAfter("#rivers-fs")
 		.click(function() {
 			var id = $(this).attr("id");
@@ -103,7 +103,7 @@ var updateFSRiverMenu = function(fsriver) {
 	if (fsriver.start===true) {
 		status = '&nbsp;<span class="badge badge-success"></span>';
 	}
-	$("#river-fs-"+fsriver.id).empty().append('<a href="#"><i class="icon-folder-open"></i> '+fsriver.name+status+'</a>');
+	$("#river-fs-"+fsriver.url).empty().append('<a href="#"><i class="icon-folder-open"></i> '+fsriver.start+'</a>');
 }
 
 // Show the FS River
@@ -156,8 +156,8 @@ var showFSRiver = function(fsriver) {
 	$("#river-fs-name").val(fsriver.name);
     $("#river-fs-protocol").val(fsriver.protocol);
     $("#river-fs-server").val(fsriver.server);
-    $("#river-fs-username").val(fsriver.username);
-    $("#river-fs-password").val(fsriver.password);
+//    $("#river-fs-username").val(fsriver.username);
+//    $("#river-fs-password").val(fsriver.password);
     if (fsriver.protocol == "ssh") {
         $("#river-fs-ssh").show();
     } else {
@@ -166,7 +166,7 @@ var showFSRiver = function(fsriver) {
 	$("#river-fs-path").val(fsriver.url);
 	$("#river-fs-rates").val(fsriver.updateRate);
 
-	$("#river-fs-index").val(fsriver.indexname);
+//	$("#river-fs-index").val(fsriver.indexname);
 	$("#river-fs-type").val(fsriver.typename);
 	$("#river-fs-analyser").val(fsriver.analyzer);
 	$("#river-fs-includes").val(fsriver.includes);
@@ -181,16 +181,16 @@ var getFSRiver = function() {
 	}
 
 	return {
-		id : id,
-		name: $("#river-fs-name").val(),
-        protocol: $("#river-fs-protocol").val(),
-        server: $("#river-fs-server").val(),
-        username: $("#river-fs-username").val(),
-        password: $("#river-fs-password").val(),
+		type : "fs",
+//		name: $("#river-fs-name").val(),
+//        protocol: $("#river-fs-protocol").val(),
+//        server: $("#river-fs-server").val(),
+//        username: $("#river-fs-username").val(),
+//        password: $("#river-fs-password").val(),
 		url: $("#river-fs-path").val(),
-		updateRate: $("#river-fs-rates").val(),
-		indexname: $("#river-fs-index").val(),
-		typename: $("#river-fs-type").val(),
+//		updateRate: $("#river-fs-rates").val(),
+//		indexname: $("#river-fs-index").val(),
+//		typename: $("#river-fs-type").val(),
 		analyzer: $("#river-fs-analyser").val(),
 		includes: $("#river-fs-includes").val(),
 		excludes: $("#river-fs-excludes").val()
@@ -208,28 +208,39 @@ var doCreateFSRiver = function(e) {
 
 	var data = getFSRiver();
 	data.start = false;
-	$.postJSON("api/2/repositories/rivers/fs/", data, function(json) {
-		// Handle errors
-		if (!json.ok) {
-			showRestError(json);
-			return;
+	
+	
+	$.ajax({
+	    type: "PUT",
+	    url: "api/2/repositories/",
+	    contentType: "application/json",
+	    data: JSON.stringify(data),
+	    succes : function(json) {
+			// Handle errors
+			if (!json.ok) {
+				showRestError(json);
+				return;
+			}
+			insertFSRiver(data);
+			$("#river-fs-"+data.id).addClass("active");
+			showFSRiver(data);
+			
+			// Buttons
+			$("#btnFSRiverCreate").hide();
+			$("#btnFSRiverDelete").show();
+			$("#btnFSRiverUpdate").show();
+
+			showNotices([{
+				type: "alert-success",
+				title: data.name + " created",
+				message : "The file system river '"+data.name+"' have been created."
+			}]);
+			
+			
 		}
-		insertFSRiver(data);
-		$("#river-fs-"+data.id).addClass("active");
-		showFSRiver(data);
-		
-		// Buttons
-		$("#btnFSRiverCreate").hide();
-		$("#btnFSRiverDelete").show();
-		$("#btnFSRiverUpdate").show();
-
-		showNotices([{
-			type: "alert-success",
-			title: data.name + " created",
-			message : "The file system river '"+data.name+"' have been created."
-		}]);
 	});
-
+	
+	
 	// Stop Event
 	e.preventDefault();
 	return false;

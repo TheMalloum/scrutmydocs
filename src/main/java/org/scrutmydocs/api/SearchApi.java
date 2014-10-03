@@ -48,8 +48,8 @@ public class SearchApi {
 	public Response search(SMDSearchQuery query) {
 		SMDSearchResponse results = null;
 
-		results = SMDSearchFactory.getInstance().search(query.getSearch(),
-				query.getFirst(), query.getPageSize());
+		results = SMDSearchFactory.getInstance().search(query.search,
+				query.first, query.pageSize);
 
 		return Response.ok(results).build();
 	}

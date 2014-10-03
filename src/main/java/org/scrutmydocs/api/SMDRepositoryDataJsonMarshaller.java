@@ -9,6 +9,7 @@ import java.lang.reflect.Type;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -20,26 +21,31 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.repositories.SMDRepositoryData;
+import org.scrutmydocs.repositories.fs.FSSMDRepositoryData;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Provider
 @Consumes("application/json")
-public class JsonMarshaller implements MessageBodyWriter<Object>,
-		MessageBodyReader<Object> {
+@Produces("application/json")
+public class SMDRepositoryDataJsonMarshaller implements
+		MessageBodyWriter<Object>, MessageBodyReader<Object> {
 
 	private final ObjectMapper mapper;
 	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger();
 
-	public JsonMarshaller() {
+	public SMDRepositoryDataJsonMarshaller() {
 		mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+				false);
 	}
 
 	@Override
 	public boolean isWriteable(Class<?> type, Type genericType,
 			Annotation[] annotations, MediaType mediaType) {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -49,8 +55,7 @@ public class JsonMarshaller implements MessageBodyWriter<Object>,
 			OutputStream entityStream) throws IOException,
 			WebApplicationException {
 
-		throw new IllegalStateException(
-				"This marshaller producte could be used");
+		mapper.writeValue(entityStream, obj);
 	}
 
 	@Override
@@ -71,28 +76,26 @@ public class JsonMarshaller implements MessageBodyWriter<Object>,
 			Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
-		Class<? extends SMDRepositoryData> obj = null;
-
-		StringWriter writer = new StringWriter();
-		IOUtils.copy(entityStream, writer, "UTF-8");
-
-		String str = writer.toString();
-
-		JsonNode jsonNode = mapper.readTree(str);
-
-		if (jsonNode.findValue("type").textValue() == null) {
+		
+		
+		byte[] input = IOUtils.toByteArray(entityStream);
+		
+		SMDRepositoryData smdRepositoryData = mapper.readValue(input,
+				SMDRepositoryData.class);
+		
+		if (smdRepositoryData.type == null) {
 			throw new BadRequestException(
 					"the field 'type' must not be null to a repository");
 		}
 
-		obj = SMDRepositoriesFactory.getAllTypeRepositories().get(
-				jsonNode.findValue("type").textValue());
+		Class<? extends SMDRepositoryData>  obj = SMDRepositoriesFactory.getAllTypeRepositories().get(
+				smdRepositoryData.type);
 
 		if (obj != null) {
-			return mapper.readValue(str, obj);
+			return mapper.readValue(input, obj);
 		} else {
 			throw new BadRequestException("the field 'type'  ("
-					+ jsonNode.findValue("type").textValue()
+					+ smdRepositoryData.type
 					+ " ) is not a repository available in scrutmydocs");
 		}
 

@@ -2,37 +2,28 @@ package org.scrutmydocs.repositories;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+public  class SMDRepositoryData {
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "class")
-public abstract class SMDRepositoryData {
-
-	
-	
-	public SMDRepositoryData() {
-		SMDRegisterRepositoryData myRegister = this.getClass().getAnnotation(SMDRegisterRepositoryData.class);
-		this.type = myRegister.name();
-
-	}
-	public final String type;
-
-	
+//	public String determineType() {
+//		SMDRegisterRepositoryData myRegister = this.getClass().getAnnotation(
+//				SMDRegisterRepositoryData.class);
+//		return myRegister.name();
+//	};
 
 	public String id;
 	
-	
+	public String type;
+
 	public Date lastScan;
-	
+
 	public boolean start;
-	
+
 	public void start() {
-		start=true;
+		start = true;
 	}
 
 	public void stop() {
-		start=false;
+		start = false;
 	}
-
-
 
 }

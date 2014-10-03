@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.scrutmydocs.repositories.SMDRepositoryData;
 import org.scrutmydocs.repositories.SMDRepositoryScan;
-import org.scrutmydocs.repositories.SMDRegisterRepositoryScan;
+import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryScan;
 
 /**
  * Implement the DropBox ScrutMyDocs Data Source

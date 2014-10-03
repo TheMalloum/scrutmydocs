@@ -31,10 +31,10 @@ import org.apache.logging.log4j.LogManager;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDFileDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.repositories.SMDRegisterRepositoryScan;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.repositories.SMDRepositoryData;
 import org.scrutmydocs.repositories.SMDRepositoryScan;
+import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryScan;
 import org.scrutmydocs.search.SMDSearchFactory;
 
 /**
