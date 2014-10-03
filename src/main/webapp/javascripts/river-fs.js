@@ -103,8 +103,7 @@ var updateFSRiverMenu = function(fsriver) {
 	if (fsriver.start===true) {
 		status = '&nbsp;<span class="badge badge-success"></span>';
 	}
-	$("#river-fs-"+fsriver.url).empty().append('<a href="#"><i class="icon-folder-open"></i> '+fsriver.start+'</a>');
-}
+	$("#river-fs-"+fsriver.id).empty().append('<a href="#"><i class="icon-folder-open"></i> '+fsriver.url+'</a>');}
 
 // Show the FS River
 var openFSRiver = function(id) {
@@ -176,9 +175,9 @@ var showFSRiver = function(fsriver) {
 // Load Current FS River
 var getFSRiver = function() {
 	var id = $("#river-fs-id").val();
-	if (!id) {
-		id = $("#river-fs-name").val().NormaliseUrl();
-	}
+//	if (!id) {
+//		id = $("#river-fs-name").val().NormaliseUrl();
+//	}
 
 	return {
 		type : "fs",

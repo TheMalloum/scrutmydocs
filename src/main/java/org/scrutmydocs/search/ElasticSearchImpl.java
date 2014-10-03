@@ -134,8 +134,8 @@ public class ElasticSearchImpl implements SMDSearchService
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
 				.prepareSearch().setIndices(SMDINDEX)
 				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(qb)
-				.setFrom(first).setSize(pageSize).addHighlightedField("type")
-				.addHighlightedField("file")
+				.setFrom(first).setSize(pageSize).addHighlightedField("name")
+				.addHighlightedField("content")
 				.setHighlighterPreTags("<span class='badge badge-info'>")
 				.setHighlighterPostTags("</span>").addFields("*", "_source")
 				.execute().actionGet();

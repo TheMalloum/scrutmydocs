@@ -2,13 +2,17 @@ package org.scrutmydocs.repositories;
 
 import java.util.Date;
 
+import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryData;
+
 public  class SMDRepositoryData {
 
-//	public String determineType() {
-//		SMDRegisterRepositoryData myRegister = this.getClass().getAnnotation(
-//				SMDRegisterRepositoryData.class);
-//		return myRegister.name();
-//	};
+	
+	
+	public SMDRepositoryData() {
+		SMDRegisterRepositoryData myRegister = this.getClass().getAnnotation(
+				SMDRegisterRepositoryData.class);
+		this.type=myRegister.name();
+	}
 
 	public String id;
 	
