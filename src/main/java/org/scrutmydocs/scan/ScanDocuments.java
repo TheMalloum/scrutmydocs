@@ -44,20 +44,31 @@ public class ScanDocuments implements Job {
 					.getTypesAnnotatedWith(SMDRegisterRepositoryScan.class);
 
 			for (Class<?> class1 : annotated) {
-				try {
+				SMDRepositoryScan register = null;
 
-					if (smdRepositoryData.getClass().isAssignableFrom(class1)) {
-						SMDRepositoryScan register = (SMDRepositoryScan) class1
-								.newInstance();
+				if (SMDRepositoryScan.class.isAssignableFrom(class1)) {
+					try {
+						register = (SMDRepositoryScan) class1.newInstance();
 
-						register.scrut(smdRepositoryData);
+					} catch (Exception e) {
+						logger.error(class1.getName()
+								+ " doesn't have default constructor" + e);
+						throw new RuntimeException(
+								"doesn't have default constructor : " + e);
 					}
-
-				} catch (Exception e) {
-					logger.error(class1.getName()
-							+ " doesn't have default constructor");
-					throw new RuntimeException(
-							"doesn't have default constructor : " + e);
+					try {
+						register.scrut(smdRepositoryData);
+					} catch (Exception e) {
+						logger.error(class1.getName()
+								+ " problem during scrutting  : "
+								+ smdRepositoryData.id);
+//						throw new RuntimeException(
+//								"problem during scrutting  : "
+//										+ smdRepositoryData.id);
+					}
+				} else {
+					logger.error("the class {} doesn't extends {} ",
+							class1.getName(), SMDRepositoryScan.class);
 				}
 
 			}

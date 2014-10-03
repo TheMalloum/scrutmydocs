@@ -4,18 +4,18 @@ import java.util.Date;
 
 import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryData;
 
-public  class SMDRepositoryData {
+public class SMDRepositoryData {
 
-	
-	
 	public SMDRepositoryData() {
 		SMDRegisterRepositoryData myRegister = this.getClass().getAnnotation(
 				SMDRegisterRepositoryData.class);
-		this.type=myRegister.name();
+		if (myRegister != null) {
+			this.type = myRegister.name();
+		}
 	}
 
 	public String id;
-	
+
 	public String type;
 
 	public Date lastScan;

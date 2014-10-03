@@ -52,18 +52,33 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 	@Override
 	public void scrut(SMDRepositoryData data) {
 
-		if (!(data instanceof FSSMDRepositoryData))
+		if (!(data instanceof FSSMDRepositoryData)){
+			logger.error("SMDRepositoryData is not a FSSMDRepositoryData");
 			throw new IllegalArgumentException(
 					"SMDRepositoryData is not a FSSMDRepositoryData");
+			
+			
+		}
 		FSSMDRepositoryData fssmdRepositoryData = (FSSMDRepositoryData) data;
 
+		if(!new File(fssmdRepositoryData.url).isDirectory()){
+				logger.warn("we cant scru just a directory and "+fssmdRepositoryData.url+" isn't a directory");
+				throw new IllegalArgumentException(
+							"we cant scru just a directory and "+fssmdRepositoryData.url+" isn't a directory");
+				}
+		
+		
 		try {
 
-			logger.info("we are scrutting your dyrectory "
+			logger.info("we are scrutting your directory "
 					+ fssmdRepositoryData.url + " ....");
 
 			Date startScarn = new Date();
 
+			
+			
+			
+			
 			List<Path> paths = parcourirDirectory(new File(
 					fssmdRepositoryData.url), fssmdRepositoryData.lastScan);
 
@@ -77,7 +92,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
 					SMDFileDocument smdDocument;
 					try {
-						smdDocument = new SMDFileDocument(file,getpath(file));
+						smdDocument = new SMDFileDocument(file, getpath(file));
 					} catch (FileNotFoundException e) {
 						continue;
 					}
@@ -112,7 +127,10 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
 	public List<Path> parcourirDirectory(File dir, Date lastModified) {
 
-		if (dir.isFile()) {
+		
+		logger.trace("parcourir dir : "+dir.getPath());
+		
+		if (!dir.isDirectory()) {
 
 			throw new IllegalArgumentException(" dir must be a directory");
 		}
@@ -123,8 +141,11 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 				|| new Date(dir.lastModified()).after(lastModified)) {
 			paths.add(dir.toPath());
 		}
+		
+		File[] listfile = dir.listFiles();
+		if(listfile.length == 0) return paths;
 
-		for (File file : dir.listFiles()) {
+		for (File file : listfile) {
 
 			// if (lastModified == null
 			// || new Date(file.lastModified()).after(lastModified)) {
@@ -157,14 +178,14 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
 			SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
 					.searchFileByDirectory(fssmdRepositoryData,
-							dir.getAbsolutePath(), first, page);
+							dir.getPath(), first, page);
 			for (SMDDocument smdResponseDocument : searchResponse.smdDocuments) {
-				if (!new File(smdResponseDocument.url).exists()) {
+//				if (!new File(smdResponseDocument.url).exists()) {
 					logger.debug("remove file " + smdResponseDocument.url
 							+ " ....");
 					SMDSearchFactory.getInstance().delete(fssmdRepositoryData,
 							smdResponseDocument);
-				}
+//				}
 			}
 
 			total = searchResponse.totalHits;
@@ -185,7 +206,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 			if (file.isFile()) {
 				try {
 					SMDSearchFactory.getInstance().index(fssmdRepositoryData,
-							new SMDFileDocument(file,getpath(file)));
+							new SMDFileDocument(file, getpath(file)));
 				} catch (FileNotFoundException e) {
 					continue;
 				}
@@ -195,7 +216,14 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 	}
 
 	public String getpath(File file) {
-		return "file://" + file.getAbsolutePath();
+		return "file://" + file.getPath();
+	}
+
+	public static void main(String[] args) {
+
+		FSSMDRepositoryData data = new FSSMDRepositoryData("/Users/Malloumlaya/Documents/");
+		new FSSMDRepositoryScan().scrut(data);
+		
 	}
 
 }
