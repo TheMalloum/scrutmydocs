@@ -8,8 +8,8 @@ import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.Date;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -26,8 +26,8 @@ public class SMDFileDocument extends SMDDocument {
 
 		super(file.getName(), file.getAbsolutePath(), URLConnection
 				.guessContentTypeFromStream(new FileInputStream(file)));
-
-		this.content = FileUtils.readFileToString(file, "UTF-8");
+		 InputStream is = new FileInputStream(file);
+		this.content = Base64.encodeBase64String(IOUtils.toByteArray(is));
 		this.date = new Date(file.lastModified());
 		this.pathDirectory = file.getParent();
 	}
@@ -36,7 +36,7 @@ public class SMDFileDocument extends SMDDocument {
 			IOException {
 		super(file.getName(), file.getName(), file.getContentType());
 
-		this.content = IOUtils.toString(file.get(), "UTF-8");
+		this.content = Base64.encodeBase64String(file.get());
 		this.date = new Date();
 		this.pathDirectory = null;
 	}
@@ -52,7 +52,7 @@ public class SMDFileDocument extends SMDDocument {
 		if (is == null) {
 			throw new IllegalArgumentException("A document can't be null");
 		}
-		this.content = IOUtils.toString(is, "UTF-8");
+		this.content = Base64.encodeBase64String(IOUtils.toByteArray(is));
 		this.date = new Date();
 		this.pathDirectory = null;
 	}
