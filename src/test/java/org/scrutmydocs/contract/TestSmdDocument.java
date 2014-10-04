@@ -3,13 +3,10 @@ package org.scrutmydocs.contract;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.scrutmydocs.servlet.ServletInit;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestSmdDocument {
 

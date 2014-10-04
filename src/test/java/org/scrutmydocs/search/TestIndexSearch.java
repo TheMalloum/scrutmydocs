@@ -13,75 +13,81 @@ public class TestIndexSearch {
 
 	@Test
 	public void testIndexSearch() throws Exception {
-		
+
 		URL url = getClass().getClassLoader().getResource("es-test.properties");
-        File file = new File(url.toURI());
-		Assert.assertTrue("The test file doesn't existe",file.exists());
-		
-		SMDFileDocument smdDocument = new SMDFileDocument(file,null);
+		File file = new File(url.toURI());
+		Assert.assertTrue("The test file doesn't existe", file.exists());
+
+		SMDFileDocument smdDocument = new SMDFileDocument(file, null);
 
 		Thread.sleep(5000);
 
-		SMDSearchFactory.getInstance().index(new FSSMDRepositoryData("url"), smdDocument);
-		
+		SMDSearchFactory.getInstance().index(new FSSMDRepositoryData("url"),
+				smdDocument);
+
 		Thread.sleep(5000);
-		//TODO when we call the getinstance SMDSearchFactory we have to be sure that indexs are available
-		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance().search("*",0,1);
-		
+		// TODO when we call the getinstance SMDSearchFactory we have to be sure
+		// that indexs are available
+		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
+				.search("*", 0, 1);
+
 		Assert.assertEquals(1, searchResponse.totalHits);
-		
-		
-		
+
 	}
 
 	@Test
-	public void testIndexSearchByDirectory() throws Exception {
-		
+	public void testdeleteAllDocumentsInDirectory() throws Exception {
+
 		URL url = getClass().getClassLoader().getResource("es-test.properties");
-        File file = new File(url.toURI());
-		Assert.assertTrue("The test file doesn't existe",file.exists());
-		
-		SMDFileDocument smdDocument = new SMDFileDocument(file,null);
+		File file = new File(url.toURI());
+		Assert.assertTrue("The test file doesn't existe", file.exists());
 
+		SMDFileDocument smdDocument = new SMDFileDocument(file, null);
 
-		SMDSearchFactory.getInstance().index(new FSSMDRepositoryData("url"), smdDocument);
-		
+		SMDSearchFactory.getInstance().index(new FSSMDRepositoryData("url"),
+				smdDocument);
+
 		Thread.sleep(6000);
 
-		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance().searchFileByDirectory(new FSSMDRepositoryData("url"),smdDocument.pathDirectory, 0,1);
+		SMDSearchFactory.getInstance().deleteAllDocumentsInDirectory(
+				new FSSMDRepositoryData("url"), smdDocument.pathDirectory);
+
 		
-		Assert.assertEquals(1, searchResponse.totalHits);
+		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
+				.search("*", 0, 1);
 		
-		
-		
+		Assert.assertEquals(0, searchResponse.totalHits);
+
 	}
-	
-	
 
 	@Test
 	public void testdelete() throws Exception {
-		
+
 		URL url = getClass().getClassLoader().getResource("es-test.properties");
-        File file = new File(url.toURI());
-		Assert.assertTrue("The test file doesn't existe",file.exists());
-		
-		SMDFileDocument smdDocument = new SMDFileDocument(file,null);
+		File file = new File(url.toURI());
+		Assert.assertTrue("The test file doesn't existe", file.exists());
+
+		SMDFileDocument smdDocument = new SMDFileDocument(file, null);
 
 		Thread.sleep(5000);
 
-		SMDSearchFactory.getInstance().index(new FSSMDRepositoryData("url"), smdDocument);
-		
+		SMDSearchFactory.getInstance().index(new FSSMDRepositoryData("url"),
+				smdDocument);
+
 		Thread.sleep(5000);
-		//TODO when we call the getinstance SMDSearchFactory we have to be sure that indexs are available
-		SMDSearchFactory.getInstance().index(new FSSMDRepositoryData("url"), smdDocument);
-		
+		// TODO when we call the getinstance SMDSearchFactory we have to be sure
+		// that indexs are available
+		SMDSearchFactory.getInstance().index(new FSSMDRepositoryData("url"),
+				smdDocument);
+
 		Thread.sleep(5000);
-		//TODO when we call the getinstance SMDSearchFactory we have to be sure that indexs are available
-		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance().search("*",0,1);
-		
+		// TODO when we call the getinstance SMDSearchFactory we have to be sure
+		// that indexs are available
+		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
+				.search("*", 0, 1);
+
 		Assert.assertEquals(1, searchResponse.totalHits);
-		
-		
+
 	}
-	
+
 }

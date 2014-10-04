@@ -31,8 +31,6 @@ import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
@@ -48,16 +46,13 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.highlight.HighlightField;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDFileDocument;
-import org.scrutmydocs.contract.SMDRepositoriesService;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDSearchService;
-import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.repositories.SMDRepositoryData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ElasticSearchImpl implements SMDSearchService
-		 {
+public class ElasticSearchImpl implements SMDSearchService {
 
 	protected Logger logger = LogManager.getLogger();
 
@@ -75,7 +70,6 @@ public class ElasticSearchImpl implements SMDSearchService
 				.execute().actionGet();
 
 		createIndex(SMDINDEX);
-
 
 		this.bulk = new BulkProcessor.Builder(esClient,
 				new BulkProcessor.Listener() {
@@ -164,8 +158,7 @@ public class ElasticSearchImpl implements SMDSearchService
 					(String) searchHit.getSource().get("name"),
 					(String) searchHit.getSource().get("url"),
 					(String) searchHit.getSource().get("contentType"),
-					(String) searchHit.getSource().get("path"),
-					highlights);
+					(String) searchHit.getSource().get("path"), highlights);
 			documents.add(smdResponseDocument);
 		}
 
@@ -201,38 +194,13 @@ public class ElasticSearchImpl implements SMDSearchService
 
 	}
 
-	
-	@Override
-	public void delete(SMDRepositoryData repository,SMDDocument document) {
 
+	 @Override
+	public void deleteAllDocumentsInDirectory(
+			SMDRepositoryData smdAbstractPlugin, String directory) {
 		if (logger.isDebugEnabled())
-			logger.debug("delete({})", document.url);
-
-		
-
-		try {
-			bulk.add(new DeleteRequest(SMDINDEX, repository.type,document.id));
-		} catch (Exception e) {
-			logger.warn("Can not delete document {} of type  {}", repository.id,
-					repository.type);
-			throw new RuntimeException("Can not delete document : " + repository.id
-					+ "whith type " + repository.type + ": " + e.getMessage());
-		}
-
-		if (logger.isDebugEnabled())
-			logger.debug("/delete()={}", repository.id);
-
-	}
-
-	@Override
-	public SMDSearchResponse searchFileByDirectory(
-			SMDRepositoryData smdAbstractPlugin, String directory, int first,
-			int pageSize) {
-		if (logger.isDebugEnabled())
-			logger.debug("searchFileByDirectory('{}', {}, {})", directory,
-					first, pageSize);
-
-		SMDSearchResponse searchResponse = null;
+			logger.debug("deleteAllDocumentsInDirectory('directory : {}', type : {})", directory,
+					smdAbstractPlugin.type);
 
 		BoolFilterBuilder filters = FilterBuilders.boolFilter().must(
 				FilterBuilders.termFilter("pathDirectory", directory));
@@ -240,33 +208,10 @@ public class ElasticSearchImpl implements SMDSearchService
 
 		QueryBuilder query = QueryBuilders.filteredQuery(qb, filters);
 
-		org.elasticsearch.action.search.SearchResponse searchHits = esClient
-				.prepareSearch().setIndices(SMDINDEX)
-				.setTypes(smdAbstractPlugin.type).setQuery(query)
-				.setFrom(first).setSize(pageSize).execute().actionGet();
+		bulk.add(esClient.prepareDeleteByQuery(SMDINDEX)
+				.setTypes(smdAbstractPlugin.type).setQuery(query).request());
 
-		List<SMDDocument> documents = new ArrayList<SMDDocument>();
-		for (SearchHit searchHit : searchHits.getHits()) {
-
-			SMDDocument smdResponseDocument = new SMDDocument(
-					(String) searchHit.getSource().get("type"),
-					(String) searchHit.getSource().get("url"),
-					(String) searchHit.getSource().get("contentType"), null);
-
-			documents.add(smdResponseDocument);
-		}
-
-		searchResponse = new SMDSearchResponse(searchHits.getTookInMillis(),
-				searchHits.getHits().totalHits(), documents);
-
-		if (logger.isDebugEnabled())
-			logger.debug("searchFileByDirectory('{}', {}, {})", directory,
-					first, pageSize);
-		return searchResponse;
 
 	}
-
-	
-
 
 }
