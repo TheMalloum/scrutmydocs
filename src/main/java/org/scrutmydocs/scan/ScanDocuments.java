@@ -1,5 +1,6 @@
 package org.scrutmydocs.scan;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -57,7 +58,13 @@ public class ScanDocuments implements Job {
 								"doesn't have default constructor : " + e);
 					}
 					try {
+						Date startScarn = new Date();
 						register.scrut(smdRepositoryData);
+						smdRepositoryData.lastScan = startScarn;
+						SMDRepositoriesFactory.getInstance().save(smdRepositoryData);
+
+						
+						
 					} catch (Exception e) {
 						logger.error(class1.getName()
 								+ " problem during scrutting  : "

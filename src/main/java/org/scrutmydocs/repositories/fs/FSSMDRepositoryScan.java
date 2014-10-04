@@ -73,10 +73,6 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 			logger.info("we are scrutting your directory "
 					+ fssmdRepositoryData.url + " ....");
 
-			Date startScarn = new Date();
-
-			
-			
 			
 			
 			List<Path> paths = parcourirDirectory(new File(
@@ -114,9 +110,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
 			}
 
-			fssmdRepositoryData.lastScan = startScarn;
-			SMDRepositoriesFactory.getInstance().save(fssmdRepositoryData);
-
+			
 		} catch (Exception ex) {
 
 			throw new RuntimeException(
