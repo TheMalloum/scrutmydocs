@@ -16,8 +16,11 @@ public abstract class SMDRepositoryScan {
 	}
 	
 	public final String type;
-
+	
+	
 
 	public abstract  void scrut(SMDRepositoryData smdRepositoryData);
+	
+	public abstract  boolean check(SMDRepositoryData smdRepositoryData);
 
 }

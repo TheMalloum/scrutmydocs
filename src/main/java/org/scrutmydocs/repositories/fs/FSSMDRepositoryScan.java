@@ -70,8 +70,9 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 			logger.info("we are scrutting your directory "
 					+ fssmdRepositoryData.url + " ....");
 
-			List<Path> paths = parcourirDirectory(new File(
-					fssmdRepositoryData.url), fssmdRepositoryData.lastScan);
+			List<Path> paths = browseDirectory(
+					new File(fssmdRepositoryData.url),
+					fssmdRepositoryData.lastScan);
 
 			for (Path path : paths) {
 
@@ -116,7 +117,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 		}
 	}
 
-	public List<Path> parcourirDirectory(File dir, Date lastModified) {
+	public List<Path> browseDirectory(File dir, Date lastModified) {
 
 		logger.trace("parcourir dir : " + dir.getPath());
 
@@ -145,7 +146,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 			// }
 
 			if (file.isDirectory()) {
-				for (Path path : parcourirDirectory(file, lastModified)) {
+				for (Path path : browseDirectory(file, lastModified)) {
 					paths.add(path);
 				}
 
@@ -180,11 +181,32 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 		return "file://" + file.getPath();
 	}
 
-	public static void main(String[] args) {
+	@Override
+	public boolean check(SMDRepositoryData data) {
 
-		FSSMDRepositoryData data = new FSSMDRepositoryData(
-				"/Users/Malloumlaya/Documents/");
-		new FSSMDRepositoryScan().scrut(data);
+		if (!(data instanceof FSSMDRepositoryData)) {
+			logger.error("SMDRepositoryData is not a FSSMDRepositoryData");
+			throw new IllegalArgumentException(
+					"SMDRepositoryData is not a FSSMDRepositoryData");
+
+		}
+		FSSMDRepositoryData fssmdRepositoryData = (FSSMDRepositoryData) data;
+
+		try {
+
+			if (new File(fssmdRepositoryData.url).isDirectory()) {
+				return true;
+			} else {
+				logger.error("the repository {} is not available",
+						fssmdRepositoryData.url);
+				return false;
+			}
+
+		} catch (Exception e) {
+			logger.error("the repository {} is not available",
+					fssmdRepositoryData.url);
+			return false;
+		}
 
 	}
 

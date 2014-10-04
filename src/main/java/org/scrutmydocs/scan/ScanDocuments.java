@@ -58,6 +58,12 @@ public class ScanDocuments implements Job {
 								"doesn't have default constructor : " + e);
 					}
 					try {
+						
+						
+						if(!register.check(smdRepositoryData)){
+							logger.error("the repository {} is not available", smdRepositoryData.id);
+							continue;
+						}
 						Date startScarn = new Date();
 						register.scrut(smdRepositoryData);
 						smdRepositoryData.lastScan = startScarn;

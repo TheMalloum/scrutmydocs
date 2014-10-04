@@ -41,4 +41,10 @@ public class UploadSMDScan extends SMDRepositoryScan {
 	public void scrut(SMDRepositoryData smdRepositoryData) {
 	}
 
+
+	@Override
+	public boolean check(SMDRepositoryData smdRepositoryData) {
+		return false;
+	}
+
 }
