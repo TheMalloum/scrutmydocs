@@ -9,8 +9,9 @@ public interface SMDSearchService {
 
 	public SMDSearchResponse search(String search, int first, int pageSize);
 
-
 	public void deleteAllDocumentsInDirectory(
 			SMDRepositoryData smdAbstractPlugin, String directory);
+
+	public SMDFileDocument getDocument(String type, String id);
 
 }

@@ -150,14 +150,16 @@ var handleSearchResults = function(json) {
 //                    contentType +'">' +icon+ title+'</a>';
 //			}
 			
-			if(hit.path){
-				 link = "<a target=_blank href="+hit.path+">"+icon + hit.name+"</a>";
-				
-			}else{
-				
-				 link = "<a href='#' >"+icon + hit.name+"</a>";
-			}
+//			if(hit.path){
+//				
+//			}else{
+//				
+//				 link = "<a href='#' >"+icon + hit.name+"</a>";
+//			}
 			
+			
+			 link = "<a target=_blank href=./api/2/documents/"+hit.type+"/"+hit.id+">"+icon + hit.name+"</a>";
+
 			 
 			if (hit.highlights) {
 				// add highlight

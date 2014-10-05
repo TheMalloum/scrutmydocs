@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -41,7 +40,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.repositories.SMDRepositoryData;
-import org.scrutmydocs.search.SMDSearchFactory;
 
 import com.sun.istack.NotNull;
 
@@ -68,26 +66,26 @@ public class RepositoriesApi {
 	 */
 	@Path("/_all_by_type/{type}")
 	@GET
-	public Response getAllByType(@PathParam("type") String type) throws Exception {
-		
+	public Response getAllByType(@PathParam("type") String type)
+			throws Exception {
+
 		List<SMDRepositoryData> reposytoriesType = new ArrayList<SMDRepositoryData>();
-		
-		List<SMDRepositoryData> reposytories = SMDRepositoriesFactory.getInstance().getRepositories();
-		
-		
-		
-		if(reposytories==null || reposytories.size() == 0){
-			return Response.ok(reposytoriesType).build(); 
+
+		List<SMDRepositoryData> reposytories = SMDRepositoriesFactory
+				.getInstance().getRepositories();
+
+		if (reposytories == null || reposytories.size() == 0) {
+			return Response.ok(reposytoriesType).build();
 		}
-		
+
 		for (SMDRepositoryData reposytory : reposytories) {
-			if(reposytory.type.equals(type)){
+			if (reposytory.type.equals(type)) {
 
 				reposytoriesType.add(reposytory);
-			
-			}	}
-		
-		
+
+			}
+		}
+
 		return Response.ok(reposytoriesType).build();
 	}
 
@@ -98,9 +96,9 @@ public class RepositoriesApi {
 	 */
 	@GET
 	@Path("/{id}")
-	public Response get(@PathParam("id") String url) throws Exception {
+	public Response get(@PathParam("id") String id) throws Exception {
 
-		return Response.ok(getSettings(url)).build();
+		return Response.ok(getSettings(id)).build();
 	}
 
 	/**
@@ -165,16 +163,12 @@ public class RepositoriesApi {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void put(SMDRepositoryData newRepository) throws Exception {
 
-		
-		
 		if (newRepository.id == null) {
 			newRepository.id = UUID.randomUUID().toString();
 		}
-		
+
 		SMDRepositoriesFactory.getInstance().save(newRepository);
 	}
-
-	
 
 	/**
 	 * 

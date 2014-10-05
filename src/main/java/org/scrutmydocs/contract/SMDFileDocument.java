@@ -22,28 +22,28 @@ public class SMDFileDocument extends SMDDocument {
 	public final String content;
 	public final Date date;
 
-	public SMDFileDocument(File file,String path) throws FileNotFoundException, IOException {
+	public SMDFileDocument(File file,String type) throws FileNotFoundException, IOException {
 
 		super(file.getName(), file.getAbsolutePath(), URLConnection
-				.guessContentTypeFromStream(new FileInputStream(file)),path);
+				.guessContentTypeFromStream(new FileInputStream(file)),type);
 		 InputStream is = new FileInputStream(file);
 		this.content = Base64.encodeBase64String(IOUtils.toByteArray(is));
 		this.date = new Date(file.lastModified());
 		this.pathDirectory = file.getParent();
 	}
 
-	public SMDFileDocument(FileItem file,String path) throws FileNotFoundException,
+	public SMDFileDocument(FileItem file,String type) throws FileNotFoundException,
 			IOException {
-		super(file.getName(), file.getName(), file.getContentType(),path);
+		super(file.getName(), file.getName(), file.getContentType(),type);
 
 		this.content = Base64.encodeBase64String(file.get());
 		this.date = new Date();
 		this.pathDirectory = null;
 	}
 
-	public SMDFileDocument(InputStream is, String name,String path)
+	public SMDFileDocument(InputStream is, String name,String type)
 			throws FileNotFoundException, IOException {
-		super(name, name, URLConnection.guessContentTypeFromStream(is),path);
+		super(name, name, URLConnection.guessContentTypeFromStream(is),type);
 
 		if (name == null) {
 			throw new IllegalArgumentException("A document must have a type");

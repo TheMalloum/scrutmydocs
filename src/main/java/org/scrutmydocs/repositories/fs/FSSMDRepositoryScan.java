@@ -84,7 +84,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
 					SMDFileDocument smdDocument;
 					try {
-						smdDocument = new SMDFileDocument(file, getpath(file));
+						smdDocument = new SMDFileDocument(file, fssmdRepositoryData.type);
 					} catch (FileNotFoundException e) {
 						continue;
 					}
@@ -168,7 +168,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 			if (file.isFile()) {
 				try {
 					SMDSearchFactory.getInstance().index(fssmdRepositoryData,
-							new SMDFileDocument(file, getpath(file)));
+							new SMDFileDocument(file, fssmdRepositoryData.type));
 				} catch (FileNotFoundException e) {
 					continue;
 				}

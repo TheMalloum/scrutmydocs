@@ -22,6 +22,7 @@ package org.scrutmydocs.search;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.queryString;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
@@ -109,6 +111,28 @@ public class ElasticSearchImpl implements SMDSearchService {
 	}
 
 	@Override
+	public SMDFileDocument getDocument(String type, String id) {
+
+		GetResponse response = esClient.prepareGet(SMDINDEX, type, id)
+				.execute().actionGet();
+
+		if (!response.isExists())
+			return null;
+		SMDFileDocument smdFileDocument = null;
+		try {
+			smdFileDocument = mapper.readValue(response.getSourceAsBytes(),
+					SMDFileDocument.class);
+
+		} catch (IOException e) {
+			logger.warn("Can not fetch document {}", id);
+			throw new RuntimeException("Can not index fetch document : " + id
+					+ ": " + e.getMessage());
+		}
+
+		return smdFileDocument;
+	}
+
+	@Override
 	public SMDSearchResponse search(String search, int first, int pageSize) {
 		if (logger.isDebugEnabled())
 			logger.debug("google('{}', {}, {})", search, first, pageSize);
@@ -155,10 +179,12 @@ public class ElasticSearchImpl implements SMDSearchService {
 			}
 
 			SMDDocument smdResponseDocument = new SMDDocument(
+					(String) searchHit.getSource().get("id"),
 					(String) searchHit.getSource().get("name"),
 					(String) searchHit.getSource().get("url"),
 					(String) searchHit.getSource().get("contentType"),
-					(String) searchHit.getSource().get("path"), highlights);
+					(String) searchHit.getSource().get("type"), highlights);
+
 			documents.add(smdResponseDocument);
 		}
 
@@ -181,7 +207,7 @@ public class ElasticSearchImpl implements SMDSearchService {
 
 			String json = mapper.writeValueAsString(document);
 
-			bulk.add(new IndexRequest(SMDINDEX, repository.type, document.url)
+			bulk.add(new IndexRequest(SMDINDEX, repository.type, document.id)
 					.source(json));
 		} catch (Exception e) {
 			logger.warn("Can not index document {}", document.name);
@@ -194,13 +220,13 @@ public class ElasticSearchImpl implements SMDSearchService {
 
 	}
 
-
-	 @Override
+	@Override
 	public void deleteAllDocumentsInDirectory(
 			SMDRepositoryData smdAbstractPlugin, String directory) {
 		if (logger.isDebugEnabled())
-			logger.debug("deleteAllDocumentsInDirectory('directory : {}', type : {})", directory,
-					smdAbstractPlugin.type);
+			logger.debug(
+					"deleteAllDocumentsInDirectory('directory : {}', type : {})",
+					directory, smdAbstractPlugin.type);
 
 		BoolFilterBuilder filters = FilterBuilders.boolFilter().must(
 				FilterBuilders.termFilter("pathDirectory", directory));
@@ -210,7 +236,6 @@ public class ElasticSearchImpl implements SMDSearchService {
 
 		bulk.add(esClient.prepareDeleteByQuery(SMDINDEX)
 				.setTypes(smdAbstractPlugin.type).setQuery(query).request());
-
 
 	}
 
