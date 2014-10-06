@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.util.Collection;
 import java.util.Date;
 
 import org.apache.commons.codec.binary.Base64;
@@ -57,4 +58,16 @@ public class SMDFileDocument extends SMDDocument {
 		this.pathDirectory = null;
 	}
 
+	public SMDFileDocument(String id, String name, String url,
+			String contentType, String type, Collection<String> highlights,
+			String pathDirectory, String content, Date date) {
+		super(id, name, url, contentType, type, highlights);
+		this.pathDirectory = pathDirectory;
+		this.content = content;
+		this.date = date;
+	}
+
+	
+	
+	
 }

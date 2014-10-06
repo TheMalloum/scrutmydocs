@@ -25,6 +25,7 @@ import static org.elasticsearch.index.query.QueryBuilders.queryString;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -120,10 +121,19 @@ public class ElasticSearchImpl implements SMDSearchService {
 			return null;
 		SMDFileDocument smdFileDocument = null;
 		try {
-			smdFileDocument = mapper.readValue(response.getSourceAsBytes(),
-					SMDFileDocument.class);
-
-		} catch (IOException e) {
+			 smdFileDocument = new SMDFileDocument(
+					(String) response.getSource().get("id"),
+					(String) response.getSource().get("name"),
+					(String) response.getSource().get("url"),
+					(String) response.getSource().get("contentType"),
+					(String) response.getSource().get("type"),
+					null,
+					(String) response.getSource().get("pathDirectory"),
+					(String)response.getSource().get("content"), 
+					null);
+			//@TODO add Date
+						
+		} catch (Exception e) {
 			logger.warn("Can not fetch document {}", id);
 			throw new RuntimeException("Can not index fetch document : " + id
 					+ ": " + e.getMessage());
