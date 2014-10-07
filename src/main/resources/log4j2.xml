@@ -6,7 +6,14 @@
     </Console>
   </Appenders>
   <Loggers>
-    <Logger name="org.scrutmydocs" level="trace">
+    <Logger name="org.scrutmydocs" level="info">
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+    <Loggers>
+    <Logger name="org.scrutmydocs.repositories.fs" level="info">
     </Logger>
     <Root level="error">
       <AppenderRef ref="Console"/>

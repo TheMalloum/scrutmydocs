@@ -51,6 +51,10 @@ public class ScanDocuments implements Job {
 					try {
 						register = (SMDRepositoryScan) class1.newInstance();
 
+						if (!register.type.equals(smdRepositoryData.type)) {
+							continue;
+						}
+
 					} catch (Exception e) {
 						logger.error(class1.getName()
 								+ " doesn't have default constructor" + e);
@@ -58,30 +62,26 @@ public class ScanDocuments implements Job {
 								"doesn't have default constructor : " + e);
 					}
 					try {
-						
-						
-						if(!register.check(smdRepositoryData)){
-							logger.error("the repository {} is not available", smdRepositoryData.id);
+
+						if (!register.check(smdRepositoryData)) {
+							logger.error("the repository {} is not available",
+									smdRepositoryData.id);
 							continue;
 						}
 						Date startScarn = new Date();
 						register.scrut(smdRepositoryData);
 						smdRepositoryData.lastScan = startScarn;
-						SMDRepositoriesFactory.getInstance().save(smdRepositoryData);
+						SMDRepositoriesFactory.getInstance().save(
+								smdRepositoryData);
 
-						
-						
 					} catch (Exception e) {
 						logger.error(class1.getName()
 								+ " problem during scrutting  : "
 								+ smdRepositoryData.id);
-//						throw new RuntimeException(
-//								"problem during scrutting  : "
-//										+ smdRepositoryData.id);
+						// throw new RuntimeException(
+						// "problem during scrutting  : "
+						// + smdRepositoryData.id);
 					}
-				} else {
-					logger.error("the class {} doesn't extends {} ",
-							class1.getName(), SMDRepositoryScan.class);
 				}
 
 			}
@@ -89,6 +89,10 @@ public class ScanDocuments implements Job {
 		}
 
 		logger.info("end scan()");
+	}
+
+	public static void main(String[] args) throws JobExecutionException {
+		new ScanDocuments().execute(null);
 	}
 
 	public static void init() {

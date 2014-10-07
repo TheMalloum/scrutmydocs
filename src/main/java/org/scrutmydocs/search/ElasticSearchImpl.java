@@ -144,7 +144,7 @@ public class ElasticSearchImpl implements SMDSearchService {
 		SMDSearchResponse searchResponse = null;
 
 		QueryBuilder qb;
-		if (search == null || search.trim().length() <= 0) {
+		if (search == "*") {
 			qb = matchAllQuery();
 		} else {
 			qb = queryString(search);
@@ -153,8 +153,8 @@ public class ElasticSearchImpl implements SMDSearchService {
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
 				.prepareSearch().setIndices(SMDINDEX)
 				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(qb)
-				.setFrom(first).setSize(pageSize).addHighlightedField("name")
-				.addHighlightedField("content")
+				.setFrom(first).setSize(pageSize).addHighlightedField("docs.name")
+				.addHighlightedField("docs.content")
 				.setHighlighterPreTags("<span class='badge badge-info'>")
 				.setHighlighterPostTags("</span>").addFields("*", "_source")
 				.execute().actionGet();
