@@ -22,26 +22,30 @@ package org.scrutmydocs.search;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.queryString;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.cluster.ClusterState;
+import org.elasticsearch.cluster.metadata.IndexMetaData;
+import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolFilterBuilder;
-import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.NodeBuilder;
@@ -51,7 +55,6 @@ import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDFileDocument;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDSearchService;
-import org.scrutmydocs.repositories.SMDRepositoryData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -60,6 +63,7 @@ public class ElasticSearchImpl implements SMDSearchService {
 	protected Logger logger = LogManager.getLogger();
 
 	final public static String SMDINDEX = "scrutmydocs-docs";
+	final public static String SMDTYPE = "docs";
 
 	private Client esClient;
 
@@ -72,7 +76,7 @@ public class ElasticSearchImpl implements SMDSearchService {
 		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus()
 				.execute().actionGet();
 
-		createIndex(SMDINDEX);
+		createIndex();
 
 		this.bulk = new BulkProcessor.Builder(esClient,
 				new BulkProcessor.Listener() {
@@ -101,38 +105,25 @@ public class ElasticSearchImpl implements SMDSearchService {
 				.setBulkActions(100).build();
 	}
 
-	public void createIndex(String index) {
-		if (logger.isDebugEnabled())
-			logger.debug("createIndex({}, {}, {})", index);
-
-		if (!esClient.admin().indices().prepareExists(index).execute()
-				.actionGet().isExists()) {
-			esClient.admin().indices().prepareCreate(index).execute();
-		}
-	}
-
 	@Override
-	public SMDFileDocument getDocument(String type, String id) {
+	public SMDFileDocument getDocument(String id) {
 
-		GetResponse response = esClient.prepareGet(SMDINDEX, type, id)
+		GetResponse response = esClient.prepareGet(SMDINDEX, SMDTYPE, id)
 				.execute().actionGet();
 
 		if (!response.isExists())
 			return null;
 		SMDFileDocument smdFileDocument = null;
 		try {
-			 smdFileDocument = new SMDFileDocument(
-					(String) response.getSource().get("id"),
-					(String) response.getSource().get("name"),
-					(String) response.getSource().get("url"),
-					(String) response.getSource().get("contentType"),
-					(String) response.getSource().get("type"),
-					null,
-					(String) response.getSource().get("pathDirectory"),
-					(String)response.getSource().get("content"), 
-					null);
-			//@TODO add Date
-						
+			smdFileDocument = new SMDFileDocument((String) response.getSource()
+					.get("id"), (String) response.getSource().get("name"),
+					(String) response.getSource().get("url"), (String) response
+							.getSource().get("contentType"), (String) response
+							.getSource().get("type"), null, (String) response
+							.getSource().get("pathDirectory"),
+					(String) response.getSource().get("content"), null);
+			// @TODO add Date
+
 		} catch (Exception e) {
 			logger.warn("Can not fetch document {}", id);
 			throw new RuntimeException("Can not index fetch document : " + id
@@ -208,7 +199,7 @@ public class ElasticSearchImpl implements SMDSearchService {
 	}
 
 	@Override
-	public void index(SMDRepositoryData repository, SMDFileDocument document) {
+	public void index(SMDFileDocument document) {
 
 		if (logger.isDebugEnabled())
 			logger.debug("index({})", document);
@@ -217,7 +208,7 @@ public class ElasticSearchImpl implements SMDSearchService {
 
 			String json = mapper.writeValueAsString(document);
 
-			bulk.add(new IndexRequest(SMDINDEX, repository.type, document.id)
+			bulk.add(new IndexRequest(SMDINDEX, SMDTYPE, document.id)
 					.source(json));
 		} catch (Exception e) {
 			logger.warn("Can not index document {}", document.name);
@@ -231,22 +222,104 @@ public class ElasticSearchImpl implements SMDSearchService {
 	}
 
 	@Override
-	public void deleteAllDocumentsInDirectory(
-			SMDRepositoryData smdAbstractPlugin, String directory) {
+	public void deleteAllDocumentsInDirectory(String directory) {
 		if (logger.isDebugEnabled())
 			logger.debug(
 					"deleteAllDocumentsInDirectory('directory : {}', type : {})",
-					directory, smdAbstractPlugin.type);
+					directory, SMDTYPE);
 
 		BoolFilterBuilder filters = FilterBuilders.boolFilter().must(
 				FilterBuilders.termFilter("pathDirectory", directory));
-		BoolQueryBuilder qb = QueryBuilders.boolQuery();
+
+		MatchAllQueryBuilder qb = QueryBuilders.matchAllQuery();
 
 		QueryBuilder query = QueryBuilders.filteredQuery(qb, filters);
-
-		bulk.add(esClient.prepareDeleteByQuery(SMDINDEX)
-				.setTypes(smdAbstractPlugin.type).setQuery(query).request());
+		
+		SearchResponse response = esClient.prepareSearch(SMDINDEX)
+				.setTypes(SMDTYPE).setQuery(query).get();
+		
+		esClient.prepareDeleteByQuery(SMDINDEX).setTypes(SMDTYPE)
+				.setQuery(query).get();
+		
+		
+		
+		
 
 	}
 
+	public void createIndex() {
+		if (logger.isDebugEnabled())
+			logger.debug("createIndex({}, {}, {})", SMDINDEX);
+
+		if (!esClient.admin().indices().prepareExists(SMDINDEX).execute()
+				.actionGet().isExists()) {
+			esClient.admin().indices().prepareCreate(SMDINDEX).execute();
+
+		}
+
+		try {
+			pushMapping();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void pushMapping() throws Exception {
+		if (logger.isTraceEnabled())
+			logger.trace("pushMapping(" + SMDINDEX + "," + SMDTYPE + "," + ")");
+
+		if (isMappingExist()) {
+			logger.info("Mapping definition for [" + SMDINDEX + "]/[" + SMDTYPE
+					+ "].");
+			return;
+		}
+
+		// Read the mapping json file if exists and use it
+		String source = IOUtils.toString(ElasticSearchImpl.class
+				.getClassLoader().getResourceAsStream(SMDTYPE + ".json"));
+
+		if (source != null) {
+			if (logger.isTraceEnabled())
+				logger.trace("Mapping for [" + SMDINDEX + "]/[" + SMDTYPE
+						+ "]=" + source);
+			// Create type and mapping
+			PutMappingResponse response = esClient.admin().indices()
+					.preparePutMapping(SMDINDEX).setType(SMDTYPE)
+					.setSource(source).execute().actionGet();
+			if (!response.isAcknowledged()) {
+				logger.fatal("the mapping {} isn't push ", SMDTYPE);
+				throw new Exception("the mapping " + SMDTYPE + " isn't push ");
+
+			}
+		} else {
+			throw new Exception("Could not finde mapping for type for type "
+					+ SMDTYPE);
+		}
+
+	}
+
+	/**
+	 * Check if a mapping already exists in an index
+	 * 
+	 * @param index
+	 *            Index name
+	 * @param type
+	 *            Mapping name
+	 * @return true if mapping exists
+	 */
+	private boolean isMappingExist() {
+		IndexMetaData imd = null;
+		ClusterState cs = esClient.admin().cluster().prepareState()
+				.setIndices(SMDINDEX).execute().actionGet().getState();
+		imd = cs.getMetaData().index(SMDINDEX);
+
+		if (imd == null)
+			return false;
+
+		MappingMetaData mdd = imd.mapping(SMDTYPE);
+
+		if (mdd != null)
+			return true;
+		return false;
+	}
 }

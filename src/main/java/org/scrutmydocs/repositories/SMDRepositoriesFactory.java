@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.reflections.Reflections;
 import org.scrutmydocs.contract.SMDRepositoriesService;
 import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryData;
-import org.scrutmydocs.search.ElasticSearchImpl;
 
 public class SMDRepositoriesFactory {
 

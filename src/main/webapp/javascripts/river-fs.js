@@ -199,11 +199,11 @@ var getFSRiver = function() {
 // FS River Creation
 var doCreateFSRiver = function(e) {
 	// Validation
-	$("#btnFSRiverValidator").click();
-	if ($("#river-fs-form input:invalid").length>0) {
-		e.preventDefault();
-		return false;		
-	}
+ 	$("#btnFSRiverValidator").click();
+//	if ($("#river-fs-form input:invalid").length>0) {
+//		e.preventDefault();
+//		return false;		
+//	}
 
 	var data = getFSRiver();
 	data.start = false;

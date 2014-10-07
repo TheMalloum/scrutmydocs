@@ -163,7 +163,7 @@ public class RepositoriesApi {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void put(SMDRepositoryData newRepository) throws Exception {
 
-		if (newRepository.id == null) {
+		if (newRepository.id == null || newRepository.id.trim().isEmpty()) {
 			newRepository.id = UUID.randomUUID().toString();
 		}
 

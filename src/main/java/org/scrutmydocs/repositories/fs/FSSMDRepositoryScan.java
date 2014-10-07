@@ -89,7 +89,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 						continue;
 					}
 
-					SMDSearchFactory.getInstance().index(fssmdRepositoryData,
+					SMDSearchFactory.getInstance().index(
 							smdDocument);
 				} else {
 					logger.debug("cleanning directory " + path + " ....");
@@ -97,8 +97,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 					// were removed
 
 					SMDSearchFactory.getInstance()
-							.deleteAllDocumentsInDirectory(fssmdRepositoryData,
-									file.getPath());
+							.deleteAllDocumentsInDirectory(	file.getPath());
 
 					logger.debug("cleanning directory " + path + " ....");
 					// if the directory changes we must index all files. ( a old
@@ -167,8 +166,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 		for (File file : dir.listFiles()) {
 			if (file.isFile()) {
 				try {
-					SMDSearchFactory.getInstance().index(fssmdRepositoryData,
-							new SMDFileDocument(file, fssmdRepositoryData.type));
+					SMDSearchFactory.getInstance().index(new SMDFileDocument(file, fssmdRepositoryData.type));
 				} catch (FileNotFoundException e) {
 					continue;
 				}

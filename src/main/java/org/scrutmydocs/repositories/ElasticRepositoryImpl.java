@@ -19,11 +19,7 @@
 
 package org.scrutmydocs.repositories;
 
-import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
-import static org.elasticsearch.index.query.QueryBuilders.queryString;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -33,24 +29,11 @@ import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.index.query.BoolFilterBuilder;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.highlight.HighlightField;
-import org.scrutmydocs.contract.SMDDocument;
-import org.scrutmydocs.contract.SMDFileDocument;
 import org.scrutmydocs.contract.SMDRepositoriesService;
-import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.contract.SMDSearchService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

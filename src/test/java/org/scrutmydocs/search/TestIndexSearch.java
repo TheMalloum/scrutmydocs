@@ -22,8 +22,7 @@ public class TestIndexSearch {
 
 		Thread.sleep(5000);
 
-		SMDSearchFactory.getInstance().index(new FSSMDRepositoryData("url"),
-				smdDocument);
+		SMDSearchFactory.getInstance().index(smdDocument);
 
 		Thread.sleep(5000);
 		// TODO when we call the getinstance SMDSearchFactory we have to be sure
@@ -42,16 +41,16 @@ public class TestIndexSearch {
 		File file = new File(url.toURI());
 		Assert.assertTrue("The test file doesn't existe", file.exists());
 
-		SMDFileDocument smdDocument = new SMDFileDocument(file, null);
+		SMDFileDocument smdDocument = new SMDFileDocument(file, "upload");
 
-		SMDSearchFactory.getInstance().index(new FSSMDRepositoryData("url"),
-				smdDocument);
+		SMDSearchFactory.getInstance().index(smdDocument);
 
 		Thread.sleep(6000);
 
-		SMDSearchFactory.getInstance().deleteAllDocumentsInDirectory(
-				new FSSMDRepositoryData("url"), smdDocument.pathDirectory);
+		SMDSearchFactory.getInstance().deleteAllDocumentsInDirectory(smdDocument.pathDirectory);
 
+		
+		Thread.sleep(6000);
 		
 		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
 				.search("*", 0, 1);
@@ -71,14 +70,12 @@ public class TestIndexSearch {
 
 		Thread.sleep(5000);
 
-		SMDSearchFactory.getInstance().index(new FSSMDRepositoryData("url"),
-				smdDocument);
+		SMDSearchFactory.getInstance().index(smdDocument);
 
 		Thread.sleep(5000);
 		// TODO when we call the getinstance SMDSearchFactory we have to be sure
 		// that indexs are available
-		SMDSearchFactory.getInstance().index(new FSSMDRepositoryData("url"),
-				smdDocument);
+		SMDSearchFactory.getInstance().index(smdDocument);
 
 		Thread.sleep(5000);
 		// TODO when we call the getinstance SMDSearchFactory we have to be sure

@@ -26,6 +26,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.contract.SMDFileDocument;
@@ -41,12 +42,11 @@ public class SMDDocumentApi {
 	 * @return
 	 */
 	@GET
-	@Path("/{type}/{id}")
-	public Response getDocument(@PathParam("type") String type,
-			@PathParam("id") String id) throws Exception {
+	@Path("/{id}")
+	public Response getDocument(@PathParam("id") String id) throws Exception {
 
 		SMDFileDocument smdFileDocument = SMDSearchFactory.getInstance()
-				.getDocument(type, id);
+				.getDocument(id);
 
 		
 		
@@ -55,7 +55,7 @@ public class SMDDocumentApi {
 					+ " doesn't exist");
 		}
 		
-		ResponseBuilder response = Response.ok(smdFileDocument.content);
+		ResponseBuilder response = Response.ok(Base64.decodeBase64(smdFileDocument.content));
 		response.header("Content-Disposition", "attachment; filename="
 				+ smdFileDocument.name);
 		
