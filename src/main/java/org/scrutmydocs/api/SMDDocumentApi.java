@@ -55,7 +55,7 @@ public class SMDDocumentApi {
 					+ " doesn't exist");
 		}
 		
-		ResponseBuilder response = Response.ok(Base64.decodeBase64(smdFileDocument.content));
+		ResponseBuilder response = Response.ok(Base64.decodeBase64(smdFileDocument.source));
 		response.header("Content-Disposition", "attachment; filename="
 				+ smdFileDocument.name);
 		

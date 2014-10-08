@@ -50,6 +50,7 @@
 		<log4j.version>2.0.2</log4j.version>
 		<junit.version>4.11</junit.version>
 		<commons.io.version>2.4</commons.io.version>
+		<tika.version>1.5</tika.version>
 
 		<!-- Plugins versions -->
 		<maven.compiler.version>3.1</maven.compiler.version>
@@ -166,13 +167,17 @@
 		</dependency>
 
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.jboss.resteasy</groupId> -->
-<!-- 			<artifactId>resteasy-jackson-provider</artifactId> -->
-<!-- 			<version>${resteasy.version}</version> -->
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>${tika.version}</version>
+		</dependency>
 
-<!-- 		</dependency> -->
-
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-parsers</artifactId>
+			<version>${tika.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-multipart-provider</artifactId>

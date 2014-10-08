@@ -47,4 +47,11 @@ public class UploadSMDScan extends SMDRepositoryScan {
 		return false;
 	}
 
+
+	@Override
+	public byte[] get(SMDRepositoryData smdRepositoryData) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

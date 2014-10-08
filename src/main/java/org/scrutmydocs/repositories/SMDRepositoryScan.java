@@ -23,4 +23,6 @@ public abstract class SMDRepositoryScan {
 	
 	public abstract  boolean check(SMDRepositoryData smdRepositoryData);
 
+	public abstract  byte[]  get(SMDRepositoryData smdRepositoryData);
+
 }
