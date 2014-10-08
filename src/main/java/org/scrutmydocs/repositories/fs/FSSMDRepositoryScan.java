@@ -92,17 +92,14 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 					SMDSearchFactory.getInstance().index(
 							smdDocument);
 				} else {
-					logger.debug("cleanning directory " + path + " ....");
-					// if the directory changes we must to find if documents
-					// were removed
+					logger.info("cleanning directory " + path + " and index");
+					// if the directory changes we must to index all the directory
 
 					SMDSearchFactory.getInstance()
-							.deleteAllDocumentsInDirectory(	file.getPath());
+							.deleteDirectory(file.getPath());
 
-					logger.debug("cleanning directory " + path + " ....");
-					// if the directory changes we must index all files. ( a old
-					// document can be moved without change a last modified
-					// date)
+					scrut(new FSSMDRepositoryData(path.toString()));
+					
 					indexAllFiles(file, fssmdRepositoryData);
 				}
 

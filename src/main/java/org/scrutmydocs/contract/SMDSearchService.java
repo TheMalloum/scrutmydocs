@@ -7,7 +7,7 @@ public interface SMDSearchService {
 
 	public SMDSearchResponse search(String search, int first, int pageSize);
 
-	public void deleteAllDocumentsInDirectory(String directory);
+	public void deleteDirectory(String directory);
 
 	public SMDFileDocument getDocument(String id);
 

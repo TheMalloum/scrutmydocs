@@ -47,7 +47,7 @@ public class TestIndexSearch {
 
 		Thread.sleep(6000);
 
-		SMDSearchFactory.getInstance().deleteAllDocumentsInDirectory(smdDocument.pathDirectory);
+		SMDSearchFactory.getInstance().deleteDirectory(smdDocument.pathDirectory);
 
 		
 		Thread.sleep(6000);

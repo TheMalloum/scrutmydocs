@@ -51,7 +51,7 @@ public class ScanDocuments implements Job {
 					try {
 						register = (SMDRepositoryScan) class1.newInstance();
 
-						if (!register.type.equals(smdRepositoryData.type)) {
+						if (!register.type.equals(smdRepositoryData.type)|| !smdRepositoryData.start) {
 							continue;
 						}
 
@@ -91,9 +91,6 @@ public class ScanDocuments implements Job {
 		logger.info("end scan()");
 	}
 
-	public static void main(String[] args) throws JobExecutionException {
-		new ScanDocuments().execute(null);
-	}
 
 	public static void init() {
 

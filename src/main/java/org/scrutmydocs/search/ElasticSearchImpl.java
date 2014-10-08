@@ -35,7 +35,6 @@ import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.ClusterState;
@@ -153,12 +152,14 @@ public class ElasticSearchImpl implements SMDSearchService {
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
 				.prepareSearch().setIndices(SMDINDEX)
 				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(qb)
-				.setFrom(first).setSize(pageSize).addHighlightedField("docs.name")
-				.addHighlightedField("docs.content")
+				.setFrom(first).setSize(pageSize)
+				.addHighlightedField("file.filename")
+				.addHighlightedField("content")
+				.addHighlightedField("meta.title")
 				.setHighlighterPreTags("<span class='badge badge-info'>")
 				.setHighlighterPostTags("</span>").addFields("*", "_source")
 				.execute().actionGet();
-
+		
 		totalHits = searchHits.getHits().totalHits();
 		took = searchHits.getTookInMillis();
 
@@ -184,7 +185,9 @@ public class ElasticSearchImpl implements SMDSearchService {
 					(String) searchHit.getSource().get("name"),
 					(String) searchHit.getSource().get("url"),
 					(String) searchHit.getSource().get("contentType"),
-					(String) searchHit.getSource().get("type"), highlights);
+					(String) searchHit.getSource().get("type"),
+					(String) searchHit.getSource().get("pathDirectory"),
+					highlights);
 
 			documents.add(smdResponseDocument);
 		}
@@ -222,28 +225,24 @@ public class ElasticSearchImpl implements SMDSearchService {
 	}
 
 	@Override
-	public void deleteAllDocumentsInDirectory(String directory) {
+	public void deleteDirectory(String directory) {
 		if (logger.isDebugEnabled())
 			logger.debug(
 					"deleteAllDocumentsInDirectory('directory : {}', type : {})",
 					directory, SMDTYPE);
 
 		BoolFilterBuilder filters = FilterBuilders.boolFilter().must(
-				FilterBuilders.termFilter("pathDirectory", directory));
+				FilterBuilders.prefixFilter("pathDirectory", directory));
 
 		MatchAllQueryBuilder qb = QueryBuilders.matchAllQuery();
 
 		QueryBuilder query = QueryBuilders.filteredQuery(qb, filters);
-		
-		SearchResponse response = esClient.prepareSearch(SMDINDEX)
-				.setTypes(SMDTYPE).setQuery(query).get();
-		
+
+		esClient.prepareSearch(SMDINDEX).setTypes(SMDTYPE).setQuery(query)
+				.get();
+
 		esClient.prepareDeleteByQuery(SMDINDEX).setTypes(SMDTYPE)
 				.setQuery(query).get();
-		
-		
-		
-		
 
 	}
 

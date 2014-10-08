@@ -19,32 +19,30 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 @JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
 public class SMDFileDocument extends SMDDocument {
 
-	public final String pathDirectory;
+	
 	public final String content;
 	public final Date date;
 
 	public SMDFileDocument(File file,String type) throws FileNotFoundException, IOException {
 
 		super(file.getName(), file.getAbsolutePath(), URLConnection
-				.guessContentTypeFromStream(new FileInputStream(file)),type);
+				.guessContentTypeFromStream(new FileInputStream(file)),type,file.getParent());
 		 InputStream is = new FileInputStream(file);
 		this.content = Base64.encodeBase64String(IOUtils.toByteArray(is));
 		this.date = new Date(file.lastModified());
-		this.pathDirectory = file.getParent();
 	}
 
 	public SMDFileDocument(FileItem file,String type) throws FileNotFoundException,
 			IOException {
-		super(file.getName(), file.getName(), file.getContentType(),type);
+		super(file.getName(), file.getName(), file.getContentType(),type,null);
 
 		this.content = Base64.encodeBase64String(file.get());
 		this.date = new Date();
-		this.pathDirectory = null;
 	}
 
 	public SMDFileDocument(InputStream is, String name,String type)
 			throws FileNotFoundException, IOException {
-		super(name, name, URLConnection.guessContentTypeFromStream(is),type);
+		super(name, name, URLConnection.guessContentTypeFromStream(is),type,null);
 
 		if (name == null) {
 			throw new IllegalArgumentException("A document must have a type");
@@ -55,14 +53,12 @@ public class SMDFileDocument extends SMDDocument {
 		}
 		this.content = Base64.encodeBase64String(IOUtils.toByteArray(is));
 		this.date = new Date();
-		this.pathDirectory = null;
 	}
 
 	public SMDFileDocument(String id, String name, String url,
 			String contentType, String type, Collection<String> highlights,
 			String pathDirectory, String content, Date date) {
-		super(id, name, url, contentType, type, highlights);
-		this.pathDirectory = pathDirectory;
+		super(id, name, url, contentType, type,pathDirectory, highlights);
 		this.content = content;
 		this.date = date;
 	}
