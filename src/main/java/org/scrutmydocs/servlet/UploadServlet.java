@@ -56,7 +56,7 @@ public class UploadServlet extends HttpServlet {
 				logger.info("Upload file : "+file.getName());
 				
 				UploadSMDData uploadSMDData =new UploadSMDData();
-				SMDSearchFactory.getInstance().index(new SMDFileDocument(file,uploadSMDData.type));
+				SMDSearchFactory.getInstance().index(new SMDFileDocument(uploadSMDData,file,uploadSMDData.type));
 			}
 		} catch (FileUploadException e) {
 			logger.error("error when upload file",e);

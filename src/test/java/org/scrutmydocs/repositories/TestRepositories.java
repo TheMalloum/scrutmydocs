@@ -2,6 +2,7 @@ package org.scrutmydocs.repositories;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.scrutmydocs.contract.SMDRepositoryData;
 import org.scrutmydocs.repositories.fs.FSSMDRepositoryData;
 
 public class TestRepositories {

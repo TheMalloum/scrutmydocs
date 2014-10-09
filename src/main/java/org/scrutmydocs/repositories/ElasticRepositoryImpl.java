@@ -24,31 +24,25 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.action.bulk.BulkProcessor;
-import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.scrutmydocs.contract.SMDRepositoriesService;
+import org.scrutmydocs.contract.SMDRepositoryData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ElasticRepositoryImpl implements 
-		SMDRepositoriesService {
+public class ElasticRepositoryImpl extends SMDRepositoriesService {
 
 	protected Logger logger = LogManager.getLogger();
 
-	final public static String SMDADMIN = "scrutmydocs-admin";
+	final public static String SMDADMIN = "scrutmydocs";
 	final public static String SMDADMIN_REPOSITORIES = "repositories";
 
-	
 	private Client esClient;
 
-	private BulkProcessor bulk;
+	// private BulkProcessor bulk;
 
 	ObjectMapper mapper = new ObjectMapper();
 
@@ -59,32 +53,31 @@ public class ElasticRepositoryImpl implements
 
 		createIndex(SMDADMIN);
 
-
-		this.bulk = new BulkProcessor.Builder(esClient,
-				new BulkProcessor.Listener() {
-					@Override
-					public void beforeBulk(long l, BulkRequest bulkRequest) {
-						logger.debug("before bulking {} actions",
-								bulkRequest.numberOfActions());
-					}
-
-					@Override
-					public void afterBulk(long l, BulkRequest bulkRequest,
-							BulkResponse bulkItemResponses) {
-						logger.debug(
-								"after bulking {} actions- has failure failures: {}",
-								bulkRequest.numberOfActions(),
-								bulkItemResponses.hasFailures());
-						// TODO check if errors
-					}
-
-					@Override
-					public void afterBulk(long l, BulkRequest bulkRequest,
-							Throwable throwable) {
-						logger.warn("Error while executing bulk", throwable);
-					}
-				}).setFlushInterval(TimeValue.timeValueSeconds(5))
-				.setBulkActions(100).build();
+		// this.bulk = new BulkProcessor.Builder(esClient,
+		// new BulkProcessor.Listener() {
+		// @Override
+		// public void beforeBulk(long l, BulkRequest bulkRequest) {
+		// logger.debug("before bulking {} actions",
+		// bulkRequest.numberOfActions());
+		// }
+		//
+		// @Override
+		// public void afterBulk(long l, BulkRequest bulkRequest,
+		// BulkResponse bulkItemResponses) {
+		// logger.debug(
+		// "after bulking {} actions- has failure failures: {}",
+		// bulkRequest.numberOfActions(),
+		// bulkItemResponses.hasFailures());
+		// // TODO check if errors
+		// }
+		//
+		// @Override
+		// public void afterBulk(long l, BulkRequest bulkRequest,
+		// Throwable throwable) {
+		// logger.warn("Error while executing bulk", throwable);
+		// }
+		// }).setFlushInterval(TimeValue.timeValueSeconds(5))
+		// .setBulkActions(100).build();
 	}
 
 	public void createIndex(String index) {
@@ -97,9 +90,8 @@ public class ElasticRepositoryImpl implements
 		}
 	}
 
-
 	@Override
-	public void deleteRepository(SMDRepositoryData repository) {
+	protected void deleteRepositorySetting(SMDRepositoryData repository) {
 
 		if (logger.isDebugEnabled())
 			logger.debug("delete({})", repository.id);
@@ -110,20 +102,22 @@ public class ElasticRepositoryImpl implements
 		}
 
 		try {
-			bulk.add(new DeleteRequest(SMDADMIN, repository.type,repository.id));
+
+			esClient.prepareDelete(SMDADMIN, SMDADMIN_REPOSITORIES, repository.id)
+					.execute().actionGet();
 		} catch (Exception e) {
-			logger.warn("Can not delete document {} of type  {}", repository.id,
-					repository.type);
-			throw new RuntimeException("Can not delete document : " + repository.id
-					+ "whith type " + repository.type + ": " + e.getMessage());
+			logger.warn("Can not delete document {} of type  {}",
+					repository.id, repository.type);
+			throw new RuntimeException("Can not delete document : "
+					+ repository.id + "whith type " + repository.type + ": "
+					+ e.getMessage());
 		}
 
 		if (logger.isDebugEnabled())
 			logger.debug("/delete()={}", repository.id);
 
 	}
-	
-	
+
 	@Override
 	public List<SMDRepositoryData> getRepositories() {
 		try {
@@ -137,10 +131,10 @@ public class ElasticRepositoryImpl implements
 
 			List<SMDRepositoryData> plugins = new ArrayList<SMDRepositoryData>();
 			for (SearchHit searchHit : searchHits.getHits()) {
-				plugins.add(mapper.readValue(
-						searchHit.getSourceAsString(),
-						SMDRepositoriesFactory.getAllTypeRepositories().get(
-								searchHit.getSource().get("type"))));
+				plugins.add(mapper.readValue(searchHit.getSourceAsString(),
+						SMDRepositoriesFactory
+								.getTypeRepository((String) searchHit
+										.getSource().get("type"))));
 			}
 
 			return plugins;
@@ -153,7 +147,8 @@ public class ElasticRepositoryImpl implements
 	@Override
 	public void save(SMDRepositoryData repository) {
 		try {
-			esClient.prepareIndex(SMDADMIN, SMDADMIN_REPOSITORIES,repository.id)
+			esClient.prepareIndex(SMDADMIN, SMDADMIN_REPOSITORIES,
+					repository.id)
 					.setSource(mapper.writeValueAsString(repository)).execute()
 					.actionGet();
 		} catch (Exception e) {
@@ -177,10 +172,9 @@ public class ElasticRepositoryImpl implements
 			if (!response.isExists())
 				return null;
 
-			return mapper.readValue(
-					response.getSourceAsString(),
-					SMDRepositoriesFactory.getAllTypeRepositories().get(
-							response.getSource().get("type")));
+			return mapper.readValue(response.getSourceAsString(),
+					SMDRepositoriesFactory.getTypeRepository((String) response
+							.getSource().get("type")));
 		} catch (Exception e) {
 			throw new RuntimeException("Can not save the configuration.", e);
 		}

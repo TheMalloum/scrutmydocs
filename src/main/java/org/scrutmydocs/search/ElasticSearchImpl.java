@@ -52,16 +52,20 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.highlight.HighlightField;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDFileDocument;
+import org.scrutmydocs.contract.SMDRepositoryData;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDSearchService;
+import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ElasticSearchImpl implements SMDSearchService {
 
 	protected Logger logger = LogManager.getLogger();
 
-	final public static String SMDINDEX = "scrutmydocs-docs";
+	final public static String SMDINDEX = "scrutmydocs";
 	final public static String SMDTYPE = "docs";
 
 	private Client esClient;
@@ -71,6 +75,8 @@ public class ElasticSearchImpl implements SMDSearchService {
 	ObjectMapper mapper = new ObjectMapper();
 
 	public ElasticSearchImpl() {
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		
 		esClient = NodeBuilder.nodeBuilder().node().client();
 		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus()
 				.execute().actionGet();
@@ -114,15 +120,17 @@ public class ElasticSearchImpl implements SMDSearchService {
 			return null;
 		SMDFileDocument smdFileDocument = null;
 		try {
-			smdFileDocument = new SMDFileDocument((String) response.getSource()
-					.get("id"), (String) response.getSource().get("name"),
-					(String) response.getSource().get("url"), (String) response
-							.getSource().get("contentType"), (String) response
-							.getSource().get("type"), null, (String) response
-							.getSource().get("pathDirectory"),
-					(String) response.getSource().get("content"), null);
-			// @TODO add Date
+			
+			JsonNode rootNode = mapper.readTree(response.getSourceAsBytes());
 
+			smdFileDocument = mapper.readValue(rootNode.toString(),SMDFileDocument.class);
+			
+			 
+			SMDRepositoryData repositoryData = mapper.readValue(rootNode.get("repositoryData").toString()
+														,SMDRepositoriesFactory.getTypeRepository(smdFileDocument.repositoryData.type));
+			
+			smdFileDocument.repositoryData = repositoryData;
+			
 		} catch (Exception e) {
 			logger.warn("Can not fetch document {}", id);
 			throw new RuntimeException("Can not index fetch document : " + id
@@ -150,7 +158,7 @@ public class ElasticSearchImpl implements SMDSearchService {
 		}
 
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
-				.prepareSearch().setIndices(SMDINDEX)
+				.prepareSearch().setIndices(SMDINDEX).setTypes(SMDTYPE)
 				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(qb)
 				.setFrom(first).setSize(pageSize)
 				.addHighlightedField("file.filename")

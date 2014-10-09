@@ -38,8 +38,8 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.scrutmydocs.contract.SMDRepositoryData;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
-import org.scrutmydocs.repositories.SMDRepositoryData;
 
 import com.sun.istack.NotNull;
 
@@ -115,7 +115,7 @@ public class RepositoriesApi {
 		String tab[][];
 
 		Class<? extends SMDRepositoryData> repo = SMDRepositoriesFactory
-				.getAllTypeRepositories().get(type);
+				.getTypeRepository(type);
 
 		if (repo == null) {
 
@@ -136,10 +136,7 @@ public class RepositoriesApi {
 		return Response.ok(tab).build();
 	}
 
-	public static void main(String[] args) throws Exception {
-		new RepositoriesApi().filedStructure("fs");
-	}
-
+	
 	/**
 	 * DELETE repositoy by id
 	 * 

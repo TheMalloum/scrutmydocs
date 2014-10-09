@@ -21,8 +21,9 @@ package org.scrutmydocs.repositories.upload;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.scrutmydocs.repositories.SMDRepositoryData;
-import org.scrutmydocs.repositories.SMDRepositoryScan;
+import org.scrutmydocs.contract.SMDDocument;
+import org.scrutmydocs.contract.SMDRepositoryData;
+import org.scrutmydocs.contract.SMDRepositoryScan;
 import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryScan;
 
 /**
@@ -49,9 +50,14 @@ public class UploadSMDScan extends SMDRepositoryScan {
 
 
 	@Override
-	public byte[] get(SMDRepositoryData smdRepositoryData) {
-		// TODO Auto-generated method stub
+	public byte[] get(SMDDocument document) {
 		return null;
+	}
+
+
+	@Override
+	public void delete(SMDRepositoryData smdRepositoryData) {
+		
 	}
 
 }

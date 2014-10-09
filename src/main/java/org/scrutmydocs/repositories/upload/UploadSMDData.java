@@ -19,7 +19,7 @@
 
 package org.scrutmydocs.repositories.upload;
 
-import org.scrutmydocs.repositories.SMDRepositoryData;
+import org.scrutmydocs.contract.SMDRepositoryData;
 import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryData;
 
 /**

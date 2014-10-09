@@ -26,13 +26,13 @@ public class ServletInit extends HttpServlet {
 
 			logger.info("index NOTICE AND LICENCE ....");
 
-			UploadSMDData uploadSMDData =new UploadSMDData();
+//			UploadSMDData uploadSMDData =new UploadSMDData();
 
-			SMDFileDocument LICENCE = new SMDFileDocument(ServletInit.class.getClassLoader().getResourceAsStream("LICENSE"),"LICENCE",uploadSMDData.type);
-			SMDFileDocument NOTICE  = new SMDFileDocument(ServletInit.class.getClassLoader().getResourceAsStream("NOTICE"),"NOTICE",uploadSMDData.type);
+//			SMDFileDocument LICENCE = new SMDFileDocument(uploadSMDData,ServletInit.class.getClassLoader().getResourceAsStream("LICENSE"),"LICENCE",uploadSMDData.type);
+//			SMDFileDocument NOTICE  = new SMDFileDocument(uploadSMDData,ServletInit.class.getClassLoader().getResourceAsStream("NOTICE"),"NOTICE",uploadSMDData.type);
 
-			SMDSearchFactory.getInstance().index(LICENCE);
-			SMDSearchFactory.getInstance().index(NOTICE);
+//			SMDSearchFactory.getInstance().index(LICENCE);
+//			SMDSearchFactory.getInstance().index(NOTICE);
 
 			logger.info("index NOTICE AND LICENCE .... OK");
 			

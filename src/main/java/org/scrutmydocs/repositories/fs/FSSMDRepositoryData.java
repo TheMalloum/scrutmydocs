@@ -19,7 +19,7 @@
 
 package org.scrutmydocs.repositories.fs;
 
-import org.scrutmydocs.repositories.SMDRepositoryData;
+import org.scrutmydocs.contract.SMDRepositoryData;
 import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryData;
 
 import com.sun.istack.NotNull;
@@ -42,9 +42,6 @@ public class FSSMDRepositoryData extends SMDRepositoryData {
 		this.type="fs";
 	}
 
-
-	@NotNull
-	public String url;
 
 	public String includes;
 

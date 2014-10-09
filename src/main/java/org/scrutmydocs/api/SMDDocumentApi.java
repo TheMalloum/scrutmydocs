@@ -30,6 +30,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.scrutmydocs.contract.SMDFileDocument;
+import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 import org.scrutmydocs.search.SMDSearchFactory;
 
 @Path("/2/documents")
@@ -48,17 +49,19 @@ public class SMDDocumentApi {
 		SMDFileDocument smdFileDocument = SMDSearchFactory.getInstance()
 				.getDocument(id);
 
-		
-		
-		if(smdFileDocument==null){
+		if (smdFileDocument == null) {
 			throw new NotFoundException(" the document with the id :  " + id
 					+ " doesn't exist");
 		}
-		
-		ResponseBuilder response = Response.ok(Base64.decodeBase64(smdFileDocument.source));
+
+		byte[] b = SMDRepositoriesFactory.getScanInstance(
+				smdFileDocument.repositoryData.type).get(
+				smdFileDocument);
+
+		ResponseBuilder response = Response.ok(b);
 		response.header("Content-Disposition", "attachment; filename="
 				+ smdFileDocument.name);
-		
+
 		return response.build();
 	}
 

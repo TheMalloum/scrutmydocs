@@ -16,8 +16,8 @@ import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
+import org.scrutmydocs.contract.SMDRepositoryData;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
-import org.scrutmydocs.repositories.SMDRepositoryData;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,7 +61,7 @@ public class SMDRepositoryDataJsonMarshaller implements
 		}
 
 		Class<? extends SMDRepositoryData> obj = SMDRepositoriesFactory
-				.getAllTypeRepositories().get(smdRepositoryData.type);
+				.getTypeRepository(smdRepositoryData.type);
 
 		if (obj != null) {
 			return mapper.readValue(input, obj);

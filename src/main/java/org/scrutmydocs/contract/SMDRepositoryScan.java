@@ -1,4 +1,4 @@
-package org.scrutmydocs.repositories;
+package org.scrutmydocs.contract;
 
 import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryScan;
 
@@ -23,6 +23,8 @@ public abstract class SMDRepositoryScan {
 	
 	public abstract  boolean check(SMDRepositoryData smdRepositoryData);
 
-	public abstract  byte[]  get(SMDRepositoryData smdRepositoryData);
+	public abstract  byte[]  get(SMDDocument document);
+
+	public abstract void  delete(SMDRepositoryData smdRepositoryData);
 
 }

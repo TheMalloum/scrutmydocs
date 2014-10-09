@@ -3,15 +3,20 @@ package org.scrutmydocs.contract;
 import java.util.Collection;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 public class SMDDocument {
 
-	public final String id;
-	public final String name;
-	public final String url;
-	public final String contentType;
-	public final String type;
-	public final Collection<String> highlights;
-	public final String pathDirectory;
+	public String id;
+	public String name;
+	public String url;
+	public String contentType;
+	public String type;
+	public Collection<String> highlights;
+	public String pathDirectory;
+
+	public SMDDocument() {
+	}
 
 	public SMDDocument(String id, String name, String url, String contentType,
 			String type, String pathDirectory, Collection<String> highlights) {
@@ -58,4 +63,5 @@ public class SMDDocument {
 		this.pathDirectory = pathDirectory;
 		this.highlights = null;
 	}
+
 }

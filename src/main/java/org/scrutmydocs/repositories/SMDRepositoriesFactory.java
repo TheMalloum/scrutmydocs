@@ -6,67 +6,114 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.reflections.Reflections;
 import org.scrutmydocs.contract.SMDRepositoriesService;
+import org.scrutmydocs.contract.SMDRepositoryData;
+import org.scrutmydocs.contract.SMDRepositoryScan;
 import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryData;
+import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryScan;
 
 public class SMDRepositoriesFactory {
 
-
 	protected static org.apache.logging.log4j.Logger logger = LogManager
 			.getLogger(SMDRepositoriesFactory.class);
-	
+
 	private static SMDRepositoriesService repositoriesService;
-	
 
-	private static HashMap<String, SMDRepositoryScan> list;
-	
-	private static HashMap<String, Class<? extends SMDRepositoryData>>  listData;
+	private static HashMap<String, SMDRepositoryScan> listScan;
 
+	private static HashMap<String, Class<? extends SMDRepositoryData>> listData;
 
-    /**
-     * We instantiate an elasticsearch backend implementation
-     */
+	/**
+	 * We instantiate an elasticsearch backend implementation
+	 */
 	public static synchronized SMDRepositoriesService getInstance() {
 		if (repositoriesService == null) {
 			repositoriesService = new ElasticRepositoryImpl();
 		}
 
-		return repositoriesService;
-	}
-	
-	
-	
-	
-	@SuppressWarnings("unchecked")
-	public synchronized static HashMap<String, Class<? extends SMDRepositoryData>> getAllTypeRepositories() {
+		Reflections reflections = new Reflections("org.scrutmydocs");
 
-		if (listData == null) {
+		// init reposytory
 
-			listData = new HashMap<String, Class<? extends SMDRepositoryData>>();
-			
-			Reflections reflections = new Reflections("org.scrutmydocs");
+		if (listScan == null) {
+			listScan = new HashMap<String, SMDRepositoryScan>();
+			Set<Class<?>> annotated = reflections
+					.getTypesAnnotatedWith(SMDRegisterRepositoryScan.class);
 
-			Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(SMDRegisterRepositoryData.class);
+			for (Class<?> annotatedScan : annotated) {
 
-			for (Class<?> class1 : annotated) {
+				if (SMDRepositoryScan.class.isAssignableFrom(annotatedScan)) {
 
-				if (SMDRepositoryData.class.isAssignableFrom(class1)) {
-
-					
-					if (listData.get(class1) != null) {
-						logger.error("the DataSource  "+ list.get(class1.getName() + " is early register"));
-						throw new IllegalStateException("the DataSource  "+ list.get(class1.getName() + " is early register"));
+					if (listScan.get(annotatedScan) != null) {
+						logger.error("the SMDRepositoryScan  "
+								+ listScan.get(annotatedScan.getName()
+										+ " is early register"));
+						throw new IllegalStateException(
+								"the SMDRepositoryScan  "
+										+ listScan.get(annotatedScan.getName()
+												+ " is early register"));
 					} else {
-						listData.put(class1.getAnnotation(SMDRegisterRepositoryData.class).name(), (Class<? extends SMDRepositoryData>) class1);
+						try {
+							listScan.put(
+									annotatedScan.getAnnotation(
+											SMDRegisterRepositoryScan.class)
+											.name(),
+									(SMDRepositoryScan) annotatedScan
+											.newInstance());
+						} catch (InstantiationException e) {
+							throw new RuntimeException(e);
+						} catch (IllegalAccessException e) {
+							throw new RuntimeException(e);
+						}
 					}
 				} else {
-					logger.warn(class1.getName() + " class must extends"+ SMDRepositoryData.class.getName());
+					logger.warn(annotatedScan.getName() + " class must extends"
+							+ SMDRepositoryScan.class.getName());
 				}
 			}
 		}
 
-		return listData;
+		if (listData == null) {
+			listData = new HashMap<String, Class<? extends SMDRepositoryData>>();
+			Set<Class<?>> annotated = reflections
+					.getTypesAnnotatedWith(SMDRegisterRepositoryData.class);
+
+			for (Class<?> annotatedData : annotated) {
+
+				if (SMDRepositoryData.class.isAssignableFrom(annotatedData)) {
+
+					if (listData.get(annotatedData) != null) {
+						logger.error("the SMDRepositoryScan  "
+								+ listData.get(annotatedData.getName()
+										+ " is early register"));
+						throw new IllegalStateException(
+								"the SMDRepositoryData  "
+										+ listData.get(annotatedData.getName()
+												+ " is early register"));
+					} else {
+						listData.put(
+								annotatedData.getAnnotation(
+										SMDRegisterRepositoryData.class).name(),
+								(Class<? extends SMDRepositoryData>) annotatedData);
+					}
+				} else {
+					logger.warn(annotatedData.getName() + " class must extends"
+							+ SMDRepositoryData.class.getName());
+				}
+			}
+		}
+
+		return repositoriesService;
 	}
-	
-	
-	
+
+	public static SMDRepositoryScan getScanInstance(String type) {
+		getInstance();
+		return listScan.get(type);
+	}
+
+	public static Class<? extends SMDRepositoryData> getTypeRepository(
+			String type) {
+		getInstance();
+		return listData.get(type);
+	}
+
 }

@@ -31,9 +31,10 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
+import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDFileDocument;
-import org.scrutmydocs.repositories.SMDRepositoryData;
-import org.scrutmydocs.repositories.SMDRepositoryScan;
+import org.scrutmydocs.contract.SMDRepositoryData;
+import org.scrutmydocs.contract.SMDRepositoryScan;
 import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryScan;
 import org.scrutmydocs.search.SMDSearchFactory;
 
@@ -73,6 +74,16 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 			logger.info("we are scrutting your directory "
 					+ fssmdRepositoryData.url + " ....");
 
+//			File root = new File(fssmdRepositoryData.url);
+//
+//			if ((fssmdRepositoryData.lastScan == null || new Date(
+//					root.lastModified()).after(fssmdRepositoryData.lastScan))) {
+//
+//				SMDSearchFactory.getInstance().deleteDirectory(
+//						fssmdRepositoryData.url);
+//				indexAllFiles(root, fssmdRepositoryData);
+//			}
+
 			List<Path> paths = browseDirectory(
 					new File(fssmdRepositoryData.url),
 					fssmdRepositoryData.lastScan);
@@ -87,22 +98,21 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
 					SMDFileDocument smdDocument;
 					try {
-						smdDocument = new SMDFileDocument(file,
-								fssmdRepositoryData.type);
+						smdDocument = new SMDFileDocument(fssmdRepositoryData,
+								file, fssmdRepositoryData.type);
 					} catch (FileNotFoundException e) {
 						continue;
 					}
 
 					SMDSearchFactory.getInstance().index(smdDocument);
 				} else {
-					logger.info("cleanning directory " + path + " and index");
+					logger.info("cleanning directory and index of " + path
+							+ " ");
 					// if the directory changes we must to index all the
 					// directory
 
 					SMDSearchFactory.getInstance().deleteDirectory(
 							file.getPath());
-
-					scrut(new FSSMDRepositoryData(path.toString()));
 
 					indexAllFiles(file, fssmdRepositoryData);
 				}
@@ -128,24 +138,22 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
 		List<Path> paths = new ArrayList<Path>();
 
-		if (lastModified == null
-				|| new Date(dir.lastModified()).after(lastModified)) {
-			paths.add(dir.toPath());
-		}
-
 		File[] listfile = dir.listFiles();
 		if (listfile.length == 0)
 			return paths;
 
 		for (File file : listfile) {
 
-			// if (lastModified == null
-			// || new Date(file.lastModified()).after(lastModified)) {
-			// logger.trace("find one File to index : " + file.toPath());
-			// paths.add(file.toPath());
-			// }
+//			if (lastModified == null
+//					|| new Date(file.lastModified()).after(lastModified)) {
+//				logger.trace("find one File to index : " + file.toPath());
+//				paths.add(file.toPath());
+//			}
 
-			if (file.isDirectory()) {
+			if (file.isDirectory()
+					&& (lastModified == null || new Date(file.lastModified())
+							.after(lastModified))) {
+				paths.add(file.toPath());
 				for (Path path : browseDirectory(file, lastModified)) {
 					paths.add(path);
 				}
@@ -167,8 +175,8 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 		for (File file : dir.listFiles()) {
 			if (file.isFile()) {
 				try {
-					SMDSearchFactory.getInstance()
-							.index(new SMDFileDocument(file,
+					SMDSearchFactory.getInstance().index(
+							new SMDFileDocument(fssmdRepositoryData, file,
 									fssmdRepositoryData.type));
 				} catch (FileNotFoundException e) {
 					continue;
@@ -212,18 +220,11 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 	}
 
 	@Override
-	public byte[] get(SMDRepositoryData data) {
-		if (!(data instanceof FSSMDRepositoryData)) {
-			logger.error("SMDRepositoryData is not a FSSMDRepositoryData");
-			throw new IllegalArgumentException(
-					"SMDRepositoryData is not a FSSMDRepositoryData");
-
-		}
-		FSSMDRepositoryData fssmdRepositoryData = (FSSMDRepositoryData) data;
+	public byte[] get(SMDDocument document) {
 
 		InputStream is;
 		try {
-			is = new FileInputStream(new File(fssmdRepositoryData.url));
+			is = new FileInputStream(new File(document.url));
 		} catch (FileNotFoundException e) {
 			return null;
 		}
@@ -234,6 +235,19 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 			return null;
 		}
 
+	}
+
+	@Override
+	public void delete(SMDRepositoryData data) {
+		if (!(data instanceof FSSMDRepositoryData)) {
+			logger.error("SMDRepositoryData is not a FSSMDRepositoryData");
+			throw new IllegalArgumentException(
+					"SMDRepositoryData is not a FSSMDRepositoryData");
+
+		}
+		FSSMDRepositoryData fssmdRepositoryData = (FSSMDRepositoryData) data;
+
+		SMDSearchFactory.getInstance().deleteDirectory(fssmdRepositoryData.url);
 	}
 
 }
