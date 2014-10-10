@@ -162,6 +162,8 @@ public class RepositoriesApi {
 
 		if (newRepository.id == null || newRepository.id.trim().isEmpty()) {
 			newRepository.id = UUID.randomUUID().toString();
+		}else{
+			delete(newRepository.id);
 		}
 
 		SMDRepositoriesFactory.getInstance().save(newRepository);
