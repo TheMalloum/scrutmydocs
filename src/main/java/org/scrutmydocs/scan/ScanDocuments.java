@@ -57,7 +57,11 @@ public class ScanDocuments implements Job {
 				
 			
 			Date startScarn = new Date();
+			try{
 			smdRepositoryScan.scrut(smdRepositoryData);
+			}catch(Exception e){
+				logger.fatal("error scan directory {} have reposytory scan with type = ",smdRepositoryData.url,e);
+			}
 			smdRepositoryData.lastScan = startScarn;
 			SMDRepositoriesFactory.getInstance().save(
 					smdRepositoryData);

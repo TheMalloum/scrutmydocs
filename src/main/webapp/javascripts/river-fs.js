@@ -214,12 +214,12 @@ var doCreateFSRiver = function(e) {
 	    url: "api/2/repositories/",
 	    contentType: "application/json",
 	    data: JSON.stringify(data),
-	    succes : function(json) {
+	    complete : function() {
 			// Handle errors
-			if (!json.ok) {
-				showRestError(json);
-				return;
-			}
+//			if (!json.ok) {
+//				showRestError(json);
+//				return;
+//			}
 			insertFSRiver(data);
 			$("#river-fs-"+data.id).addClass("active");
 			showFSRiver(data);
@@ -229,6 +229,9 @@ var doCreateFSRiver = function(e) {
 			$("#btnFSRiverDelete").show();
 			$("#btnFSRiverUpdate").show();
 
+			
+			updateFSRiverMenu(data);
+			
 			showNotices([{
 				type: "alert-success",
 				title: data.name + " created",

@@ -11,14 +11,16 @@ import java.util.Date;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
 import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.elasticsearch.common.io.stream.BytesStreamInput;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 public class SMDFileDocument extends SMDDocument {
+
+	protected org.apache.logging.log4j.Logger logger = LogManager
+			.getLogger(getClass().getName());
 
 	public String content;
 	public Date date;
@@ -34,13 +36,11 @@ public class SMDFileDocument extends SMDDocument {
 		super(file.getName(), file.getAbsolutePath(), URLConnection
 				.guessContentTypeFromStream(new FileInputStream(file)), type,
 				file.getParent());
-		InputStream is = new FileInputStream(file);
 
-		byte[] b = IOUtils.toByteArray(is);
 		try {
 			this.content = new Tika().parseToString(file);
 		} catch (TikaException e) {
-			throw new RuntimeException("tika pb");
+			logger.debug("the file {} could not be parse by tika",file.getAbsoluteFile() );
 		}
 
 		this.date = new Date(file.lastModified());
@@ -57,9 +57,8 @@ public class SMDFileDocument extends SMDDocument {
 					new BytesStreamInput(file.get(), false), new Metadata(),
 					100000);
 		} catch (TikaException e) {
-			throw new RuntimeException("tika pb");
+			logger.debug("the file {} could not be parse by tika",file.getName() );
 		}
-		;
 		this.date = new Date();
 		this.repositoryData = repositoryData;
 
@@ -82,7 +81,7 @@ public class SMDFileDocument extends SMDDocument {
 			this.content = new Tika().parseToString(new BytesStreamInput(b,
 					false), new Metadata(), 100000);
 		} catch (TikaException e) {
-			throw new RuntimeException("tika pb");
+			logger.debug("the file {} could not be parse by tika",name );
 		}
 		this.date = new Date();
 		this.repositoryData = repositoryData;
@@ -99,7 +98,7 @@ public class SMDFileDocument extends SMDDocument {
 					new BytesStreamInput(source.getBytes(), false),
 					new Metadata(), 100000);
 		} catch (TikaException e) {
-			throw new RuntimeException("tika pb");
+			logger.debug("the file {} could not be parse by tika",name );
 		}
 		this.date = date;
 		this.repositoryData = repositoryData;
