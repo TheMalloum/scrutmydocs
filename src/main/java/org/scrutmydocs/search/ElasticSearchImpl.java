@@ -22,6 +22,7 @@ package org.scrutmydocs.search;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.queryString;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -65,7 +66,7 @@ public class ElasticSearchImpl implements SMDSearchService {
 
 	protected Logger logger = LogManager.getLogger();
 
-	final public static String SMDINDEX = "scrutmydocs";
+	final public static String SMDINDEX = "scrutmydocs-docs";
 	final public static String SMDTYPE = "docs";
 
 	private Client esClient;
@@ -75,8 +76,9 @@ public class ElasticSearchImpl implements SMDSearchService {
 	ObjectMapper mapper = new ObjectMapper();
 
 	public ElasticSearchImpl() {
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+				false);
+
 		esClient = NodeBuilder.nodeBuilder().node().client();
 		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus()
 				.execute().actionGet();
@@ -120,17 +122,20 @@ public class ElasticSearchImpl implements SMDSearchService {
 			return null;
 		SMDFileDocument smdFileDocument = null;
 		try {
-			
+
 			JsonNode rootNode = mapper.readTree(response.getSourceAsBytes());
 
-			smdFileDocument = mapper.readValue(rootNode.toString(),SMDFileDocument.class);
-			
-			 
-			SMDRepositoryData repositoryData = mapper.readValue(rootNode.get("repositoryData").toString()
-														,SMDRepositoriesFactory.getTypeRepository(smdFileDocument.repositoryData.type));
-			
+			smdFileDocument = mapper.readValue(rootNode.toString(),
+					SMDFileDocument.class);
+
+			SMDRepositoryData repositoryData = mapper
+					.readValue(
+							rootNode.get("repositoryData").toString(),
+							SMDRepositoriesFactory
+									.getTypeRepository(smdFileDocument.repositoryData.type));
+
 			smdFileDocument.repositoryData = repositoryData;
-			
+
 		} catch (Exception e) {
 			logger.warn("Can not fetch document {}", id);
 			throw new RuntimeException("Can not index fetch document : " + id
@@ -167,7 +172,7 @@ public class ElasticSearchImpl implements SMDSearchService {
 				.setHighlighterPreTags("<span class='badge badge-info'>")
 				.setHighlighterPostTags("</span>").addFields("*", "_source")
 				.execute().actionGet();
-		
+
 		totalHits = searchHits.getHits().totalHits();
 		took = searchHits.getTookInMillis();
 
@@ -261,29 +266,40 @@ public class ElasticSearchImpl implements SMDSearchService {
 		if (!esClient.admin().indices().prepareExists(SMDINDEX).execute()
 				.actionGet().isExists()) {
 			esClient.admin().indices().prepareCreate(SMDINDEX).execute();
+		}
 
+		esClient.admin().indices().prepareCreate(SMDINDEX).execute();
+
+		// TODO use ES methode to wait
+		while (!esClient.admin().indices().prepareExists(SMDINDEX).execute()
+				.actionGet().isExists()) {
+			try {
+				Thread.sleep(1000 * 1);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
 		}
 
 		try {
 			pushMapping();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void pushMapping() throws Exception {
+	private void pushMapping() throws IOException {
 		if (logger.isTraceEnabled())
 			logger.trace("pushMapping(" + SMDINDEX + "," + SMDTYPE + "," + ")");
 
 		if (isMappingExist()) {
-			logger.info("Mapping definition for [" + SMDINDEX + "]/[" + SMDTYPE
-					+ "].");
+			logger.trace("Mapping definition for [" + SMDINDEX + "]/["
+					+ SMDTYPE + "].");
 			return;
 		}
 
 		// Read the mapping json file if exists and use it
 		String source = IOUtils.toString(ElasticSearchImpl.class
-				.getClassLoader().getResourceAsStream(SMDTYPE + ".json"));
+				.getClassLoader().getResourceAsStream("docs.json"));
 
 		if (source != null) {
 			if (logger.isTraceEnabled())
@@ -295,12 +311,13 @@ public class ElasticSearchImpl implements SMDSearchService {
 					.setSource(source).execute().actionGet();
 			if (!response.isAcknowledged()) {
 				logger.fatal("the mapping {} isn't push ", SMDTYPE);
-				throw new Exception("the mapping " + SMDTYPE + " isn't push ");
+				throw new RuntimeException("the mapping " + SMDTYPE
+						+ " isn't push ");
 
 			}
 		} else {
-			throw new Exception("Could not finde mapping for type for type "
-					+ SMDTYPE);
+			throw new RuntimeException(
+					"Could not finde mapping for type for type " + SMDTYPE);
 		}
 
 	}

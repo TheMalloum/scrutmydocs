@@ -158,7 +158,8 @@ public class RepositoriesApi {
 	 */
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void put(SMDRepositoryData newRepository) throws Exception {
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response put(SMDRepositoryData newRepository) throws Exception {
 
 		if (newRepository.id == null || newRepository.id.trim().isEmpty()) {
 			newRepository.id = UUID.randomUUID().toString();
@@ -167,6 +168,9 @@ public class RepositoriesApi {
 		}
 
 		SMDRepositoriesFactory.getInstance().save(newRepository);
+		
+		
+		return Response.ok(newRepository).build();
 	}
 
 	/**

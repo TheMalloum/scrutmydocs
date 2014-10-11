@@ -1,5 +1,8 @@
 package org.scrutmydocs.contract;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryScan;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -9,6 +12,8 @@ public abstract class SMDRepositoryScan {
 
 	
 	
+	
+	
 	public SMDRepositoryScan() {
 		SMDRegisterRepositoryScan myRegister = this.getClass().getAnnotation(SMDRegisterRepositoryScan.class);
 		this.type = myRegister.name();
@@ -16,7 +21,6 @@ public abstract class SMDRepositoryScan {
 	}
 	
 	public final String type;
-	
 	
 
 	public abstract  void  scrut(SMDRepositoryData smdRepositoryData);

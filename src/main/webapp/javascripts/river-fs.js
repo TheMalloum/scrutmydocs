@@ -206,7 +206,7 @@ var doCreateFSRiver = function(e) {
 //	}
 
 	var data = getFSRiver();
-	data.start = false;
+//	data.start = false;
 	
 	
 	$.ajax({
@@ -214,15 +214,15 @@ var doCreateFSRiver = function(e) {
 	    url: "api/2/repositories/",
 	    contentType: "application/json",
 	    data: JSON.stringify(data),
-	    complete : function() {
+	    success : function(json) {
 			// Handle errors
 //			if (!json.ok) {
 //				showRestError(json);
 //				return;
 //			}
-			insertFSRiver(data);
+			insertFSRiver(json);
 			$("#river-fs-"+data.id).addClass("active");
-			showFSRiver(data);
+			showFSRiver(json);
 			
 			// Buttons
 			$("#btnFSRiverCreate").hide();
@@ -230,7 +230,7 @@ var doCreateFSRiver = function(e) {
 			$("#btnFSRiverUpdate").show();
 
 			
-			updateFSRiverMenu(data);
+			updateFSRiverMenu(json);
 			
 			showNotices([{
 				type: "alert-success",
@@ -291,15 +291,15 @@ var doUpdateFSRiver = function(e) {
 	    url: "api/2/repositories/",
 	    contentType: "application/json",
 	    data: JSON.stringify(data),
-	    succes : function(json) {
+	    success : function(json) {
 		// Handle errors
 //		if (!json.ok) {
 //			showRestError(json);
 //			return;
 //		}
 
-		updateFSRiverMenu(data);
-
+		updateFSRiverMenu(json);
+		showFSRiver(json);
 		showNotices([{
 			type: "alert-success",
 			title: data.url + " updated",

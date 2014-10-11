@@ -51,7 +51,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 			.getLogger(getClass().getName());
 
 	@Override
-	public synchronized void  scrut(SMDRepositoryData data) {
+	public synchronized void scrut(SMDRepositoryData data) {
 
 		if (!(data instanceof FSSMDRepositoryData)) {
 			logger.error("SMDRepositoryData is not a FSSMDRepositoryData");
@@ -71,8 +71,8 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
 		try {
 
-			logger.info("we are scrutting your directory "
-					+ fssmdRepositoryData.url + " ....");
+			logger.info("Start scrutting your directory "
+					+ fssmdRepositoryData.url);
 
 			File root = new File(fssmdRepositoryData.url);
 
@@ -91,20 +91,23 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 				File file = path.toFile();
 
 				if (file.isDirectory()) {
-					
+
 					logger.info("cleanning directory and index of " + path
 							+ " ");
 					// if the directory changes we must to index all the
 					// directory
-
-					
 
 					indexAllFiles(file, fssmdRepositoryData);
 				}
 
 			}
 
+			logger.info("End scrutting your directory "
+					+ fssmdRepositoryData.url);
+
 		} catch (Exception ex) {
+			logger.error("scrutting your directory {} : {} ",
+					fssmdRepositoryData.url, ex);
 
 			throw new RuntimeException(
 					"can't checkout changes in the directory "
@@ -129,19 +132,16 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
 		for (File file : listfile) {
 
-//			if (lastModified == null
-//					|| new Date(file.lastModified()).after(lastModified)) {
-//				logger.trace("find one File to index : " + file.toPath());
-//				paths.add(file.toPath());
-//			}
-
-			if ( file.isDirectory() && (lastModified == null || new Date(file.lastModified())
+			if (file.isDirectory()
+					&& (lastModified == null || new Date(file.lastModified())
 							.after(lastModified))) {
-					paths.add(file.toPath());
-					for (Path path : browseDirectory(file, lastModified)) {
-						paths.add(path);
-				}
+				paths.add(file.toPath());
 
+			}
+			if (file.isDirectory()) {
+				for (Path path : browseDirectory(file, lastModified)) {
+					paths.add(path);
+				}
 			}
 		}
 
@@ -156,9 +156,8 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 					"we can indexAllFiles just to a directory");
 		}
 
-		SMDSearchFactory.getInstance().deleteDirectory(
-				dir.getPath());
-		
+		SMDSearchFactory.getInstance().deleteDirectory(dir.getPath());
+
 		for (File file : dir.listFiles()) {
 			if (file.isFile()) {
 				try {
@@ -166,13 +165,15 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 							new SMDFileDocument(fssmdRepositoryData, file,
 									fssmdRepositoryData.type));
 				} catch (FileNotFoundException e) {
-					logger.error("the document {} could not be index {}",file.getAbsoluteFile(),e);
+//					logger.debug("the document {} could not be index {}",
+//							file.getAbsoluteFile(), e);
 					continue;
 				}
 			}
 		}
 
 	}
+
 
 	public String getpath(File file) {
 		return "file://" + file.getPath();

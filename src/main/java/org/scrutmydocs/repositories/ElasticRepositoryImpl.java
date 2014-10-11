@@ -37,7 +37,7 @@ public class ElasticRepositoryImpl extends SMDRepositoriesService {
 
 	protected Logger logger = LogManager.getLogger();
 
-	final public static String SMDADMIN = "scrutmydocs";
+	final public static String SMDADMIN = "scrutmydocs-settings";
 	final public static String SMDADMIN_REPOSITORIES = "repositories";
 
 	private Client esClient;
@@ -53,6 +53,15 @@ public class ElasticRepositoryImpl extends SMDRepositoriesService {
 
 		createIndex(SMDADMIN);
 
+		//TODO use ES methode to wait
+		while (!esClient.admin().indices().prepareExists(SMDADMIN)
+				.execute().actionGet().isExists()) {
+			try {
+				Thread.sleep(1000 * 1);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		}
 		// this.bulk = new BulkProcessor.Builder(esClient,
 		// new BulkProcessor.Listener() {
 		// @Override
