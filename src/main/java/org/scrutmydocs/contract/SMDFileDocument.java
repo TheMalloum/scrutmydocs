@@ -120,8 +120,7 @@ public class SMDFileDocument extends SMDDocument {
 		List<String> indexExtentions = Arrays.asList("txt","pdf","odt","jpg","doc","docx","csv","xls","png","ppt","key","odp");
 		
 		if(!indexExtentions.contains(extension)){
-			System.out.println(extension);
-			throw new FileNotFoundException();
+			throw new FileNotFoundException("this file isn not available in scrutmydocs");
 		}
 		
 	
