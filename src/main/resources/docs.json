@@ -24,6 +24,10 @@
          "date":{
             "type":"string",
             "index":"not_analyzed"
+         },
+         "groups":{
+            "type":"string",
+            "index":"not_analyzed"
          }
          
       }

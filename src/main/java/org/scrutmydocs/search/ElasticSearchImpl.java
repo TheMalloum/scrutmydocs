@@ -45,6 +45,7 @@ import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.MatchAllFilterBuilder;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -54,6 +55,7 @@ import org.elasticsearch.search.highlight.HighlightField;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDFileDocument;
 import org.scrutmydocs.contract.SMDRepositoryData;
+import org.scrutmydocs.contract.SMDSearchQuery;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.contract.SMDSearchService;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
@@ -146,26 +148,34 @@ public class ElasticSearchImpl implements SMDSearchService {
 	}
 
 	@Override
-	public SMDSearchResponse search(String search, int first, int pageSize) {
+	public SMDSearchResponse search(SMDSearchQuery searchQuery) {
 		if (logger.isDebugEnabled())
-			logger.debug("google('{}', {}, {})", search, first, pageSize);
+			logger.debug("google('{}', {}, {})", searchQuery.search, searchQuery.first, searchQuery.pageSize);
 
 		long totalHits = -1;
 		long took = -1;
 
 		SMDSearchResponse searchResponse = null;
 
-		QueryBuilder qb;
-		if (search == "*") {
-			qb = matchAllQuery();
+		QueryBuilder query;
+		if (searchQuery.search == "*") {
+			query = matchAllQuery();
 		} else {
-			qb = queryString(search);
+			
+			MatchAllFilterBuilder filters = FilterBuilders.matchAllFilter();
+//					boolFilter().must(
+//					FilterBuilders.termsFilter("repositoryData.groupes", searchQuery.groups));
+//TODO add filter by group
+			QueryBuilder qb = queryString(searchQuery.search);
+
+			 query = QueryBuilders.filteredQuery(qb, filters);
+			
 		}
 
 		org.elasticsearch.action.search.SearchResponse searchHits = esClient
 				.prepareSearch().setIndices(SMDINDEX).setTypes(SMDTYPE)
-				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(qb)
-				.setFrom(first).setSize(pageSize)
+				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(query)
+				.setFrom(searchQuery.first).setSize(searchQuery.pageSize)
 				.addHighlightedField("file.filename")
 				.addHighlightedField("content")
 				.addHighlightedField("meta.title")
@@ -208,7 +218,7 @@ public class ElasticSearchImpl implements SMDSearchService {
 		searchResponse = new SMDSearchResponse(took, totalHits, documents);
 
 		if (logger.isDebugEnabled())
-			logger.debug("/google({}) : {}", search, totalHits);
+			logger.debug("/google({}) : {}", searchQuery, totalHits);
 
 		return searchResponse;
 

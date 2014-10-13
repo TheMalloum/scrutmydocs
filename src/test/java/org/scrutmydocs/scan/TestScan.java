@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.scrutmydocs.contract.SMDSearchQuery;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.repositories.fs.FSSMDRepositoryData;
 import org.scrutmydocs.repositories.fs.FSSMDRepositoryScan;
@@ -31,8 +32,10 @@ public class TestScan {
 
 		Thread.sleep(6 * 1000);
 
+		
+		
 		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
-				.search("*", 0, 1);
+				.search(new SMDSearchQuery("*", 0, 1,null));
 
 		Assert.assertEquals(0, searchResponse.totalHits);
 
@@ -46,7 +49,7 @@ public class TestScan {
 
 		Thread.sleep(6 * 1000);
 
-		searchResponse = SMDSearchFactory.getInstance().search("*", 1, 1);
+		searchResponse = SMDSearchFactory.getInstance().search(new SMDSearchQuery("*", 0, 1,null));
 
 		Assert.assertEquals(1, searchResponse.totalHits);
 
@@ -57,7 +60,7 @@ public class TestScan {
 
 		Thread.sleep(6 * 1000);
 
-		searchResponse = SMDSearchFactory.getInstance().search("*", 1, 1);
+		searchResponse = SMDSearchFactory.getInstance().search(new SMDSearchQuery("*", 0, 1,null));
 
 		Assert.assertEquals(0, searchResponse.totalHits);
 

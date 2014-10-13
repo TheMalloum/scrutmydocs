@@ -1,9 +1,6 @@
 package org.scrutmydocs.contract;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryScan;
+import org.scrutmydocs.annotations.SMDRegisterRepositoryScan;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 

@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -17,13 +18,13 @@ import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.elasticsearch.common.io.stream.BytesStreamInput;
+import org.scrutmydocs.security.Group;
 
 public class SMDFileDocument extends SMDDocument {
 
 	public String content;
 	public Date date;
 	public SMDRepositoryData repositoryData;
-	
 	
 	
 	public SMDFileDocument() {
@@ -47,6 +48,7 @@ public class SMDFileDocument extends SMDDocument {
 
 		this.date = new Date(file.lastModified());
 		this.repositoryData = repositoryData;
+		
 
 	}
 

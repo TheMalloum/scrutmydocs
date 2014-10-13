@@ -1,4 +1,4 @@
-package org.scrutmydocs.repositories.annotations;
+package org.scrutmydocs.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

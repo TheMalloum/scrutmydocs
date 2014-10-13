@@ -3,8 +3,6 @@ package org.scrutmydocs.contract;
 import java.util.Collection;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 public class SMDDocument {
 
 	public String id;

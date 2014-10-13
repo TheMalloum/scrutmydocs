@@ -1,9 +1,12 @@
 package org.scrutmydocs.contract;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
-import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryData;
+import org.scrutmydocs.annotations.SMDRegisterRepositoryData;
+import org.scrutmydocs.security.Group;
 
 import com.sun.istack.NotNull;
 
@@ -28,6 +31,9 @@ public class SMDRepositoryData {
 		if (myRegister != null) {
 			this.type = myRegister.name();
 		}
+		groups.add(Group.ANONYME.name());
+		
+		
 	}
 
 	public String id;
@@ -41,6 +47,9 @@ public class SMDRepositoryData {
 	public Date lastScan;
 
 	public boolean start;
+	
+	
+	public List<String> groups =new ArrayList<String>();
 
 	public void start() {
 		start = true;

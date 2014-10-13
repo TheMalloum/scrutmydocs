@@ -19,10 +19,8 @@
 
 package org.scrutmydocs.repositories.fs;
 
+import org.scrutmydocs.annotations.SMDRegisterRepositoryData;
 import org.scrutmydocs.contract.SMDRepositoryData;
-import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryData;
-
-import com.sun.istack.NotNull;
 
 /**
  * Implement the DropBox ScrutMyDocs Data Source

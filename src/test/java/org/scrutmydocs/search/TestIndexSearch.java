@@ -6,8 +6,8 @@ import java.net.URL;
 import org.junit.Assert;
 import org.junit.Test;
 import org.scrutmydocs.contract.SMDFileDocument;
+import org.scrutmydocs.contract.SMDSearchQuery;
 import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.repositories.fs.FSSMDRepositoryData;
 
 public class TestIndexSearch {
 
@@ -28,7 +28,7 @@ public class TestIndexSearch {
 		// TODO when we call the getinstance SMDSearchFactory we have to be sure
 		// that indexs are available
 		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
-				.search("*", 0, 1);
+				.search(new SMDSearchQuery("*", 0, 1));
 
 		Assert.assertEquals(1, searchResponse.totalHits);
 
@@ -53,7 +53,7 @@ public class TestIndexSearch {
 		Thread.sleep(6000);
 		
 		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
-				.search("*", 0, 1);
+				.search(new SMDSearchQuery("*", 0, 1));
 		
 		Assert.assertEquals(0, searchResponse.totalHits);
 
@@ -81,7 +81,7 @@ public class TestIndexSearch {
 		// TODO when we call the getinstance SMDSearchFactory we have to be sure
 		// that indexs are available
 		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
-				.search("*", 0, 1);
+				.search(new SMDSearchQuery("*", 0, 1));
 
 		Assert.assertEquals(1, searchResponse.totalHits);
 

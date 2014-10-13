@@ -19,8 +19,8 @@
 
 package org.scrutmydocs.repositories.upload;
 
+import org.scrutmydocs.annotations.SMDRegisterRepositoryData;
 import org.scrutmydocs.contract.SMDRepositoryData;
-import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryData;
 
 /**
  * Implement the DropBox ScrutMyDocs Data Source

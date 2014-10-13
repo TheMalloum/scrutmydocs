@@ -21,10 +21,10 @@ package org.scrutmydocs.repositories.upload;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.scrutmydocs.annotations.SMDRegisterRepositoryScan;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDRepositoryData;
 import org.scrutmydocs.contract.SMDRepositoryScan;
-import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryScan;
 
 /**
  * Implement the DropBox ScrutMyDocs Data Source

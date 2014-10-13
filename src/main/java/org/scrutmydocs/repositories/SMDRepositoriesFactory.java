@@ -5,11 +5,11 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.reflections.Reflections;
+import org.scrutmydocs.annotations.SMDRegisterRepositoryData;
+import org.scrutmydocs.annotations.SMDRegisterRepositoryScan;
 import org.scrutmydocs.contract.SMDRepositoriesService;
 import org.scrutmydocs.contract.SMDRepositoryData;
 import org.scrutmydocs.contract.SMDRepositoryScan;
-import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryData;
-import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryScan;
 
 public class SMDRepositoriesFactory {
 

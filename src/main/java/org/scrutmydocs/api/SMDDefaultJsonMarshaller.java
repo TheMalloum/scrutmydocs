@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -15,23 +17,39 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
+import org.jboss.resteasy.core.Headers;
+import org.jboss.resteasy.core.ServerResponse;
+import org.jboss.resteasy.spi.UnauthorizedException;
+import org.scrutmydocs.contract.SMDSearchQuery;
+import org.scrutmydocs.security.Group;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Provider
 @Consumes("application/json")
 @Produces("application/json")
-public class SMDDefaultJsonMarshaller implements MessageBodyWriter<Object>,
-		MessageBodyReader<Object> {
+public class SMDDefaultJsonMarshaller implements
+		MessageBodyWriter<SMDSearchQuery>, MessageBodyReader<SMDSearchQuery> {
 
 	private final ObjectMapper mapper;
 	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger();
 
+	private static final String AUTHORIZATION_PROPERTY = "Authorization";
+	private static final String AUTHENTICATION_SCHEME = "Basic";
+	private static final ServerResponse ACCESS_DENIED = new ServerResponse(
+			"Access denied for this resource", 401, new Headers<Object>());;
+	// private static final ServerResponse ACCESS_FORBIDDEN = new
+	// ServerResponse("Nobody can access this resource", 403, new
+	// Headers<Object>());;
+	private static final ServerResponse SERVER_ERROR = new ServerResponse(
+			"INTERNAL SERVER ERROR", 500, new Headers<Object>());;
+
 	public SMDDefaultJsonMarshaller() {
 		mapper = new ObjectMapper();
-//		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-//				false);
+		// mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+		// false);
 	}
 
 	@Override
@@ -41,7 +59,7 @@ public class SMDDefaultJsonMarshaller implements MessageBodyWriter<Object>,
 	}
 
 	@Override
-	public void writeTo(Object obj, Class<?> type, Type genericType,
+	public void writeTo(SMDSearchQuery obj, Class<?> type, Type genericType,
 			Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException,
@@ -51,7 +69,7 @@ public class SMDDefaultJsonMarshaller implements MessageBodyWriter<Object>,
 	}
 
 	@Override
-	public long getSize(Object obj, Class<?> type, Type genericType,
+	public long getSize(SMDSearchQuery obj, Class<?> type, Type genericType,
 			Annotation[] annotations, MediaType mediaType) {
 		return -1;
 	}
@@ -64,12 +82,48 @@ public class SMDDefaultJsonMarshaller implements MessageBodyWriter<Object>,
 	}
 
 	@Override
-	public Object readFrom(Class<Object> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType,
+	public SMDSearchQuery readFrom(Class<SMDSearchQuery> type,
+			Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
 
-		return mapper.readValue(entityStream, type);
+		SMDSearchQuery query = mapper.readValue(entityStream, type);
+
+		// Fetch authorization header
+		final List<String> authorization = httpHeaders
+				.get(AUTHORIZATION_PROPERTY);
+
+		
+//		if (authorization == null || authorization.isEmpty()) {
+//			throw new UnauthorizedException("ddd");
+//		}
+//		
+		
+		// If no authorization information present;
+		if (authorization != null &&  !authorization.isEmpty()) {
+
+			// Get encoded username and password
+			final String encodedUserPassword = authorization.get(0)
+					.replaceFirst(AUTHENTICATION_SCHEME + " ", "");
+
+			// Decode username and password
+			String usernameAndPassword;
+			
+			usernameAndPassword = new String(
+					Base64.decodeBase64(encodedUserPassword));
+
+			// Split username and password tokens
+			final StringTokenizer tokenizer = new StringTokenizer(
+					usernameAndPassword, ":");
+			final String username = tokenizer.nextToken();
+			final String password = tokenizer.nextToken();
+
+		}else{
+			
+			query.groups.add(Group.ANONYME.name());
+		}
+
+		return query;
 
 	}
 }

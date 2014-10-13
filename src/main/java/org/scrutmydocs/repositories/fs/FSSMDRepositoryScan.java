@@ -31,11 +31,11 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
+import org.scrutmydocs.annotations.SMDRegisterRepositoryScan;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDFileDocument;
 import org.scrutmydocs.contract.SMDRepositoryData;
 import org.scrutmydocs.contract.SMDRepositoryScan;
-import org.scrutmydocs.repositories.annotations.SMDRegisterRepositoryScan;
 import org.scrutmydocs.search.SMDSearchFactory;
 
 /**
