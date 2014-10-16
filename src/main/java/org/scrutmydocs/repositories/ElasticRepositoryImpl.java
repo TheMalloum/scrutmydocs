@@ -23,8 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.scrutmydocs.contract.SMDRepositoriesService;
 import org.scrutmydocs.contract.SMDRepositoryData;
@@ -32,27 +30,31 @@ import org.scrutmydocs.contract.SMDRepositoryData;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.scrutmydocs.dao.elasticsearch.ElasticsearchFactory.createIndex;
+import static org.scrutmydocs.dao.elasticsearch.ElasticsearchFactory.esClient;
+import static org.scrutmydocs.dao.elasticsearch.ElasticsearchFactory.pushMapping;
+
 public class ElasticRepositoryImpl extends SMDRepositoriesService {
 
-	protected Logger logger = LogManager.getLogger();
+	protected static Logger logger = LogManager.getLogger();
 
 	final public static String SMDADMIN = "scrutmydocs-settings";
 	final public static String SMDADMIN_REPOSITORIES = "repositories";
 
-	private Client esClient;
-
-	// private BulkProcessor bulk;
+    // private BulkProcessor bulk;
 
 	ObjectMapper mapper = new ObjectMapper();
 
 	public ElasticRepositoryImpl() {
-		esClient = NodeBuilder.nodeBuilder().node().client();
-		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus().get();
+        // We could either create a transport client to connect on an existing cluster
+        // Or run our own internal cluster
+        esClient().admin().cluster().prepareHealth().setWaitForYellowStatus().get();
 
 		createIndex(SMDADMIN);
+        pushMapping(SMDADMIN, SMDADMIN_REPOSITORIES);
 
 		//TODO use ES methode to wait
-		while (!esClient.admin().indices().prepareExists(SMDADMIN).get().isExists()) {
+		while (!esClient().admin().indices().prepareExists(SMDADMIN).get().isExists()) {
 			try {
 				Thread.sleep(1000 * 1);
 			} catch (InterruptedException e) {
@@ -86,15 +88,6 @@ public class ElasticRepositoryImpl extends SMDRepositoriesService {
 		// .setBulkActions(100).build();
 	}
 
-	public void createIndex(String index) {
-		if (logger.isDebugEnabled())
-			logger.debug("createIndex({}, {}, {})", index);
-
-		if (!esClient.admin().indices().prepareExists(index).get().isExists()) {
-			esClient.admin().indices().prepareCreate(index).get();
-		}
-	}
-
 	@Override
 	protected void deleteRepositorySetting(SMDRepositoryData repository) {
 
@@ -108,7 +101,7 @@ public class ElasticRepositoryImpl extends SMDRepositoriesService {
 
 		try {
 
-			esClient.prepareDelete(SMDADMIN, SMDADMIN_REPOSITORIES, repository.id)
+            esClient().prepareDelete(SMDADMIN, SMDADMIN_REPOSITORIES, repository.id)
 					.execute().actionGet();
 		} catch (Exception e) {
 			logger.warn("Can not delete document {} of type  {}",
@@ -126,7 +119,7 @@ public class ElasticRepositoryImpl extends SMDRepositoriesService {
 	@Override
 	public List<SMDRepositoryData> getRepositories() {
 		try {
-			org.elasticsearch.action.search.SearchResponse searchHits = esClient
+			org.elasticsearch.action.search.SearchResponse searchHits = esClient()
 					.prepareSearch(SMDADMIN).setTypes(SMDADMIN_REPOSITORIES)
 					.execute().actionGet();
 
@@ -155,7 +148,7 @@ public class ElasticRepositoryImpl extends SMDRepositoriesService {
         assert repository.id != null;
 
 		try {
-			esClient.prepareIndex(SMDADMIN, SMDADMIN_REPOSITORIES, repository.id)
+            esClient().prepareIndex(SMDADMIN, SMDADMIN_REPOSITORIES, repository.id)
 					.setSource(mapper.writeValueAsString(repository))
                     .setRefresh(true)
                     .get();
@@ -173,7 +166,7 @@ public class ElasticRepositoryImpl extends SMDRepositoriesService {
 		}
 
 		try {
-			GetResponse response = esClient
+			GetResponse response = esClient()
 					.prepareGet(SMDADMIN, SMDADMIN_REPOSITORIES, id)
 					.setOperationThreaded(false).execute().actionGet();
 

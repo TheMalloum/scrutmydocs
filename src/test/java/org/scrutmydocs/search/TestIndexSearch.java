@@ -1,5 +1,6 @@
 package org.scrutmydocs.search;
 
+import com.google.common.base.Predicate;
 import org.junit.Test;
 import org.scrutmydocs.ScrutMyDocsTests;
 import org.scrutmydocs.contract.SMDFileDocument;
@@ -8,6 +9,7 @@ import org.scrutmydocs.contract.SMDSearchResponse;
 
 import java.io.File;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -22,17 +24,15 @@ public class TestIndexSearch extends ScrutMyDocsTests {
         assertThat("The test file doesn't exist", file.exists(), is(true));
 
 		SMDFileDocument smdDocument = new SMDFileDocument(null, file, SMDFileDocument.EXTENSION.TXT);
-
-		Thread.sleep(5000);
-
 		SMDSearchFactory.getInstance().index(smdDocument);
 
-		Thread.sleep(6000);
-		// TODO when we call the getinstance SMDSearchFactory we have to be sure
-		// that indexs are available
-		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance().search(new SMDSearchQuery("*", 0, 1));
-
-        assertThat(searchResponse.totalHits, is(1L));
+        assertThat("We should have 1 document indexed", awaitBusy(new Predicate<Object>() {
+            @Override
+            public boolean apply(Object input) {
+                SMDSearchResponse searchResponse = SMDSearchFactory.getInstance().search(new SMDSearchQuery("*", 0, 1, null));
+                return searchResponse.totalHits == 1;
+            }
+        }, 6, TimeUnit.SECONDS), is(true));
 
 /*
         searchResponse = SMDSearchFactory.getInstance().search(new SMDSearchQuery("*LICENSE*", 0, 1));
@@ -52,15 +52,22 @@ public class TestIndexSearch extends ScrutMyDocsTests {
 
 		SMDSearchFactory.getInstance().index(smdDocument);
 
-		Thread.sleep(6000);
+        assertThat("We should have 1 document indexed", awaitBusy(new Predicate<Object>() {
+            @Override
+            public boolean apply(Object input) {
+                SMDSearchResponse searchResponse = SMDSearchFactory.getInstance().search(new SMDSearchQuery("*", 0, 1, null));
+                return searchResponse.totalHits == 1;
+            }
+        }, 6, TimeUnit.SECONDS), is(true));
 
 		SMDSearchFactory.getInstance().deleteDirectory(smdDocument.pathDirectory);
 
-		Thread.sleep(6000);
-		
-		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
-				.search(new SMDSearchQuery("*", 0, 1));
-
-        assertThat(searchResponse.totalHits, is(0L));
+        assertThat("We should have 0 document indexed", awaitBusy(new Predicate<Object>() {
+            @Override
+            public boolean apply(Object input) {
+                SMDSearchResponse searchResponse = SMDSearchFactory.getInstance().search(new SMDSearchQuery("*", 0, 1, null));
+                return searchResponse.totalHits == 1;
+            }
+        }, 6, TimeUnit.SECONDS), is(true));
 	}
 }

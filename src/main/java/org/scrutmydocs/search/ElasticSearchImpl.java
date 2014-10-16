@@ -22,30 +22,25 @@ package org.scrutmydocs.search;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.cluster.ClusterState;
-import org.elasticsearch.cluster.metadata.IndexMetaData;
-import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.index.query.*;
-import org.elasticsearch.node.NodeBuilder;
+import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.highlight.HighlightField;
 import org.scrutmydocs.contract.*;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -53,8 +48,8 @@ import java.util.List;
 import static org.elasticsearch.index.query.FilterBuilders.boolFilter;
 import static org.elasticsearch.index.query.FilterBuilders.termsFilter;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
-import static org.elasticsearch.index.query.QueryBuilders.queryString;
 import static org.elasticsearch.index.query.QueryBuilders.simpleQueryString;
+import static org.scrutmydocs.dao.elasticsearch.ElasticsearchFactory.*;
 
 public class ElasticSearchImpl implements SMDSearchService {
 
@@ -62,8 +57,6 @@ public class ElasticSearchImpl implements SMDSearchService {
 
 	final public static String SMDINDEX = "scrutmydocs-docs";
 	final public static String SMDTYPE = "docs";
-
-	private Client esClient;
 
 	private BulkProcessor bulk;
 
@@ -73,13 +66,13 @@ public class ElasticSearchImpl implements SMDSearchService {
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
 				false);
 
-		esClient = NodeBuilder.nodeBuilder().node().client();
-		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus()
+        esClient().admin().cluster().prepareHealth().setWaitForYellowStatus()
 				.execute().actionGet();
 
-		createIndex();
+        createIndex(SMDINDEX);
+        pushMapping(SMDINDEX, SMDTYPE);
 
-		this.bulk = new BulkProcessor.Builder(esClient,
+		this.bulk = new BulkProcessor.Builder(esClient(),
 				new BulkProcessor.Listener() {
 					@Override
 					public void beforeBulk(long l, BulkRequest bulkRequest) {
@@ -109,7 +102,7 @@ public class ElasticSearchImpl implements SMDSearchService {
 	@Override
 	public SMDFileDocument getDocument(String id) {
 
-		GetResponse response = esClient.prepareGet(SMDINDEX, SMDTYPE, id)
+		GetResponse response = esClient().prepareGet(SMDINDEX, SMDTYPE, id)
 				.execute().actionGet();
 
 		if (!response.isExists())
@@ -162,7 +155,7 @@ public class ElasticSearchImpl implements SMDSearchService {
             query = QueryBuilders.filteredQuery(qb, filter);
 		}
 
-		SearchResponse searchHits = esClient
+		SearchResponse searchHits = esClient()
 				.prepareSearch().setIndices(SMDINDEX).setTypes(SMDTYPE)
 				.setQuery(query)
 				.setFrom(searchQuery.first)
@@ -247,106 +240,13 @@ public class ElasticSearchImpl implements SMDSearchService {
 					"deleteAllDocumentsInDirectory('directory : {}', type : {})",
 					directory, SMDTYPE);
 
-		BoolFilterBuilder filters = boolFilter().must(
-				FilterBuilders.prefixFilter("pathDirectory", directory));
+		FilterBuilder filter = boolFilter().must(
+                FilterBuilders.prefixFilter("pathDirectory", directory));
 
-		MatchAllQueryBuilder qb = QueryBuilders.matchAllQuery();
+		QueryBuilder query = QueryBuilders.filteredQuery(matchAllQuery(), filter);
 
-		QueryBuilder query = QueryBuilders.filteredQuery(qb, filters);
-
-		esClient.prepareSearch(SMDINDEX).setTypes(SMDTYPE).setQuery(query)
-				.get();
-
-		esClient.prepareDeleteByQuery(SMDINDEX).setTypes(SMDTYPE)
+        esClient().prepareDeleteByQuery(SMDINDEX).setTypes(SMDTYPE)
 				.setQuery(query).get();
 
-	}
-
-	public void createIndex() {
-		if (logger.isDebugEnabled())
-			logger.debug("createIndex({}, {}, {})", SMDINDEX);
-
-		if (!esClient.admin().indices().prepareExists(SMDINDEX).execute()
-				.actionGet().isExists()) {
-			esClient.admin().indices().prepareCreate(SMDINDEX).execute();
-		}
-
-		esClient.admin().indices().prepareCreate(SMDINDEX).execute();
-
-		// TODO use ES methode to wait
-		while (!esClient.admin().indices().prepareExists(SMDINDEX).execute()
-				.actionGet().isExists()) {
-			try {
-				Thread.sleep(1000 * 1);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-		}
-
-		try {
-			pushMapping();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private void pushMapping() throws IOException {
-		if (logger.isTraceEnabled())
-			logger.trace("pushMapping(" + SMDINDEX + "," + SMDTYPE + "," + ")");
-
-		if (isMappingExist()) {
-			logger.trace("Mapping definition for [" + SMDINDEX + "]/["
-					+ SMDTYPE + "].");
-			return;
-		}
-
-		// Read the mapping json file if exists and use it
-		String source = IOUtils.toString(ElasticSearchImpl.class
-				.getClassLoader().getResourceAsStream("docs.json"));
-
-		if (source != null) {
-			if (logger.isTraceEnabled())
-				logger.trace("Mapping for [" + SMDINDEX + "]/[" + SMDTYPE
-						+ "]=" + source);
-			// Create type and mapping
-			PutMappingResponse response = esClient.admin().indices()
-					.preparePutMapping(SMDINDEX).setType(SMDTYPE)
-					.setSource(source).execute().actionGet();
-			if (!response.isAcknowledged()) {
-				logger.fatal("the mapping {} isn't push ", SMDTYPE);
-				throw new RuntimeException("the mapping " + SMDTYPE
-						+ " isn't push ");
-
-			}
-		} else {
-			throw new RuntimeException(
-					"Could not finde mapping for type for type " + SMDTYPE);
-		}
-
-	}
-
-	/**
-	 * Check if a mapping already exists in an index
-	 * 
-	 * @param index
-	 *            Index name
-	 * @param type
-	 *            Mapping name
-	 * @return true if mapping exists
-	 */
-	private boolean isMappingExist() {
-		IndexMetaData imd = null;
-		ClusterState cs = esClient.admin().cluster().prepareState()
-				.setIndices(SMDINDEX).execute().actionGet().getState();
-		imd = cs.getMetaData().index(SMDINDEX);
-
-		if (imd == null)
-			return false;
-
-		MappingMetaData mdd = imd.mapping(SMDTYPE);
-
-		if (mdd != null)
-			return true;
-		return false;
 	}
 }

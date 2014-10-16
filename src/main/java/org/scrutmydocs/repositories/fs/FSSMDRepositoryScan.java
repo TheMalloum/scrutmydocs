@@ -19,18 +19,9 @@
 
 package org.scrutmydocs.repositories.fs;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.scrutmydocs.annotations.SMDRegisterRepositoryScan;
 import org.scrutmydocs.contract.SMDDocument;
 import org.scrutmydocs.contract.SMDFileDocument;
@@ -38,17 +29,22 @@ import org.scrutmydocs.contract.SMDRepositoryData;
 import org.scrutmydocs.contract.SMDRepositoryScan;
 import org.scrutmydocs.search.SMDSearchFactory;
 
+import java.io.*;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
- * Implement the DropBox ScrutMyDocs Data Source
+ * Implement the FS ScrutMyDocs Data Source
  * 
  * @author Malloum LAYA
  * 
  */
-@SMDRegisterRepositoryScan(name = "fs")
+@SMDRegisterRepositoryScan(name = FSSMDRepositoryData.TYPE)
 public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
-	protected org.apache.logging.log4j.Logger logger = LogManager
-			.getLogger(getClass().getName());
+	protected Logger logger = LogManager.getLogger();
 
 	@Override
 	public synchronized void scrut(SMDRepositoryData data) {
@@ -62,23 +58,21 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 		FSSMDRepositoryData fssmdRepositoryData = (FSSMDRepositoryData) data;
 
 		if (!new File(fssmdRepositoryData.url).isDirectory()) {
-			logger.warn("we cant scru just a directory and "
+			logger.warn("we can scrut just a directory and "
 					+ fssmdRepositoryData.url + " isn't a directory");
 			throw new IllegalArgumentException(
-					"we cant scru just a directory and "
+					"we can scrut just a directory and "
 							+ fssmdRepositoryData.url + " isn't a directory");
 		}
 
 		try {
 
-			logger.info("Start scrutting your directory "
-					+ fssmdRepositoryData.url);
+			logger.info("Start scrutting your directory [{}]", fssmdRepositoryData.url);
 
 			File root = new File(fssmdRepositoryData.url);
 
 			if ((fssmdRepositoryData.lastScan == null || new Date(
 					root.lastModified()).after(fssmdRepositoryData.lastScan))) {
-
 				indexAllFiles(root, fssmdRepositoryData);
 			}
 
@@ -87,23 +81,16 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 					fssmdRepositoryData.lastScan);
 
 			for (Path path : paths) {
-
 				File file = path.toFile();
-
 				if (file.isDirectory()) {
-
-					logger.info("cleanning directory and index of " + path
-							+ " ");
+					logger.info("cleaning directory and index for [{}]", path);
 					// if the directory changes we must to index all the
 					// directory
-
 					indexAllFiles(file, fssmdRepositoryData);
 				}
-
 			}
 
-			logger.info("End scrutting your directory "
-					+ fssmdRepositoryData.url);
+			logger.info("End scrutting your directory {}", fssmdRepositoryData.url);
 
 		} catch (Exception ex) {
 			logger.error("scrutting your directory {} : {} ",
@@ -117,26 +104,23 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
 	public List<Path> browseDirectory(File dir, Date lastModified) {
 
-		logger.trace("parcourir dir : " + dir.getPath());
+		logger.trace("browse dir : {}", dir.getPath());
 
 		if (!dir.isDirectory()) {
-
 			throw new IllegalArgumentException(" dir must be a directory");
 		}
 
 		List<Path> paths = new ArrayList<Path>();
 
-		File[] listfile = dir.listFiles();
-		if (listfile.length == 0)
+		File[] files = dir.listFiles();
+		if (files.length == 0)
 			return paths;
 
-		for (File file : listfile) {
-
+		for (File file : files) {
 			if (file.isDirectory()
 					&& (lastModified == null || new Date(file.lastModified())
 							.after(lastModified))) {
 				paths.add(file.toPath());
-
 			}
 			if (file.isDirectory()) {
 				for (Path path : browseDirectory(file, lastModified)) {
@@ -152,8 +136,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 			throws IOException {
 
 		if (dir.isFile()) {
-			throw new IllegalArgumentException(
-					"we can indexAllFiles just to a directory");
+			throw new IllegalArgumentException("we can indexAllFiles just to a directory");
 		}
 
 		SMDSearchFactory.getInstance().deleteDirectory(dir.getPath());

@@ -19,10 +19,17 @@
 
 package org.scrutmydocs;
 
+import com.google.common.base.Predicate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.scrutmydocs.dao.elasticsearch.ElasticsearchFactory;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
+import org.scrutmydocs.search.SMDSearchFactory;
+
+import java.util.concurrent.TimeUnit;
 
 public class ScrutMyDocsTests {
 
@@ -32,8 +39,44 @@ public class ScrutMyDocsTests {
 
     @BeforeClass
     public static void startRepositoriesFactory() {
+        logger.info("  -> Starting ElasticsearchFactory...");
+        ElasticsearchFactory.esClient();
+        logger.info("  -> ElasticsearchFactory started");
         logger.info("  -> Starting SMDRepositoriesFactory...");
         SMDRepositoriesFactory.getInstance();
         logger.info("  -> SMDRepositoriesFactory started");
+        logger.info("  -> Starting SMDSearchFactory...");
+        SMDSearchFactory.getInstance();
+        logger.info("  -> SMDSearchFactory started");
+    }
+
+    @Before @After
+    public void wipeIndices() {
+        logger.info("  --> Cleaning existing data");
+        // TODO When we uncomment the following line, tests are failing.
+        // Strange. We should not have to wait here
+//        ElasticsearchFactory.esClient().admin().indices().prepareDelete("_all").get();
+    }
+
+    public static boolean awaitBusy(Predicate<?> breakPredicate) throws InterruptedException {
+        return awaitBusy(breakPredicate, 10, TimeUnit.SECONDS);
+    }
+
+    public static boolean awaitBusy(Predicate<?> breakPredicate, long maxWaitTime, TimeUnit unit) throws InterruptedException {
+        long maxTimeInMillis = TimeUnit.MILLISECONDS.convert(maxWaitTime, unit);
+        long iterations = Math.max(Math.round(Math.log10(maxTimeInMillis) / Math.log10(2)), 1);
+        long timeInMillis = 1;
+        long sum = 0;
+        for (int i = 0; i < iterations; i++) {
+            if (breakPredicate.apply(null)) {
+                return true;
+            }
+            sum += timeInMillis;
+            Thread.sleep(timeInMillis);
+            timeInMillis *= 2;
+        }
+        timeInMillis = maxTimeInMillis - sum;
+        Thread.sleep(Math.max(timeInMillis, 0));
+        return breakPredicate.apply(null);
     }
 }

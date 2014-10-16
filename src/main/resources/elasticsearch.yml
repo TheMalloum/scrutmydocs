@@ -16,10 +16,9 @@
 # specific language governing permissions and limitations
 # under the License.
 ################################################################
- path:
-   logs: ./.scrutmydocs/logs
-   data: ./.scrutmydocs/index
+path.logs: ./.scrutmydocs/logs
+path.data: ./.scrutmydocs/index
   
- cluster:
-   name:scrutmydocs
-discovery.zen.ping.multicast.enabled=false
+cluster.name: scrutmydocs
+
+discovery.zen.ping.multicast.enabled: false

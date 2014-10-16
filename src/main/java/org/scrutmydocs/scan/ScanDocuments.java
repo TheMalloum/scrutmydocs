@@ -1,22 +1,15 @@
 package org.scrutmydocs.scan;
 
-import java.util.Date;
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.quartz.Job;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.SimpleScheduleBuilder;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
+import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.scrutmydocs.contract.SMDRepositoryData;
 import org.scrutmydocs.contract.SMDRepositoryScan;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
+
+import java.util.Date;
+import java.util.List;
 
 public class ScanDocuments implements Job {
 	private Logger logger = LogManager.getLogger(ScanDocuments.class);
@@ -35,13 +28,10 @@ public class ScanDocuments implements Job {
 		}
 
 		for (SMDRepositoryData smdRepositoryData : repositories) {
+            SMDRepositoryScan smdRepositoryScan= SMDRepositoriesFactory.getScanInstance(smdRepositoryData.type);
 
-			SMDRepositoryScan smdRepositoryScan= SMDRepositoriesFactory.getScanInstance(smdRepositoryData.type);
-			
-			
-			
 			if (smdRepositoryScan == null ) {
-				logger.fatal("doen't have reposytory scan with type = "+smdRepositoryData.type);
+				logger.fatal("we don't have repository scan with type = "+smdRepositoryData.type);
 				continue;
 			}
 			
@@ -56,13 +46,13 @@ public class ScanDocuments implements Job {
 			}
 				
 			
-			Date startScarn = new Date();
+			Date startScan = new Date();
 			try{
 			smdRepositoryScan.scrut(smdRepositoryData);
 			}catch(Exception e){
-				logger.fatal("error scan directory {} have reposytory scan with type = ",smdRepositoryData.url,e);
+				logger.fatal("error scan directory {} have repository scan with type = ",smdRepositoryData.url,e);
 			}
-			smdRepositoryData.lastScan = startScarn;
+			smdRepositoryData.lastScan = startScan;
 			SMDRepositoriesFactory.getInstance().save(
 					smdRepositoryData);
 			

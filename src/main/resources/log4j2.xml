@@ -6,7 +6,8 @@
 		</Console>
 	</Appenders>
 	<Loggers>
-		<Logger name="org.scrutmydocs" level="info"/>
+        <Logger name="org.elasticsearch" level="info"/>
+		<Logger name="org.scrutmydocs" level="debug"/>
 		<Root level="info">
 			<AppenderRef ref="Console" />
 		</Root>
