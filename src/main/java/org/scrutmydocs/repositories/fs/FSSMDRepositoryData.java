@@ -23,28 +23,28 @@ import org.scrutmydocs.annotations.SMDRegisterRepositoryData;
 import org.scrutmydocs.contract.SMDRepositoryData;
 
 /**
- * Implement the DropBox ScrutMyDocs Data Source
+ * Implements the FS ScrutMyDocs Data Source
  * 
  * @author Malloum LAYA
  * 
  */
-@SMDRegisterRepositoryData(name = "fs")
+@SMDRegisterRepositoryData(name = FSSMDRepositoryData.TYPE)
 public class FSSMDRepositoryData extends SMDRepositoryData {
+
+    public static final String TYPE = "fs";
 
 	public FSSMDRepositoryData(String absolutePath) {
 		this.url = absolutePath;
-		this.type="fs";
+		this.type = TYPE;
 	}
 
 	public FSSMDRepositoryData() {
-		this.type="fs";
+		this.type = TYPE;
 	}
-
 
 	public String includes;
 
 	public String excludes;
 
 	public String analyzer;
-
 }

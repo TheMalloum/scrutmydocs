@@ -1,20 +1,23 @@
 package org.scrutmydocs.scan;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.scrutmydocs.ScrutMyDocsTests;
 import org.scrutmydocs.contract.SMDSearchQuery;
 import org.scrutmydocs.contract.SMDSearchResponse;
 import org.scrutmydocs.repositories.fs.FSSMDRepositoryData;
 import org.scrutmydocs.repositories.fs.FSSMDRepositoryScan;
 import org.scrutmydocs.search.SMDSearchFactory;
 
-public class TestScan {
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+public class TestScan extends ScrutMyDocsTests {
 	File dir;
 
 	@Before
@@ -27,22 +30,15 @@ public class TestScan {
 	public void testScanAdd() throws InterruptedException, IOException, URISyntaxException {
 
 		FSSMDRepositoryData fssmdPlugin = new FSSMDRepositoryData(dir.getAbsolutePath());
-
 		new FSSMDRepositoryScan().scrut(fssmdPlugin);
 
 		Thread.sleep(6 * 1000);
 
-		
-		
 		SMDSearchResponse searchResponse = SMDSearchFactory.getInstance()
 				.search(new SMDSearchQuery("*", 0, 1,null));
+        assertThat(searchResponse.totalHits, is(0L));
 
-		Assert.assertEquals(0, searchResponse.totalHits);
-
-		
-		
 		// add file
-		
 		File tmp = File.createTempFile("add-file", "tmp", dir);
 		
 		new FSSMDRepositoryScan().scrut(fssmdPlugin);
@@ -50,8 +46,7 @@ public class TestScan {
 		Thread.sleep(6 * 1000);
 
 		searchResponse = SMDSearchFactory.getInstance().search(new SMDSearchQuery("*", 0, 1,null));
-
-		Assert.assertEquals(1, searchResponse.totalHits);
+        assertThat(searchResponse.totalHits, is(1L));
 
 		// remove file
 		tmp.delete();
@@ -61,8 +56,6 @@ public class TestScan {
 		Thread.sleep(6 * 1000);
 
 		searchResponse = SMDSearchFactory.getInstance().search(new SMDSearchQuery("*", 0, 1,null));
-
-		Assert.assertEquals(0, searchResponse.totalHits);
-
+        assertThat(searchResponse.totalHits, is(0L));
 	}
 }

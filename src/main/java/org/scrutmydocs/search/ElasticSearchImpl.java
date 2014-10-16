@@ -19,14 +19,9 @@
 
 package org.scrutmydocs.search;
 
-import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
-import static org.elasticsearch.index.query.QueryBuilders.queryString;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,33 +31,28 @@ import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.index.query.BoolFilterBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.MatchAllFilterBuilder;
-import org.elasticsearch.index.query.MatchAllQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.highlight.HighlightField;
-import org.scrutmydocs.contract.SMDDocument;
-import org.scrutmydocs.contract.SMDFileDocument;
-import org.scrutmydocs.contract.SMDRepositoryData;
-import org.scrutmydocs.contract.SMDSearchQuery;
-import org.scrutmydocs.contract.SMDSearchResponse;
-import org.scrutmydocs.contract.SMDSearchService;
+import org.scrutmydocs.contract.*;
 import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
+import static org.elasticsearch.index.query.QueryBuilders.queryString;
+import static org.elasticsearch.index.query.QueryBuilders.simpleQueryString;
 
 public class ElasticSearchImpl implements SMDSearchService {
 
@@ -161,37 +151,39 @@ public class ElasticSearchImpl implements SMDSearchService {
 		if (searchQuery.search == "*") {
 			query = matchAllQuery();
 		} else {
-			
 			MatchAllFilterBuilder filters = FilterBuilders.matchAllFilter();
 //					boolFilter().must(
 //					FilterBuilders.termsFilter("repositoryData.groupes", searchQuery.groups));
 //TODO add filter by group
-			QueryBuilder qb = queryString(searchQuery.search);
-
-			 query = QueryBuilders.filteredQuery(qb, filters);
-			
+			QueryBuilder qb = simpleQueryString(searchQuery.search)
+                    .field("content")
+                    .field("name", 3.0f);
+            query = QueryBuilders.filteredQuery(qb, filters);
 		}
 
-		org.elasticsearch.action.search.SearchResponse searchHits = esClient
+		SearchResponse searchHits = esClient
 				.prepareSearch().setIndices(SMDINDEX).setTypes(SMDTYPE)
-				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(query)
-				.setFrom(searchQuery.first).setSize(searchQuery.pageSize)
-				.addHighlightedField("file.filename")
+				.setQuery(query)
+				.setFrom(searchQuery.first)
+                .setSize(searchQuery.pageSize)
+				.addHighlightedField("name")
 				.addHighlightedField("content")
-				.addHighlightedField("meta.title")
+                // TODO Fix field names
 				.setHighlighterPreTags("<span class='badge badge-info'>")
-				.setHighlighterPostTags("</span>").addFields("*", "_source")
-				.execute().actionGet();
+				.setHighlighterPostTags("</span>")
+
+				.addFields("*", "_source")
+				.get();
 
 		totalHits = searchHits.getHits().totalHits();
 		took = searchHits.getTookInMillis();
 
-		List<SMDDocument> documents = new ArrayList<SMDDocument>();
+		List<SMDDocument> documents = new ArrayList<>();
 		for (SearchHit searchHit : searchHits.getHits()) {
 
 			Collection<String> highlights = null;
 			if (searchHit.getHighlightFields() != null) {
-				highlights = new ArrayList<String>();
+				highlights = new ArrayList<>();
 				for (HighlightField highlightField : searchHit
 						.getHighlightFields().values()) {
 

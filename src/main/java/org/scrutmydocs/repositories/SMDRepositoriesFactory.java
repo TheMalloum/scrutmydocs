@@ -1,9 +1,7 @@
 package org.scrutmydocs.repositories;
 
-import java.util.HashMap;
-import java.util.Set;
-
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
 import org.scrutmydocs.annotations.SMDRegisterRepositoryData;
 import org.scrutmydocs.annotations.SMDRegisterRepositoryScan;
@@ -11,10 +9,12 @@ import org.scrutmydocs.contract.SMDRepositoriesService;
 import org.scrutmydocs.contract.SMDRepositoryData;
 import org.scrutmydocs.contract.SMDRepositoryScan;
 
+import java.util.HashMap;
+import java.util.Set;
+
 public class SMDRepositoriesFactory {
 
-	protected static org.apache.logging.log4j.Logger logger = LogManager
-			.getLogger(SMDRepositoriesFactory.class);
+	protected static Logger logger = LogManager.getLogger(SMDRepositoriesFactory.class);
 
 	private static SMDRepositoriesService repositoriesService;
 
@@ -32,10 +32,8 @@ public class SMDRepositoriesFactory {
 
 		Reflections reflections = new Reflections("org.scrutmydocs");
 
-		// init reposytory
-
 		if (listScan == null) {
-			listScan = new HashMap<String, SMDRepositoryScan>();
+			listScan = new HashMap<>();
 			Set<Class<?>> annotated = reflections
 					.getTypesAnnotatedWith(SMDRegisterRepositoryScan.class);
 
@@ -73,7 +71,7 @@ public class SMDRepositoriesFactory {
 		}
 
 		if (listData == null) {
-			listData = new HashMap<String, Class<? extends SMDRepositoryData>>();
+			listData = new HashMap<>();
 			Set<Class<?>> annotated = reflections
 					.getTypesAnnotatedWith(SMDRegisterRepositoryData.class);
 

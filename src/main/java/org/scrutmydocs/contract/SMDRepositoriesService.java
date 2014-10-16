@@ -1,8 +1,8 @@
 package org.scrutmydocs.contract;
 
-import java.util.List;
-
 import org.scrutmydocs.search.SMDSearchFactory;
+
+import java.util.List;
 
 public abstract class SMDRepositoriesService {
 
@@ -20,5 +20,4 @@ public abstract class SMDRepositoriesService {
 		deleteRepositorySetting(repository);
 
 	}
-
 }

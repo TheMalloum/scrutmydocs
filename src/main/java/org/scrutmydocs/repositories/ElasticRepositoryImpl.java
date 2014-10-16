@@ -19,9 +19,7 @@
 
 package org.scrutmydocs.repositories;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.get.GetResponse;
@@ -31,7 +29,8 @@ import org.elasticsearch.search.SearchHit;
 import org.scrutmydocs.contract.SMDRepositoriesService;
 import org.scrutmydocs.contract.SMDRepositoryData;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ElasticRepositoryImpl extends SMDRepositoriesService {
 
@@ -48,14 +47,12 @@ public class ElasticRepositoryImpl extends SMDRepositoriesService {
 
 	public ElasticRepositoryImpl() {
 		esClient = NodeBuilder.nodeBuilder().node().client();
-		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus()
-				.execute().actionGet();
+		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus().get();
 
 		createIndex(SMDADMIN);
 
 		//TODO use ES methode to wait
-		while (!esClient.admin().indices().prepareExists(SMDADMIN)
-				.execute().actionGet().isExists()) {
+		while (!esClient.admin().indices().prepareExists(SMDADMIN).get().isExists()) {
 			try {
 				Thread.sleep(1000 * 1);
 			} catch (InterruptedException e) {
@@ -93,9 +90,8 @@ public class ElasticRepositoryImpl extends SMDRepositoriesService {
 		if (logger.isDebugEnabled())
 			logger.debug("createIndex({}, {}, {})", index);
 
-		if (!esClient.admin().indices().prepareExists(index).execute()
-				.actionGet().isExists()) {
-			esClient.admin().indices().prepareCreate(index).execute();
+		if (!esClient.admin().indices().prepareExists(index).get().isExists()) {
+			esClient.admin().indices().prepareCreate(index).get();
 		}
 	}
 
@@ -155,11 +151,14 @@ public class ElasticRepositoryImpl extends SMDRepositoriesService {
 
 	@Override
 	public void save(SMDRepositoryData repository) {
+        assert repository != null;
+        assert repository.id != null;
+
 		try {
-			esClient.prepareIndex(SMDADMIN, SMDADMIN_REPOSITORIES,
-					repository.id)
-					.setSource(mapper.writeValueAsString(repository)).execute()
-					.actionGet();
+			esClient.prepareIndex(SMDADMIN, SMDADMIN_REPOSITORIES, repository.id)
+					.setSource(mapper.writeValueAsString(repository))
+                    .setRefresh(true)
+                    .get();
 		} catch (Exception e) {
 			throw new RuntimeException("Can not save the configuration.");
 		}
@@ -187,7 +186,5 @@ public class ElasticRepositoryImpl extends SMDRepositoriesService {
 		} catch (Exception e) {
 			throw new RuntimeException("Can not save the configuration.", e);
 		}
-
 	}
-
 }
