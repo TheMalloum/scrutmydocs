@@ -158,7 +158,7 @@ var handleSearchResults = function(json) {
 //			}
 			
 			
-			 link = "<a target=_blank href=./api/2/documents/"+hit.id+">"+icon + hit.name+"<br> <em> "+hit.pathDirectory+"</em> </a>";
+			 link = "<a target=_blank href=./api/2/documents/"+hit.id+">"+icon + hit.name+"<br></a> <em style=color:green> "+hit.pathDirectory+"</em> ";
 
 			 
 			if (hit.highlights) {
