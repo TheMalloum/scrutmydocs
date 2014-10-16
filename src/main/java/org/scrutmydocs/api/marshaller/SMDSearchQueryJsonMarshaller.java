@@ -1,12 +1,12 @@
-package org.scrutmydocs.api;
+package org.scrutmydocs.api.marshaller;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.StringTokenizer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.logging.log4j.LogManager;
+import org.jboss.resteasy.core.Headers;
+import org.jboss.resteasy.core.ServerResponse;
+import org.scrutmydocs.contract.SMDSearchQuery;
+import org.scrutmydocs.security.Group;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -16,21 +16,18 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.logging.log4j.LogManager;
-import org.jboss.resteasy.core.Headers;
-import org.jboss.resteasy.core.ServerResponse;
-import org.jboss.resteasy.spi.UnauthorizedException;
-import org.scrutmydocs.contract.SMDSearchQuery;
-import org.scrutmydocs.security.Group;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.StringTokenizer;
 
 @Provider
 @Consumes("application/json")
 @Produces("application/json")
-public class SMDDefaultJsonMarshaller implements
+public class SMDSearchQueryJsonMarshaller implements
 		MessageBodyWriter<SMDSearchQuery>, MessageBodyReader<SMDSearchQuery> {
 
 	private final ObjectMapper mapper;
@@ -46,7 +43,7 @@ public class SMDDefaultJsonMarshaller implements
 	private static final ServerResponse SERVER_ERROR = new ServerResponse(
 			"INTERNAL SERVER ERROR", 500, new Headers<Object>());;
 
-	public SMDDefaultJsonMarshaller() {
+	public SMDSearchQueryJsonMarshaller() {
 		mapper = new ObjectMapper();
 		// mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
 		// false);

@@ -1,9 +1,11 @@
-package org.scrutmydocs.api;
+package org.scrutmydocs.api.marshaller;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.scrutmydocs.contract.SMDRepositoryData;
+import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
@@ -13,14 +15,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.scrutmydocs.contract.SMDRepositoryData;
-import org.scrutmydocs.repositories.SMDRepositoriesFactory;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
 @Provider
 @Consumes("application/json")
