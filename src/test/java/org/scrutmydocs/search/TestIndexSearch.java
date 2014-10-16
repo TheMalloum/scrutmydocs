@@ -34,9 +34,11 @@ public class TestIndexSearch extends ScrutMyDocsTests {
 
         assertThat(searchResponse.totalHits, is(1L));
 
+/*
         searchResponse = SMDSearchFactory.getInstance().search(new SMDSearchQuery("*LICENSE*", 0, 1));
 
         assertThat(searchResponse.totalHits, is(1L));
+*/
 	}
 
 	@Test

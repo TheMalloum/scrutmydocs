@@ -25,11 +25,14 @@
             "type":"string",
             "index":"not_analyzed"
          },
-         "groups":{
-            "type":"string",
-            "index":"not_analyzed"
-         }
-         
+          "repositoryData": {
+              "properties": {
+                  "groups":{
+                      "type":"string",
+                      "index":"not_analyzed"
+                  }
+              }
+          }
       }
    }
 }

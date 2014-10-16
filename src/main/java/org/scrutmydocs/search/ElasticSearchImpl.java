@@ -50,6 +50,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static org.elasticsearch.index.query.FilterBuilders.boolFilter;
+import static org.elasticsearch.index.query.FilterBuilders.termsFilter;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.queryString;
 import static org.elasticsearch.index.query.QueryBuilders.simpleQueryString;
@@ -151,14 +153,13 @@ public class ElasticSearchImpl implements SMDSearchService {
 		if (searchQuery.search == "*") {
 			query = matchAllQuery();
 		} else {
-			MatchAllFilterBuilder filters = FilterBuilders.matchAllFilter();
-//					boolFilter().must(
-//					FilterBuilders.termsFilter("repositoryData.groupes", searchQuery.groups));
-//TODO add filter by group
+			FilterBuilder filter = boolFilter().must(
+                    termsFilter("repositoryData.groups", searchQuery.groups));
+
 			QueryBuilder qb = simpleQueryString(searchQuery.search)
                     .field("content")
                     .field("name", 3.0f);
-            query = QueryBuilders.filteredQuery(qb, filters);
+            query = QueryBuilders.filteredQuery(qb, filter);
 		}
 
 		SearchResponse searchHits = esClient
@@ -246,7 +247,7 @@ public class ElasticSearchImpl implements SMDSearchService {
 					"deleteAllDocumentsInDirectory('directory : {}', type : {})",
 					directory, SMDTYPE);
 
-		BoolFilterBuilder filters = FilterBuilders.boolFilter().must(
+		BoolFilterBuilder filters = boolFilter().must(
 				FilterBuilders.prefixFilter("pathDirectory", directory));
 
 		MatchAllQueryBuilder qb = QueryBuilders.matchAllQuery();
