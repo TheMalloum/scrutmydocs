@@ -1,18 +1,11 @@
 package org.scrutmydocs.security;
 
-import java.util.HashMap;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
-import org.scrutmydocs.annotations.SMDRegisterRepositoryData;
-import org.scrutmydocs.annotations.SMDRegisterRepositoryScan;
 import org.scrutmydocs.annotations.SMDRegisterSecurityPolicy;
-import org.scrutmydocs.contract.SMDRepositoryData;
-import org.scrutmydocs.contract.SMDRepositoryScan;
-import org.scrutmydocs.repositories.ElasticRepositoryImpl;
-import org.scrutmydocs.repositories.SMDRepositoriesFactory;
 
 public class SMDSecurityFactory {
 
