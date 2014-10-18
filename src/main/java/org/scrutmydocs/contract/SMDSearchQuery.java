@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.scrutmydocs.security.Group;
-
 public class SMDSearchQuery implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -27,11 +25,11 @@ public class SMDSearchQuery implements Serializable {
 		this.groups = groups;
 	}
 	
-	public SMDSearchQuery(String search, int first, int pageSize) {
-		this.search = search;
-		this.first = first;
-		this.pageSize = pageSize;
-		 groups.add(Group.ANONYME.name());
-	}
+//	public SMDSearchQuery(String search, int first, int pageSize) {
+//		this.search = search;
+//		this.first = first;
+//		this.pageSize = pageSize;
+//		 groups.add(Group.ANONYME.name());
+//	}
 
 }

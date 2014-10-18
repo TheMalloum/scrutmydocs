@@ -1,12 +1,10 @@
 package org.scrutmydocs.api.marshaller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.logging.log4j.LogManager;
-import org.jboss.resteasy.core.Headers;
-import org.jboss.resteasy.core.ServerResponse;
-import org.scrutmydocs.contract.SMDSearchQuery;
-import org.scrutmydocs.security.Group;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -16,13 +14,14 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.StringTokenizer;
+
+import org.apache.logging.log4j.LogManager;
+import org.jboss.resteasy.core.Headers;
+import org.jboss.resteasy.core.ServerResponse;
+import org.scrutmydocs.contract.SMDSearchQuery;
+import org.scrutmydocs.security.SMDSecurityFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Provider
 @Consumes("application/json")
@@ -86,39 +85,7 @@ public class SMDSearchQueryJsonMarshaller implements
 
 		SMDSearchQuery query = mapper.readValue(entityStream, type);
 
-		// Fetch authorization header
-		final List<String> authorization = httpHeaders
-				.get(AUTHORIZATION_PROPERTY);
-
-		
-//		if (authorization == null || authorization.isEmpty()) {
-//			throw new UnauthorizedException("ddd");
-//		}
-//		
-		
-		// If no authorization information present;
-		if (authorization != null &&  !authorization.isEmpty()) {
-
-			// Get encoded username and password
-			final String encodedUserPassword = authorization.get(0)
-					.replaceFirst(AUTHENTICATION_SCHEME + " ", "");
-
-			// Decode username and password
-			String usernameAndPassword;
-			
-			usernameAndPassword = new String(
-					Base64.decodeBase64(encodedUserPassword));
-
-			// Split username and password tokens
-			final StringTokenizer tokenizer = new StringTokenizer(
-					usernameAndPassword, ":");
-			final String username = tokenizer.nextToken();
-			final String password = tokenizer.nextToken();
-
-		}else{
-			
-			query.groups.add(Group.ANONYME.name());
-		}
+		query.groups = SMDSecurityFactory.getInstance().schekGroups(httpHeaders);
 
 		return query;
 

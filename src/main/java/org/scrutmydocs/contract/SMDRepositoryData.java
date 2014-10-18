@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.scrutmydocs.annotations.SMDRegisterRepositoryData;
-import org.scrutmydocs.security.Group;
 
 import com.sun.istack.NotNull;
 
@@ -31,7 +30,7 @@ public class SMDRepositoryData {
 		if (myRegister != null) {
 			this.type = myRegister.name();
 		}
-		groups.add(Group.ANONYME.name());
+		groups.add("ANONYME");
 		
 		
 	}
