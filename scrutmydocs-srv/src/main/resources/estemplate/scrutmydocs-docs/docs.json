@@ -1,0 +1,65 @@
+{
+    "docs": {
+        "properties": {
+            "id": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "type": {
+                "type": "string",
+                "index": "not_analyzed"
+            },
+            "content": {
+                "type": "string"
+            },
+            "meta": {
+                "properties": {
+                    "author": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "date"
+                    },
+                    "keywords": {
+                        "type": "string"
+                    }
+                }
+            },
+            "file": {
+                "properties": {
+                    "content_type": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "last_modified": {
+                        "type": "date"
+                    },
+                    "indexing_date": {
+                        "type": "date"
+                    },
+                    "filesize": {
+                        "type": "long"
+                    },
+                    "filename": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "path": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "url": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "indexed_chars": {
+                        "type": "long"
+                    }
+                }
+            }
+        }
+    }
+}

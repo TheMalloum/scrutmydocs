@@ -1,0 +1,9 @@
+cluster.name: scrutmydocs
+node.name: scrutmydocs
+# network.host: 127.0.0.1
+# http.enabled: false
+
+index.number_of_shards: 1
+index.number_of_replicas: 0
+
+http.cors.enabled: true
