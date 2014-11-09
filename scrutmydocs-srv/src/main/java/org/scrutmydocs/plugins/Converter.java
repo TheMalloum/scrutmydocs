@@ -19,12 +19,16 @@
 
 package org.scrutmydocs.plugins;
 
-import org.apache.tika.Tika;
+import org.scrutmydocs.domain.SMDDocument;
+import org.scrutmydocs.exceptions.SMDException;
 
 /**
- * This abstract class provides default Tika implementation to extract content
- * from binary files.
+ * Provides conversion services to SMDDocuments from a given type
+ * @param <T> type to convert from
  */
-public abstract class AbstractTikaPlugin<T, L extends DocumentListener<T>, R extends Runner> extends Plugin<T, L, R> {
-
+public interface Converter<T> {
+    /**
+     * Generate a Document from object of type T
+     */
+    public SMDDocument toDocument(T source) throws SMDException;
 }

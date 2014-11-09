@@ -17,45 +17,44 @@
  * under the License.
  */
 
-package org.scrutmydocs.converters;
+package org.scrutmydocs.plugins.upload;
 
 import org.scrutmydocs.domain.SMDConfiguration;
 import org.scrutmydocs.domain.SMDDocument;
+import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.exceptions.SMDExtractionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.scrutmydocs.plugins.tika.TikaConverter;
+import org.scrutmydocs.plugins.tika.TikaService;
+import restx.factory.Component;
 
-import java.io.File;
-import java.io.FileInputStream;
+import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
-/**
- * This class process a binary content and generates from it a SMDDocument
- * using Apache Tika library
- */
-public class FileToSMDDocument extends ObjectToSMDDocument {
-    private static final Logger logger = LoggerFactory.getLogger(FileToSMDDocument.class);
+@Component
+public class UploadConverter extends TikaConverter<byte[]> {
 
-    public static final String TYPE_FS = "fs";
+    @Inject
+    public UploadConverter(TikaService tikaService) {
+        super(tikaService);
+    }
 
-    /**
-     * Extract content from a file
-     */
-    public static SMDDocument toDocument(File file) throws SMDExtractionException {
-        logger.debug("generating SMDDocument from [{}]", file.getAbsolutePath());
-        try (InputStream is = new FileInputStream(file)) {
+    @Override
+    public SMDDocument toDocument(byte[] source) throws SMDException {
+        logger.debug("generating SMDDocument from binary content");
+        try (InputStream is = new ByteArrayInputStream(source)) {
             return toDocument(
                     is,
-                    TYPE_FS,
+                    UploadPlugin.TYPE_UPLOAD,
                     SMDConfiguration.INDEXED_CHARS_DEFAULT,
-                    file.getName(),
-                    file.getParent(),
-                    new Date(file.lastModified()),
+                    null,
+                    null,
+                    null,
                     new Date(),
-                    file.toPath().toUri().toString(),
-                    file.length()
+                    null,
+                    new Long(source.length)
             );
         } catch (IOException e) {
             throw new SMDExtractionException(e);

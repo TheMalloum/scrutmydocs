@@ -19,47 +19,34 @@
 
 package org.scrutmydocs.plugins.fs;
 
+import org.joda.time.DateTime;
 import org.scrutmydocs.annotations.SMDRegisterRepository;
-import org.scrutmydocs.domain.SMDConfiguration;
-import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.exceptions.SMDException;
-import org.scrutmydocs.exceptions.SMDExtractionException;
 import org.scrutmydocs.plugins.AbstractTikaPlugin;
+import org.scrutmydocs.plugins.dummy.DummyRunner;
 import restx.factory.Component;
 
+import javax.inject.Inject;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
+import java.nio.file.Paths;
 
 /**
  * This plugin processes a local file
  */
 @Component
 @SMDRegisterRepository(name = FileSystemPlugin.TYPE_FS)
-public class FileSystemPlugin extends AbstractTikaPlugin<File> {
+public class FileSystemPlugin extends AbstractTikaPlugin<File, FileSystemDocumentListener, DummyRunner> {
 
     public static final String TYPE_FS = "fs";
 
-    @Override
-    public SMDDocument toDocument(File source) throws SMDException {
-        logger.debug("generating SMDDocument from [{}]", source.getAbsolutePath());
-        try (InputStream is = new FileInputStream(source)) {
-            return toDocument(
-                    is,
-                    TYPE_FS,
-                    SMDConfiguration.INDEXED_CHARS_DEFAULT,
-                    source.getName(),
-                    source.getParent(),
-                    new Date(source.lastModified()),
-                    new Date(),
-                    source.toPath().toUri().toString(),
-                    source.length()
-            );
-        } catch (IOException e) {
-            throw new SMDExtractionException(e);
-        }
+    /**
+     * The file system plugin uses a listener and no runner
+     */
+    @Inject
+    public FileSystemPlugin(FileSystemDocumentListener listener) {
+        documentListener = listener;
+        documentListener.setLastChecked(DateTime.parse("1970-01-01"));
+        documentListener.add(Paths.get("/Users/dpilato/Documents/Elasticsearch/tmp/es"));
+        documentListener.add(Paths.get("/tmp/es"));
     }
 
     @Override

@@ -38,8 +38,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.scrutmydocs.converters.FileToSMDDocument.toDocument;
-
 /**
  * Implement the FS ScrutMyDocs Data Source
  * 
@@ -52,11 +50,14 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 
     private static final Logger logger = LoggerFactory.getLogger(FSSMDRepositoryScan.class);
 
-    private SMDDocumentService searchService;
+    private final SMDDocumentService searchService;
+    private final FileSystemConverter fileSystemConverter;
 
     @Inject
-    public void FSSMDRepositoryScan(SMDDocumentService searchService) {
+    public FSSMDRepositoryScan(SMDDocumentService searchService,
+                                    FileSystemConverter fileSystemConverter) {
         this.searchService = searchService;
+        this.fileSystemConverter = fileSystemConverter;
     }
 
 	@Override
@@ -157,7 +158,7 @@ public class FSSMDRepositoryScan extends SMDRepositoryScan {
 		for (File file : dir.listFiles()) {
 			if (file.isFile()) {
 				try {
-                    searchService.index(toDocument(file));
+                    searchService.index(fileSystemConverter.toDocument(file));
 				} catch (SMDExtractionException e) {
                     logger.warn("can not index [{}]: {}", file, e);
                 }

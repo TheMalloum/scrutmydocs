@@ -20,24 +20,20 @@
 package org.scrutmydocs.converters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.exceptions.SMDJsonParsingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import restx.factory.Component;
 
-public class JsonToSMDDocument {
-    private static final Logger logger = LoggerFactory.getLogger(JsonToSMDDocument.class);
+/**
+ * Provides Jackson service
+ */
+@Component
+public class JsonService {
+    private ObjectMapper mapper;
 
-    // TODO Inject one single instance for the full project
-    private static final ObjectMapper mapper = new ObjectMapper();
+    public JsonService() {
+        mapper = new ObjectMapper();
+    }
 
-    public static SMDDocument toDocument(String json) throws SMDJsonParsingException {
-        try {
-            SMDDocument smdDocument = mapper.readValue(json, SMDDocument.class);
-            return smdDocument;
-        } catch (Exception e) {
-            logger.warn("Can not parse json document to SMDDocument: [{}]", json);
-            throw new SMDJsonParsingException("Can not parse json document", e);
-        }
+    public ObjectMapper mapper() {
+        return mapper;
     }
 }

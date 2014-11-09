@@ -20,12 +20,13 @@
 package org.scrutmydocs.resources;
 
 import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.services.SMDDocumentService;
 import org.scrutmydocs.domain.SMDSearchQuery;
 import org.scrutmydocs.domain.SMDSearchResponse;
-import org.scrutmydocs.exceptions.SMDExtractionException;
+import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.exceptions.SMDIndexException;
 import org.scrutmydocs.exceptions.SMDJsonParsingException;
+import org.scrutmydocs.plugins.upload.UploadConverter;
+import org.scrutmydocs.services.SMDDocumentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import restx.annotations.DELETE;
@@ -37,18 +38,18 @@ import restx.security.PermitAll;
 import javax.inject.Inject;
 import java.io.IOException;
 
-import static org.scrutmydocs.converters.UploadToSMDDocument.toDocument;
-
 @Component
 @RestxResource(ScrutmydocsApi.API_ROOT_DOCUMENT)
 public class SMDDocumentResource {
 
     private static final Logger logger = LoggerFactory.getLogger(SMDDocumentResource.class);
-    private SMDDocumentService documentService;
+    private final SMDDocumentService documentService;
+    private final UploadConverter uploadConverter;
 
     @Inject
-    public SMDDocumentResource(SMDDocumentService documentService) {
+    public SMDDocumentResource(SMDDocumentService documentService, UploadConverter uploadConverter) {
         this.documentService = documentService;
+        this.uploadConverter = uploadConverter;
     }
 
     @POST("/_search")
@@ -82,9 +83,9 @@ public class SMDDocumentResource {
         // TODO replace with actual filename
         String filename = "dummy";
         try {
-            SMDDocument document = toDocument(data, filename);
+            SMDDocument document = uploadConverter.toDocument(data);
             documentService.index(document);
-        } catch (SMDIndexException | SMDExtractionException e) {
+        } catch (SMDException e) {
             // TODO Remove when Restx will be fixed - see https://github.com/restx/restx/issues/121
             throw new IOException(e);
         }

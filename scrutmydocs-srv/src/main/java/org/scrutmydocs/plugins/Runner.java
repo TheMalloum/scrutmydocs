@@ -19,12 +19,10 @@
 
 package org.scrutmydocs.plugins;
 
-import org.apache.tika.Tika;
-
 /**
- * This abstract class provides default Tika implementation to extract content
- * from binary files.
+ * Implementing this interface means that the plugin will control itself
+ * batch jobs.
  */
-public abstract class AbstractTikaPlugin<T, L extends DocumentListener<T>, R extends Runner> extends Plugin<T, L, R> {
-
+public interface Runner {
+    public void run();
 }

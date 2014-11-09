@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import org.junit.Before;
 import org.junit.Test;
 import org.scrutmydocs.ScrutMyDocsTests;
+import org.scrutmydocs.plugins.fs.FileSystemConverter;
 import org.scrutmydocs.services.SMDDocumentService;
 import org.scrutmydocs.services.SMDRepositoriesService;
 import org.scrutmydocs.domain.SMDSearchQuery;
@@ -27,8 +28,10 @@ public class TestScan extends ScrutMyDocsTests {
 	File dir;
 
     @Inject
-    public TestScan(SMDRepositoriesService repositoriesService, SMDDocumentService searchService) {
-        super(repositoriesService, searchService);
+    public TestScan(SMDRepositoriesService repositoriesService,
+                    SMDDocumentService searchService,
+                    FileSystemConverter fileSystemConverter) {
+        super(repositoriesService, searchService, fileSystemConverter);
     }
 
     @Before
@@ -39,7 +42,7 @@ public class TestScan extends ScrutMyDocsTests {
 	@Test
 	public void testScanAdd() throws InterruptedException, IOException, URISyntaxException, SMDJsonParsingException {
 		FSSMDRepository fssmdPlugin = new FSSMDRepository(dir.getAbsolutePath());
-		new FSSMDRepositoryScan().scrut(fssmdPlugin);
+		new FSSMDRepositoryScan(searchService, fileSystemConverter).scrut(fssmdPlugin);
 
         // We wait 6 seconds
         // TODO We should have something in elasticsearch saying that
@@ -57,7 +60,7 @@ public class TestScan extends ScrutMyDocsTests {
 		// add file
 		File tmp = File.createTempFile("add-file", "tmp", dir);
 		
-		new FSSMDRepositoryScan().scrut(fssmdPlugin);
+		new FSSMDRepositoryScan(searchService, fileSystemConverter).scrut(fssmdPlugin);
 
 		Thread.sleep(6 * 1000);
 
@@ -77,7 +80,7 @@ public class TestScan extends ScrutMyDocsTests {
 		// remove file
 		tmp.delete();
 
-		new FSSMDRepositoryScan().scrut(fssmdPlugin);
+		new FSSMDRepositoryScan(searchService, fileSystemConverter).scrut(fssmdPlugin);
 
         assertThat("We should have 0 document indexed", awaitBusy(new Predicate<Object>() {
             @Override

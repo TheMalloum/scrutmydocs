@@ -17,14 +17,15 @@
  * under the License.
  */
 
-package org.scrutmydocs.plugins;
+package org.scrutmydocs.plugins.dummy;
 
-import org.apache.tika.Tika;
+import org.scrutmydocs.plugins.Runner;
 
 /**
- * This abstract class provides default Tika implementation to extract content
- * from binary files.
+ * The Null Runner does nothing! :)
  */
-public abstract class AbstractTikaPlugin<T, L extends DocumentListener<T>, R extends Runner> extends Plugin<T, L, R> {
-
+public class DummyRunner implements Runner {
+    @Override
+    public void run() {
+    }
 }

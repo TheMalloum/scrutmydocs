@@ -17,44 +17,53 @@
  * under the License.
  */
 
-package org.scrutmydocs.converters;
+package org.scrutmydocs.plugins.tika;
 
-import org.apache.tika.Tika;
 import org.apache.tika.metadata.Metadata;
 import org.elasticsearch.common.Strings;
 import org.joda.time.DateTime;
 import org.scrutmydocs.domain.SMDConfiguration;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.exceptions.SMDExtractionException;
+import org.scrutmydocs.plugins.Converter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.io.InputStream;
 import java.util.Date;
 
-public class ObjectToSMDDocument {
-    private static final Logger logger = LoggerFactory.getLogger(ObjectToSMDDocument.class);
+/**
+ * Uses Tika to convert a binary content to a SMDDocument
+ * @param <T> binary content type
+ */
+public abstract class TikaConverter<T> implements Converter<T> {
+    protected static final Logger logger = LoggerFactory.getLogger(TikaConverter.class);
+    protected TikaService tikaService;
 
-    protected static final Tika tika = new Tika();
+    @Inject
+    public TikaConverter(TikaService tikaService) {
+        this.tikaService = tikaService;
+    }
 
     /**
      * Extract content from a stream
      */
-    public static SMDDocument toDocument(InputStream is,
-                                         String type,
-                                         int indexedChars,
-                                         String filename,
-                                         String path,
-                                         Date lastModified,
-                                         Date indexedDate,
-                                         String url,
-                                         Long filesize) throws SMDExtractionException {
+    public SMDDocument toDocument(InputStream is,
+                                     String type,
+                                     int indexedChars,
+                                     String filename,
+                                     String path,
+                                     Date lastModified,
+                                     Date indexedDate,
+                                     String url,
+                                     Long filesize) throws SMDExtractionException {
         Metadata metadata = new Metadata();
 
         String parsedContent;
         try {
             // Set the maximum length of strings returned by the parseToString method, -1 sets no limit
-            parsedContent = tika.parseToString(is, metadata, indexedChars);
+            parsedContent = tikaService.tika().parseToString(is, metadata, indexedChars);
         } catch (Throwable e) {
             logger.debug("Failed to extract [{}] characters of text", indexedChars);
             logger.trace("exception raised", e);

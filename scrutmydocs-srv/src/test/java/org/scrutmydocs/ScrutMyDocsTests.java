@@ -22,6 +22,7 @@ package org.scrutmydocs;
 import com.google.common.base.Predicate;
 import org.junit.After;
 import org.junit.Before;
+import org.scrutmydocs.plugins.fs.FileSystemConverter;
 import org.scrutmydocs.services.SMDDocumentService;
 import org.scrutmydocs.services.SMDRepositoriesService;
 import org.slf4j.Logger;
@@ -38,12 +39,15 @@ public class ScrutMyDocsTests {
     public static final String TEST_FILE = "integration/docs/" + TEST_FILENAME;
     protected final SMDRepositoriesService repositoriesService;
     protected final SMDDocumentService searchService;
+    protected final FileSystemConverter fileSystemConverter;
 
     @Inject
     public ScrutMyDocsTests(SMDRepositoriesService repositoriesService,
-                            SMDDocumentService searchService) {
+                            SMDDocumentService searchService,
+                            FileSystemConverter fileSystemConverter) {
         this.repositoriesService = repositoriesService;
         this.searchService = searchService;
+        this.fileSystemConverter = fileSystemConverter;
     }
 
     @Before @After

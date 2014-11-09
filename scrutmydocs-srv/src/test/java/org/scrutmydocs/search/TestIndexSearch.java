@@ -7,6 +7,7 @@ import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.domain.SMDSearchQuery;
 import org.scrutmydocs.domain.SMDSearchResponse;
 import org.scrutmydocs.exceptions.SMDJsonParsingException;
+import org.scrutmydocs.plugins.fs.FileSystemConverter;
 import org.scrutmydocs.services.SMDDocumentService;
 import org.scrutmydocs.services.SMDRepositoriesService;
 
@@ -17,14 +18,14 @@ import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.scrutmydocs.converters.FileToSMDDocument.toDocument;
 
 public class TestIndexSearch extends ScrutMyDocsTests {
 
     @Inject
     public TestIndexSearch(SMDRepositoriesService repositoriesService,
-                           SMDDocumentService searchService) {
-        super(repositoriesService, searchService);
+                           SMDDocumentService searchService,
+                           FileSystemConverter fileSystemConverter) {
+        super(repositoriesService, searchService, fileSystemConverter);
     }
 
     @Test
@@ -34,7 +35,7 @@ public class TestIndexSearch extends ScrutMyDocsTests {
 		File file = new File(url.toURI());
         assertThat("The test file doesn't exist", file.exists(), is(true));
 
-		SMDDocument smdDocument = toDocument(file);
+		SMDDocument smdDocument = fileSystemConverter.toDocument(file);
 
         searchService.index(smdDocument);
 
@@ -65,7 +66,7 @@ public class TestIndexSearch extends ScrutMyDocsTests {
 		File file = new File(url.toURI());
         assertThat("The test file doesn't exist", file.exists(), is(true));
 
-        SMDDocument smdDocument = toDocument(file);
+        SMDDocument smdDocument = fileSystemConverter.toDocument(file);
 
         searchService.index(smdDocument);
 

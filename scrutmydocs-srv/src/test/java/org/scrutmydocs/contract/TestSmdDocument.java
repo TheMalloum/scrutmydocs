@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.scrutmydocs.ScrutMyDocsTests;
 import org.scrutmydocs.domain.SMDConfiguration;
 import org.scrutmydocs.domain.SMDDocument;
+import org.scrutmydocs.plugins.fs.FileSystemConverter;
+import org.scrutmydocs.plugins.fs.FileSystemPlugin;
 import org.scrutmydocs.services.SMDDocumentService;
 import org.scrutmydocs.services.SMDRepositoriesService;
 
@@ -16,14 +18,14 @@ import java.util.Date;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.scrutmydocs.converters.FileToSMDDocument.*;
 
 public class TestSmdDocument extends ScrutMyDocsTests {
 
     @Inject
     public TestSmdDocument(SMDRepositoriesService repositoriesService,
-                           SMDDocumentService searchService) {
-        super(repositoriesService, searchService);
+                           SMDDocumentService searchService,
+                           FileSystemConverter fileSystemConverter) {
+        super(repositoriesService, searchService, fileSystemConverter);
     }
 
     @Test
@@ -34,7 +36,7 @@ public class TestSmdDocument extends ScrutMyDocsTests {
 
         assertThat("The test file doesn't exist", file.exists(), is(true));
 
-		SMDDocument smdDocument = toDocument(file);
+		SMDDocument smdDocument = fileSystemConverter.toDocument(file);
 
         assertThat(smdDocument.file.filename, is(file.getName()));
         assertThat(smdDocument.file.path, is(file.getParent()));
@@ -45,7 +47,7 @@ public class TestSmdDocument extends ScrutMyDocsTests {
 	public void testDocumentfromInputstream() throws Exception {
 		InputStream is = TestSmdDocument.class.getResourceAsStream(TEST_FILE);
 		String path = new File(TestSmdDocument.class.getResource(TEST_FILE).getFile()).getParent();
-        SMDDocument smdDocument = toDocument(is, TYPE_FS, SMDConfiguration.INDEXED_CHARS_DEFAULT, TEST_FILENAME, path,
+        SMDDocument smdDocument = fileSystemConverter.toDocument(is, FileSystemPlugin.TYPE_FS, SMDConfiguration.INDEXED_CHARS_DEFAULT, TEST_FILENAME, path,
                 null, new Date(), null, null);
         assertThat(smdDocument, notNullValue());
 	}

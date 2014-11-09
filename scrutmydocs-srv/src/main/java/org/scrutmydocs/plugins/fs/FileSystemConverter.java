@@ -17,45 +17,45 @@
  * under the License.
  */
 
-package org.scrutmydocs.converters;
+package org.scrutmydocs.plugins.fs;
 
 import org.scrutmydocs.domain.SMDConfiguration;
 import org.scrutmydocs.domain.SMDDocument;
+import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.exceptions.SMDExtractionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.scrutmydocs.plugins.tika.TikaConverter;
+import org.scrutmydocs.plugins.tika.TikaService;
+import restx.factory.Component;
 
-import java.io.ByteArrayInputStream;
+import javax.inject.Inject;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
-/**
- * This class process a binary content and generates from it a SMDDocument
- * using Apache Tika library
- */
-public class UploadToSMDDocument extends ObjectToSMDDocument {
-    private static final Logger logger = LoggerFactory.getLogger(UploadToSMDDocument.class);
+@Component
+public class FileSystemConverter extends TikaConverter<File> {
 
-    public static final String TYPE_UPLOAD = "upload";
+    @Inject
+    public FileSystemConverter(TikaService tikaService) {
+        super(tikaService);
+    }
 
-    /**
-     * Extract content from a stream
-     */
-    public static SMDDocument toDocument(byte[] data, String filename) throws SMDExtractionException {
-        logger.debug("generating SMDDocument from uploaded content [{}]", filename);
-
-        try (InputStream is = new ByteArrayInputStream(data)) {
+    @Override
+    public SMDDocument toDocument(File source) throws SMDException {
+        logger.debug("generating SMDDocument from [{}]", source.getAbsolutePath());
+        try (InputStream is = new FileInputStream(source)) {
             return toDocument(
                     is,
-                    TYPE_UPLOAD,
+                    FileSystemPlugin.TYPE_FS,
                     SMDConfiguration.INDEXED_CHARS_DEFAULT,
-                    filename,
-                    null,
-                    null,
+                    source.getName(),
+                    source.getParent(),
+                    new Date(source.lastModified()),
                     new Date(),
-                    null, // TODO Generate an URL?
-                    new Long(data.length)
+                    source.toPath().toUri().toString(),
+                    source.length()
             );
         } catch (IOException e) {
             throw new SMDExtractionException(e);

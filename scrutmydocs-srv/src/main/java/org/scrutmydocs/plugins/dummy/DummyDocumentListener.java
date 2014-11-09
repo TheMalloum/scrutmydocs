@@ -17,14 +17,33 @@
  * under the License.
  */
 
-package org.scrutmydocs.plugins;
+package org.scrutmydocs.plugins.dummy;
 
-import org.apache.tika.Tika;
+import org.scrutmydocs.exceptions.SMDException;
+import org.scrutmydocs.plugins.DocumentListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import restx.factory.Component;
+
+import java.util.List;
 
 /**
- * This abstract class provides default Tika implementation to extract content
- * from binary files.
+ * An empty Document Listener which does not provide any service
  */
-public abstract class AbstractTikaPlugin<T, L extends DocumentListener<T>, R extends Runner> extends Plugin<T, L, R> {
+@Component
+public class DummyDocumentListener<T> implements DocumentListener<T> {
+    protected static final Logger logger = LoggerFactory.getLogger(DummyDocumentListener.class);
 
+    @Override
+    public List<T> scrut() throws SMDException {
+        return null;
+    }
+
+    @Override
+    public void add(T document) throws SMDException {
+    }
+
+    @Override
+    public void delete(T document) throws SMDException {
+    }
 }

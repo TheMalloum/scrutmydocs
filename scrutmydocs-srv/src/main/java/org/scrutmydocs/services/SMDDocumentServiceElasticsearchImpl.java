@@ -35,10 +35,11 @@ import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.scrutmydocs.converters.JsonToSMDDocumentService;
+import org.scrutmydocs.dao.elasticsearch.ElasticsearchService;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.domain.SMDSearchQuery;
 import org.scrutmydocs.domain.SMDSearchResponse;
-import org.scrutmydocs.dao.elasticsearch.ElasticsearchService;
 import org.scrutmydocs.exceptions.SMDDocumentNotFoundException;
 import org.scrutmydocs.exceptions.SMDIndexException;
 import org.scrutmydocs.exceptions.SMDJsonParsingException;
@@ -53,7 +54,6 @@ import java.util.List;
 import static org.elasticsearch.index.query.FilterBuilders.termsFilter;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.simpleQueryString;
-import static org.scrutmydocs.converters.JsonToSMDDocument.toDocument;
 
 @Component
 public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
@@ -66,13 +66,16 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
 	private BulkProcessor bulk;
 
     private final ElasticsearchService elasticsearchService;
+    private final JsonToSMDDocumentService jsonToSMDDocumentService;
 
     // TODO Inject one single instance for the full project
 	ObjectMapper mapper = new ObjectMapper();
 
     @Inject
-	public SMDDocumentServiceElasticsearchImpl(ElasticsearchService elasticsearchService) {
+	public SMDDocumentServiceElasticsearchImpl(ElasticsearchService elasticsearchService,
+                                               JsonToSMDDocumentService jsonToSMDDocumentService) {
         this.elasticsearchService = elasticsearchService;
+        this.jsonToSMDDocumentService = jsonToSMDDocumentService;
 
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -112,7 +115,7 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
             throw new SMDDocumentNotFoundException();
         }
 
-        return toDocument(response.getSourceAsString());
+        return jsonToSMDDocumentService.toDocument(response.getSourceAsString());
 	}
 
     @Override
@@ -157,7 +160,7 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
 
 		List<SMDDocument> documents = new ArrayList<>();
 		for (SearchHit hit : hits.getHits()) {
-            documents.add(toDocument(hit.getSourceAsString()));
+            documents.add(jsonToSMDDocumentService.toDocument(hit.getSourceAsString()));
 		}
 
 		searchResponse = new SMDSearchResponse(

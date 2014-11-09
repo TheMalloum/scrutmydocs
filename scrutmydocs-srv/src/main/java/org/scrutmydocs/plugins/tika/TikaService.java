@@ -17,14 +17,23 @@
  * under the License.
  */
 
-package org.scrutmydocs.plugins;
+package org.scrutmydocs.plugins.tika;
 
 import org.apache.tika.Tika;
+import restx.factory.Component;
 
 /**
- * This abstract class provides default Tika implementation to extract content
- * from binary files.
+ * Provides a Tika instance
  */
-public abstract class AbstractTikaPlugin<T, L extends DocumentListener<T>, R extends Runner> extends Plugin<T, L, R> {
+@Component
+public class TikaService {
+    private Tika tika;
 
+    public TikaService() {
+        tika = new Tika();
+    }
+
+    public Tika tika() {
+        return tika;
+    }
 }

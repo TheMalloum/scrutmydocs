@@ -2,6 +2,7 @@ package org.scrutmydocs.plugins;
 
 import org.junit.Test;
 import org.scrutmydocs.ScrutMyDocsTests;
+import org.scrutmydocs.plugins.fs.FileSystemConverter;
 import org.scrutmydocs.services.SMDDocumentService;
 import org.scrutmydocs.services.SMDRepositoriesService;
 import org.scrutmydocs.domain.SMDRepository;
@@ -18,8 +19,9 @@ public class TestRepositories extends ScrutMyDocsTests {
 
     @Inject
     public TestRepositories(SMDRepositoriesService repositoriesService,
-                            SMDDocumentService searchService) {
-        super(repositoriesService, searchService);
+                            SMDDocumentService searchService,
+                            FileSystemConverter fileSystemConverter) {
+        super(repositoriesService, searchService, fileSystemConverter);
     }
 
     @Test

@@ -19,45 +19,33 @@
 
 package org.scrutmydocs.plugins.upload;
 
-import org.scrutmydocs.domain.SMDConfiguration;
-import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.exceptions.SMDException;
-import org.scrutmydocs.exceptions.SMDExtractionException;
+import org.apache.commons.codec.binary.Base64;
+import org.scrutmydocs.annotations.SMDRegisterRepository;
 import org.scrutmydocs.plugins.AbstractTikaPlugin;
+import org.scrutmydocs.plugins.dummy.DummyDocumentListener;
 import restx.factory.Component;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
+import javax.inject.Inject;
 
 /**
  * This plugin processes an uploaded stream
  */
 @Component
-public class UploadPlugin extends AbstractTikaPlugin<File> {
+@SMDRegisterRepository(name = UploadPlugin.TYPE_UPLOAD)
+public class UploadPlugin
+        extends AbstractTikaPlugin<byte[], DummyDocumentListener<byte[]>, UploadRunner> {
 
     public static final String TYPE_UPLOAD = "upload";
 
-    @Override
-    public SMDDocument toDocument(File source) throws SMDException {
-        logger.debug("generating SMDDocument from [{}]", source.getAbsolutePath());
-        try (InputStream is = new FileInputStream(source)) {
-            return toDocument(
-                    is,
-                    TYPE_UPLOAD,
-                    SMDConfiguration.INDEXED_CHARS_DEFAULT,
-                    source.getName(),
-                    source.getParent(),
-                    new Date(source.lastModified()),
-                    new Date(),
-                    source.toPath().toUri().toString(),
-                    source.length()
-            );
-        } catch (IOException e) {
-            throw new SMDExtractionException(e);
-        }
+    /**
+     * The file system plugin uses a listener and no runner
+     */
+    @Inject
+    public UploadPlugin(UploadRunner uploadRunner) {
+        runner = uploadRunner;
+
+        // TODO For test purpose. Remove it!
+        uploadRunner.setData(Base64.decodeBase64("SGVsbG8gV29ybGQK"));
     }
 
     @Override

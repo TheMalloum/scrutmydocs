@@ -19,32 +19,70 @@
 
 package org.scrutmydocs.plugins;
 
-import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.exceptions.SMDException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * You can implement this interface if you want to provide plugin
  * which will generate documents from your data source
  */
-public interface Plugin<T> {
+public abstract class Plugin<T, L extends DocumentListener<T>, R extends Runner> {
+    protected static final Logger logger = LoggerFactory.getLogger(Plugin.class);
 
-    /**
-     * Generate a Document from object of type T
-     */
-    public SMDDocument toDocument(T source) throws SMDException;
+    private boolean started = false;
+    protected L documentListener = null;
+    protected R runner = null;
+
+    public L getDocumentListener() {
+        return documentListener;
+    }
+
+    public R getRunner() {
+        return runner;
+    }
 
     /**
      * Supported type
      */
-    public String type();
+    public abstract String type();
 
     /**
      * Plugin name
      */
-    public String name();
+    public abstract String name();
 
     /**
      * Plugin version
      */
-    public String version();
+    public abstract String version();
+
+    /**
+     * Start the plugin
+     */
+    public void start() throws SMDException {
+        logger.debug("starting plugin [{}]/[{}]", name(), version());
+
+        if (runner != null) {
+            // If we have a runner, we simply use it
+            runner.run();
+        } else {
+            // TODO Add the plugin to the Jobs
+        }
+
+        started = true;
+    }
+
+    /**
+     * Stop the plugin
+     */
+    public void stop() throws SMDException {
+        logger.debug("stopping plugin [{}]/[{}]", name(), version());
+        started = false;
+    }
+
+    public boolean isStarted() {
+        return started;
+    }
+
 }

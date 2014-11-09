@@ -17,14 +17,29 @@
  * under the License.
  */
 
-package org.scrutmydocs.plugins;
+package org.scrutmydocs.plugins.upload;
 
-import org.apache.tika.Tika;
+import org.scrutmydocs.plugins.Runner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import restx.factory.Component;
 
-/**
- * This abstract class provides default Tika implementation to extract content
- * from binary files.
- */
-public abstract class AbstractTikaPlugin<T, L extends DocumentListener<T>, R extends Runner> extends Plugin<T, L, R> {
+@Component
+public class UploadRunner implements Runner {
+    protected static final Logger logger = LoggerFactory.getLogger(UploadRunner.class);
 
+    private byte[] data;
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    @Override
+    public void run() {
+        logger.debug("running uploader");
+    }
 }

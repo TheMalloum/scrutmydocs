@@ -19,12 +19,16 @@
 
 package org.scrutmydocs.plugins;
 
-import org.apache.tika.Tika;
+import org.scrutmydocs.exceptions.SMDException;
+
+import java.util.List;
 
 /**
- * This abstract class provides default Tika implementation to extract content
- * from binary files.
+ * Implementing this interface means that the plugin will be called every x minutes
+ * by a Job.
  */
-public abstract class AbstractTikaPlugin<T, L extends DocumentListener<T>, R extends Runner> extends Plugin<T, L, R> {
-
+public interface DocumentListener<T> {
+    public List<T> scrut() throws SMDException;
+    public void add(T document) throws SMDException;
+    public void delete(T document) throws SMDException;
 }
