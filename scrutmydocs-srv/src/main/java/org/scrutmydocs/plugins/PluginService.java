@@ -24,6 +24,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.exceptions.SMDIllegalArgumentException;
 import org.scrutmydocs.jobs.PluginScrutinerJob;
+import org.scrutmydocs.services.SMDDocumentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import restx.factory.AutoStartable;
@@ -42,9 +43,11 @@ public class PluginService implements AutoStartable {
     private static final Logger logger = LoggerFactory.getLogger(PluginService.class);
 
     private final Map<String, Plugin<?,?,?>> plugins;
+    private final SMDDocumentService documentService;
 
-    public PluginService() {
+    public PluginService(SMDDocumentService documentService) {
         plugins = new HashMap<>();
+        this.documentService = documentService;
     }
 
     public void registerPlugins() {
@@ -80,6 +83,7 @@ public class PluginService implements AutoStartable {
             // We register a job
             JobDataMap jobDataMap = new JobDataMap();
             jobDataMap.put("plugins", plugins);
+            jobDataMap.put("document-service", documentService);
             JobDetail job = JobBuilder.newJob(PluginScrutinerJob.class)
                     .withIdentity("scrutiner-jobs")
                     .usingJobData(jobDataMap).build();

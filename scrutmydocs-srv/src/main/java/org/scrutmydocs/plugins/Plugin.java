@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * You can implement this interface if you want to provide plugin
+ * You can extend this class if you want to provide plugin
  * which will generate documents from your data source
  */
 public abstract class Plugin<T, L extends DocumentListener<T>, R extends Runner> {

@@ -31,10 +31,7 @@ import restx.factory.Component;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,10 +79,10 @@ public class FileSystemDocumentListener implements DocumentListener<File> {
     }
 
     @Override
-    public List<File> scrut() throws SMDException {
+    public List<String> scrut() throws SMDException {
         DateTime checkingDate = DateTime.now();
         logger.debug("current date is [{}]", checkingDate);
-        final List<File> files = new ArrayList<>();
+        final List<String> files = new ArrayList<>();
 
         for (Path path : paths) {
             try {
@@ -98,7 +95,7 @@ public class FileSystemDocumentListener implements DocumentListener<File> {
                         // If this file is new, let's add it
                         DateTime fileDate = new DateTime(fileAttributes.lastModifiedTime().toMillis());
                         if (fileDate.isAfter(lastChecked)) {
-                            files.add(file.toFile());
+                            files.add(file.toAbsolutePath().toString());
                         } else {
                             logger.debug("ignoring old file [{}] date [{}]", file, fileDate);
                         }
@@ -118,10 +115,12 @@ public class FileSystemDocumentListener implements DocumentListener<File> {
     }
 
     @Override
-    public void add(File document) throws SMDException {
-        logger.debug("add new file [{}]", document.getAbsolutePath());
-        SMDDocument smdDocument = converter.toDocument(document);
+    public SMDDocument get(String documentId) throws SMDException {
+        Path file = Paths.get(documentId);
+        logger.debug("add new file [{}]", file.toAbsolutePath());
+        SMDDocument smdDocument = converter.toDocument(file.toFile());
         logger.trace("generated document: [{}]", smdDocument);
+        return smdDocument;
     }
 
     @Override

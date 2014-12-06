@@ -17,14 +17,14 @@
  * under the License.
  */
 
-package org.scrutmydocs.resources;
+package org.scrutmydocs.plugins;
 
 import com.google.common.base.Optional;
 import org.scrutmydocs.domain.SMDRepository;
 import org.scrutmydocs.exceptions.SMDIllegalArgumentException;
 import org.scrutmydocs.exceptions.SMDJsonParsingException;
+import org.scrutmydocs.resources.ScrutmydocsApi;
 import org.scrutmydocs.services.SMDRepositoriesService;
-import org.scrutmydocs.services.SMDRepositoryReflectionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import restx.annotations.DELETE;
@@ -43,22 +43,25 @@ import java.util.UUID;
 
 @Component
 @RestxResource(ScrutmydocsApi.API_ROOT_REPOSITORY)
-public class RepositoryResource implements AutoStartable {
-    private static final Logger logger = LoggerFactory.getLogger(RepositoryResource.class);
+public class PluginResource implements AutoStartable {
+    private static final Logger logger = LoggerFactory.getLogger(PluginResource.class);
 
     private final SMDRepositoriesService repositoriesService;
-    private final SMDRepositoryReflectionService repositoryReflectionService;
+    private final PluginService pluginService;
+    private List<SMDRepository> repositories;
 
     @Inject
-    public RepositoryResource(SMDRepositoriesService repositoriesService,
-                              SMDRepositoryReflectionService repositoryReflectionService) {
+    public PluginResource(SMDRepositoriesService repositoriesService,
+                          PluginService pluginService) {
         this.repositoriesService = repositoriesService;
-        this.repositoryReflectionService = repositoryReflectionService;
+        this.pluginService = pluginService;
     }
 
     @Override
     public void start() {
-        logger.debug("starting RepositoryResource");
+        logger.debug("starting PluginResource - loading existing repositories");
+        repositories = repositoriesService.getRepositories();
+        pluginService.registerPlugins();
     }
 
     /**

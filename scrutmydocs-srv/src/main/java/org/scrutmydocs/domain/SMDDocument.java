@@ -34,7 +34,9 @@ public class SMDDocument {
      */
     public File file;
 
-    public SMDDocument() {
+    public SMDDocument(String type, String id) {
+        this.type = type;
+        this.id = id;
         meta = new Meta();
         file = new File();
     }

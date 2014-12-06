@@ -22,14 +22,17 @@ package org.scrutmydocs.plugins.tika;
 import org.apache.tika.metadata.Metadata;
 import org.elasticsearch.common.Strings;
 import org.joda.time.DateTime;
+import org.scrutmydocs.converters.IdGeneratorService;
 import org.scrutmydocs.domain.SMDConfiguration;
 import org.scrutmydocs.domain.SMDDocument;
+import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.exceptions.SMDExtractionException;
+import org.scrutmydocs.exceptions.SMDIllegalArgumentException;
 import org.scrutmydocs.plugins.Converter;
+import org.scrutmydocs.services.SMDConfigurationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.io.InputStream;
 import java.util.Date;
 
@@ -39,38 +42,48 @@ import java.util.Date;
  */
 public abstract class TikaConverter<T> implements Converter<T> {
     protected static final Logger logger = LoggerFactory.getLogger(TikaConverter.class);
-    protected TikaService tikaService;
+    protected final TikaService tikaService;
+    protected final SMDConfiguration smdConfiguration;
+    protected final IdGeneratorService idGeneratorService;
 
-    @Inject
-    public TikaConverter(TikaService tikaService) {
+    public TikaConverter(TikaService tikaService,
+                         SMDConfigurationService smdConfigurationService,
+                         IdGeneratorService idGeneratorService) {
         this.tikaService = tikaService;
+        this.smdConfiguration = smdConfigurationService.getSmdConfiguration();
+        this.idGeneratorService = idGeneratorService;
     }
 
     /**
      * Extract content from a stream
      */
     public SMDDocument toDocument(InputStream is,
+                                     String key,
                                      String type,
-                                     int indexedChars,
                                      String filename,
                                      String path,
                                      Date lastModified,
                                      Date indexedDate,
                                      String url,
-                                     Long filesize) throws SMDExtractionException {
+                                     Long filesize) throws SMDException {
+        // Check rules
+        if (type == null || key == null) {
+            throw new SMDIllegalArgumentException("type and key must be provided.");
+        }
+
         Metadata metadata = new Metadata();
 
         String parsedContent;
         try {
             // Set the maximum length of strings returned by the parseToString method, -1 sets no limit
-            parsedContent = tikaService.tika().parseToString(is, metadata, indexedChars);
+            parsedContent = tikaService.tika().parseToString(is, metadata, smdConfiguration.getIndexedChars());
         } catch (Throwable e) {
-            logger.debug("Failed to extract [{}] characters of text", indexedChars);
+            logger.debug("Failed to extract [{}] characters of text", smdConfiguration.getIndexedChars());
             logger.trace("exception raised", e);
             throw new SMDExtractionException(e);
         }
 
-        SMDDocument smdFileDocument = new SMDDocument();
+        SMDDocument smdFileDocument = new SMDDocument(type, idGeneratorService.generateId(type, key));
 
         // File
         smdFileDocument.file.filename = filename;
@@ -81,8 +94,8 @@ public abstract class TikaConverter<T> implements Converter<T> {
         smdFileDocument.file.content_type = metadata.get(Metadata.CONTENT_TYPE);
 
         // We only add `indexed_chars` if we have other value than default
-        if (indexedChars != SMDConfiguration.INDEXED_CHARS_DEFAULT) {
-            smdFileDocument.file.indexed_chars = indexedChars;
+        if (smdConfiguration.getIndexedChars() != SMDConfiguration.INDEXED_CHARS_DEFAULT) {
+            smdFileDocument.file.indexed_chars = smdConfiguration.getIndexedChars();
         }
 
         if (metadata.get(Metadata.CONTENT_LENGTH) != null) {

@@ -24,12 +24,12 @@ import java.util.List;
 public class SMDSearchResponse  {
 	public final long took;
     public final long totalHits;
-    public final List<SMDDocument> smdDocuments;
+    public final List<SMDResponseDocument> smdDocuments;
 
-	public SMDSearchResponse(long took, long totalHits, List<SMDDocument> smdDocuments) {
-		super();
+	public SMDSearchResponse(long took, long totalHits, List<SMDResponseDocument> smdDocuments) {
 		this.took = took;
 		this.totalHits = totalHits;
 		this.smdDocuments = smdDocuments;
 	}
+
 }

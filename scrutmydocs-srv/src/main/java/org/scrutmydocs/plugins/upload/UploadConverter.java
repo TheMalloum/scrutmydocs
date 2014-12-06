@@ -19,12 +19,13 @@
 
 package org.scrutmydocs.plugins.upload;
 
-import org.scrutmydocs.domain.SMDConfiguration;
+import org.scrutmydocs.converters.IdGeneratorService;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.exceptions.SMDExtractionException;
 import org.scrutmydocs.plugins.tika.TikaConverter;
 import org.scrutmydocs.plugins.tika.TikaService;
+import org.scrutmydocs.services.SMDConfigurationService;
 import restx.factory.Component;
 
 import javax.inject.Inject;
@@ -32,13 +33,16 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class UploadConverter extends TikaConverter<byte[]> {
 
     @Inject
-    public UploadConverter(TikaService tikaService) {
-        super(tikaService);
+    public UploadConverter(TikaService tikaService,
+                           SMDConfigurationService smdConfigurationService,
+                           IdGeneratorService idGeneratorService) {
+        super(tikaService, smdConfigurationService, idGeneratorService);
     }
 
     @Override
@@ -47,8 +51,8 @@ public class UploadConverter extends TikaConverter<byte[]> {
         try (InputStream is = new ByteArrayInputStream(source)) {
             return toDocument(
                     is,
+                    UUID.randomUUID().toString(),
                     UploadPlugin.TYPE_UPLOAD,
-                    SMDConfiguration.INDEXED_CHARS_DEFAULT,
                     null,
                     null,
                     null,

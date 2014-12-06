@@ -23,9 +23,11 @@ import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.plugins.DocumentListener;
 import org.scrutmydocs.plugins.Plugin;
+import org.scrutmydocs.services.SMDDocumentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,14 +43,16 @@ public class PluginScrutinerJob implements Job {
 
         JobDataMap jobDataMap = context.getMergedJobDataMap();
         Map<String, Plugin> plugins = (Map<String, Plugin>) jobDataMap.get("plugins");
+        SMDDocumentService documentService = (SMDDocumentService) jobDataMap.get("document-service");
 
         for (String pluginType : plugins.keySet()) {
             try {
                 DocumentListener listener = plugins.get(pluginType).getDocumentListener();
                 if (listener != null) {
                     logger.debug("executing plugin [{}]", pluginType);
-                    for (Object o : listener.scrut()) {
-                        listener.add(o);
+                    for (Object id : listener.scrut()) {
+                        SMDDocument smdDocument = listener.get((String) id);
+                        documentService.index(smdDocument);
                     }
                 } else {
                     logger.trace("ignoring plugin [{}]: no listener implemented", pluginType);

@@ -2,7 +2,6 @@ package org.scrutmydocs.contract;
 
 import org.junit.Test;
 import org.scrutmydocs.ScrutMyDocsTests;
-import org.scrutmydocs.domain.SMDConfiguration;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.plugins.fs.FileSystemConverter;
 import org.scrutmydocs.plugins.fs.FileSystemPlugin;
@@ -47,7 +46,7 @@ public class TestSmdDocument extends ScrutMyDocsTests {
 	public void testDocumentfromInputstream() throws Exception {
 		InputStream is = TestSmdDocument.class.getResourceAsStream(TEST_FILE);
 		String path = new File(TestSmdDocument.class.getResource(TEST_FILE).getFile()).getParent();
-        SMDDocument smdDocument = fileSystemConverter.toDocument(is, FileSystemPlugin.TYPE_FS, SMDConfiguration.INDEXED_CHARS_DEFAULT, TEST_FILENAME, path,
+        SMDDocument smdDocument = fileSystemConverter.toDocument(is, TEST_FILENAME, FileSystemPlugin.TYPE_FS, TEST_FILENAME, path,
                 null, new Date(), null, null);
         assertThat(smdDocument, notNullValue());
 	}

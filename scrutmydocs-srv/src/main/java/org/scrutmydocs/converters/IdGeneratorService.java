@@ -17,35 +17,36 @@
  * under the License.
  */
 
-package org.scrutmydocs.plugins.dummy;
+package org.scrutmydocs.converters;
 
-import org.scrutmydocs.domain.SMDDocument;
+import org.elasticsearch.common.Base64;
 import org.scrutmydocs.exceptions.SMDException;
-import org.scrutmydocs.plugins.DocumentListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import restx.factory.Component;
 
-import java.util.List;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
-/**
- * An empty Document Listener which does not provide any service
- */
 @Component
-public class DummyDocumentListener<T> implements DocumentListener<T> {
-    protected static final Logger logger = LoggerFactory.getLogger(DummyDocumentListener.class);
+public class IdGeneratorService {
+    private static final Logger logger = LoggerFactory.getLogger(IdGeneratorService.class);
 
-    @Override
-    public List<String> scrut() throws SMDException {
-        return null;
+    private MessageDigest sha;
+
+    public IdGeneratorService() {
+        try {
+            sha = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("Can not access to SHA-1 algorithm", e);
+        }
     }
 
-    @Override
-    public SMDDocument get(String documentId) throws SMDException {
-        return null;
+    public String generateId(String type, String key) throws SMDException {
+        if (sha == null) {
+            throw new SMDException("Can not access to SHA-1 algorithm");
+        }
+        return Base64.encodeBytes(sha.digest(type.concat(key).getBytes()));
     }
 
-    @Override
-    public void delete(T document) throws SMDException {
-    }
 }

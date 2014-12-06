@@ -17,35 +17,16 @@
  * under the License.
  */
 
-package org.scrutmydocs.plugins.dummy;
-
-import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.exceptions.SMDException;
-import org.scrutmydocs.plugins.DocumentListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import restx.factory.Component;
+package org.scrutmydocs.domain;
 
 import java.util.List;
 
-/**
- * An empty Document Listener which does not provide any service
- */
-@Component
-public class DummyDocumentListener<T> implements DocumentListener<T> {
-    protected static final Logger logger = LoggerFactory.getLogger(DummyDocumentListener.class);
+public class SMDResponseDocument {
+    public final List<String> highlights;
+    public final SMDDocument document;
 
-    @Override
-    public List<String> scrut() throws SMDException {
-        return null;
-    }
-
-    @Override
-    public SMDDocument get(String documentId) throws SMDException {
-        return null;
-    }
-
-    @Override
-    public void delete(T document) throws SMDException {
+    public SMDResponseDocument(List<String> highlights, SMDDocument document) {
+        this.highlights = highlights;
+        this.document = document;
     }
 }

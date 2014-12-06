@@ -19,12 +19,13 @@
 
 package org.scrutmydocs.plugins.fs;
 
-import org.scrutmydocs.domain.SMDConfiguration;
+import org.scrutmydocs.converters.IdGeneratorService;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.exceptions.SMDExtractionException;
 import org.scrutmydocs.plugins.tika.TikaConverter;
 import org.scrutmydocs.plugins.tika.TikaService;
+import org.scrutmydocs.services.SMDConfigurationService;
 import restx.factory.Component;
 
 import javax.inject.Inject;
@@ -38,8 +39,10 @@ import java.util.Date;
 public class FileSystemConverter extends TikaConverter<File> {
 
     @Inject
-    public FileSystemConverter(TikaService tikaService) {
-        super(tikaService);
+    public FileSystemConverter(TikaService tikaService,
+                               SMDConfigurationService smdConfigurationService,
+                               IdGeneratorService idGeneratorService) {
+        super(tikaService, smdConfigurationService, idGeneratorService);
     }
 
     @Override
@@ -48,8 +51,8 @@ public class FileSystemConverter extends TikaConverter<File> {
         try (InputStream is = new FileInputStream(source)) {
             return toDocument(
                     is,
+                    source.getAbsolutePath(),
                     FileSystemPlugin.TYPE_FS,
-                    SMDConfiguration.INDEXED_CHARS_DEFAULT,
                     source.getName(),
                     source.getParent(),
                     new Date(source.lastModified()),
