@@ -34,6 +34,12 @@ public class SMDDocument {
      */
     public File file;
 
+    // The default constructor is needed by Jackson
+    public SMDDocument() {
+        meta = new Meta();
+        file = new File();
+    }
+
     public SMDDocument(String type, String id) {
         this.type = type;
         this.id = id;

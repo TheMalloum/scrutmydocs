@@ -39,4 +39,35 @@ public class TestSmdDocument extends ScrutMyDocsTests {
                 null, new Date(), null, null);
         assertThat(smdDocument, notNullValue());
 	}
+
+	@Test
+	public void testJsonToSMDDocument() throws Exception {
+		String json = "{\n" +
+				"   \"id\":\"ZYRfBGwm8j6/0yvkikdwm7qJLaM=\",\n" +
+				"   \"type\":\"fs\",\n" +
+				"   \"content\":\"\",\n" +
+				"   \"meta\":{\n" +
+				"      \"author\":null,\n" +
+				"      \"title\":null,\n" +
+				"      \"date\":null,\n" +
+				"      \"keywords\":[\n" +
+				"\n" +
+				"      ]\n" +
+				"   },\n" +
+				"   \"file\":{\n" +
+				"      \"content_type\":\"application/octet-stream\",\n" +
+				"      \"last_modified\":1411037363000,\n" +
+				"      \"indexing_date\":1422115405189,\n" +
+				"      \"filesize\":6148,\n" +
+				"      \"filename\":\".DS_Store\",\n" +
+				"      \"path\":\"/Users/dpilato/Documents/Elasticsearch/tmp/es\",\n" +
+				"      \"url\":\"file:///Users/dpilato/Documents/Elasticsearch/tmp/es/.DS_Store\",\n" +
+				"      \"indexed_chars\":null\n" +
+				"   }\n" +
+				"}";
+		SMDDocument smdDocument = components.jsonToSMDDocumentService.toDocument(json);
+
+	}
+
+
 }

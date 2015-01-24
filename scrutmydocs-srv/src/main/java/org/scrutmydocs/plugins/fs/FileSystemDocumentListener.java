@@ -106,7 +106,8 @@ public class FileSystemDocumentListener implements DocumentListener<File> {
 
                 // TODO We need to manage file removal...
             } catch (IOException e) {
-                throw new SMDException(e);
+                // We need to be smarter here. Because some paths could work and some others not.
+                logger.warn("caught an error while scanning [{}]: [{}]", path, e.getMessage());
             }
         }
 

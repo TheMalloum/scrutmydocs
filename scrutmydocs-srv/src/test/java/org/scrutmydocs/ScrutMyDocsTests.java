@@ -23,6 +23,7 @@ import com.google.common.base.Predicate;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.scrutmydocs.converters.JsonToSMDDocumentService;
 import org.scrutmydocs.plugins.fs.FileSystemConverter;
 import org.scrutmydocs.services.SMDDocumentService;
 import org.scrutmydocs.services.SMDRepositoriesService;
@@ -51,13 +52,16 @@ public class ScrutMyDocsTests {
         public final SMDRepositoriesService repositoriesService;
         public final SMDDocumentService searchService;
         public final FileSystemConverter fileSystemConverter;
+        public final JsonToSMDDocumentService jsonToSMDDocumentService;
 
         public TestComponents(SMDRepositoriesService repositoriesService,
                               SMDDocumentService searchService,
-                              FileSystemConverter fileSystemConverter) {
+                              FileSystemConverter fileSystemConverter,
+                              JsonToSMDDocumentService jsonToSMDDocumentService) {
             this.repositoriesService = repositoriesService;
             this.searchService = searchService;
             this.fileSystemConverter = fileSystemConverter;
+            this.jsonToSMDDocumentService = jsonToSMDDocumentService;
         }
     }
 
