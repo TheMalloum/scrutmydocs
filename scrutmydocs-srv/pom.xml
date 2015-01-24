@@ -20,7 +20,7 @@
 
         <!-- Dependencies versions -->
         <restx.version>0.33.1</restx.version>
-        <elasticsearch.version>1.4.0</elasticsearch.version>
+        <elasticsearch.version>1.4.2</elasticsearch.version>
         <beyonder.version>0.1.0-SNAPSHOT</beyonder.version>
         <tika.version>1.6</tika.version>
         <log4j.version>2.1</log4j.version>
