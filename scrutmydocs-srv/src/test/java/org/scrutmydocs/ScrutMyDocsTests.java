@@ -22,13 +22,15 @@ package org.scrutmydocs;
 import com.google.common.base.Predicate;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.scrutmydocs.plugins.fs.FileSystemConverter;
 import org.scrutmydocs.services.SMDDocumentService;
 import org.scrutmydocs.services.SMDRepositoriesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import restx.factory.Component;
+import restx.factory.Factory;
 
-import javax.inject.Inject;
 import java.util.concurrent.TimeUnit;
 
 public class ScrutMyDocsTests {
@@ -37,17 +39,26 @@ public class ScrutMyDocsTests {
 
     public static final String TEST_FILENAME = "LICENSE.txt";
     public static final String TEST_FILE = "integration/docs/" + TEST_FILENAME;
-    protected final SMDRepositoriesService repositoriesService;
-    protected final SMDDocumentService searchService;
-    protected final FileSystemConverter fileSystemConverter;
+    protected static TestComponents components;
 
-    @Inject
-    public ScrutMyDocsTests(SMDRepositoriesService repositoriesService,
-                            SMDDocumentService searchService,
-                            FileSystemConverter fileSystemConverter) {
-        this.repositoriesService = repositoriesService;
-        this.searchService = searchService;
-        this.fileSystemConverter = fileSystemConverter;
+    @BeforeClass
+    public static void loadRestXFactory() {
+        components = Factory.getInstance().getComponent(TestComponents.class);
+    }
+
+    @Component
+    public static class TestComponents {
+        public final SMDRepositoriesService repositoriesService;
+        public final SMDDocumentService searchService;
+        public final FileSystemConverter fileSystemConverter;
+
+        public TestComponents(SMDRepositoriesService repositoriesService,
+                              SMDDocumentService searchService,
+                              FileSystemConverter fileSystemConverter) {
+            this.repositoriesService = repositoriesService;
+            this.searchService = searchService;
+            this.fileSystemConverter = fileSystemConverter;
+        }
     }
 
     @Before @After

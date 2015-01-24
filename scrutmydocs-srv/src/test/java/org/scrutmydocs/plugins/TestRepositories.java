@@ -2,13 +2,9 @@ package org.scrutmydocs.plugins;
 
 import org.junit.Test;
 import org.scrutmydocs.ScrutMyDocsTests;
-import org.scrutmydocs.plugins.fs.FileSystemConverter;
-import org.scrutmydocs.services.SMDDocumentService;
-import org.scrutmydocs.services.SMDRepositoriesService;
 import org.scrutmydocs.domain.SMDRepository;
 import org.scrutmydocs.plugins.fs.FSSMDRepository;
 
-import javax.inject.Inject;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,21 +13,14 @@ import static org.hamcrest.core.Is.is;
 
 public class TestRepositories extends ScrutMyDocsTests {
 
-    @Inject
-    public TestRepositories(SMDRepositoriesService repositoriesService,
-                            SMDDocumentService searchService,
-                            FileSystemConverter fileSystemConverter) {
-        super(repositoriesService, searchService, fileSystemConverter);
-    }
-
     @Test
 	public void testIndexRepository() throws Exception {
 		FSSMDRepository repository = new FSSMDRepository();
         repository.id = "test-fs";
 
-        repositoriesService.save(repository);
+        components.repositoriesService.save(repository);
 
-        List<SMDRepository> repositories = repositoriesService.getRepositories();
+        List<SMDRepository> repositories = components.repositoriesService.getRepositories();
 
         assertThat(repositories.size(), is(1));
 

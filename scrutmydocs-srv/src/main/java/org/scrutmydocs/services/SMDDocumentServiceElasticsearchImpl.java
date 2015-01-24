@@ -79,6 +79,7 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
     @Inject
 	public SMDDocumentServiceElasticsearchImpl(ElasticsearchService elasticsearchService,
                                                JsonToSMDDocumentService jsonToSMDDocumentService) {
+		logger.debug("Starting SMDDocumentServiceElasticsearchImpl");
         this.elasticsearchService = elasticsearchService;
         this.jsonToSMDDocumentService = jsonToSMDDocumentService;
 
@@ -110,6 +111,8 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
 					}
 				}).setFlushInterval(TimeValue.timeValueSeconds(5))
 				.setBulkActions(100).build();
+
+		logger.debug("Started SMDDocumentServiceElasticsearchImpl");
 	}
 
 	@Override
