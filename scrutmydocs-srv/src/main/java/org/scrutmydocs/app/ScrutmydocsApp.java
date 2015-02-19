@@ -26,7 +26,7 @@ import restx.server.WebServer;
 
 public class ScrutmydocsApp {
     public static final String WEB_INF_LOCATION = "scrutmydocs-srv/src/main/webapp/WEB-INF/web.xml";
-    public static final String WEB_APP_LOCATION = "scrutmydocs-ui/dist";
+    public static final String WEB_APP_LOCATION = "scrutmydocs-ui/app";
     public static final String SRV_LOCATION = "scrutmydocs-srv";
     public static final String SRV_RESOURCES_LOCATION = SRV_LOCATION + "/src/main/resources";
     public static final String SRV_RECORDER_LOCATION = SRV_RESOURCES_LOCATION;

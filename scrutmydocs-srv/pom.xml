@@ -45,7 +45,7 @@
 
         <display_version>${project.version}-${maven.build.timestamp}</display_version>
 
-        <project.war.resources.directory>../scrutmydocs-ui/dist</project.war.resources.directory>
+        <project.war.resources.directory>../scrutmydocs-ui/app</project.war.resources.directory>
 
     </properties>
 

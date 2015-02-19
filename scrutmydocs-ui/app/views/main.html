@@ -1,0 +1,87 @@
+<div class="company" ng-controller="MainCtrl">
+    <a ng-href="/#/">
+        <h1 class="title-page">
+            <span class="title-logo" ng-click="search()"></span>
+            <span class="smallSeparator"></span>
+            <span class="title-page-content">
+              <input id="query" class="input-login" type="text" name="query"
+                     ng-model="query"
+                     placeholder="what are you looking for?"
+                     ng-change="search()"
+                     >
+            </span>
+            <span class="title-page-content">{{total}} results in {{took}} ms</span>
+        </h1>
+    </a>
+
+  <!--
+"highlights" : [ "-­social  simplifié  \n\nAccusé  de  réception\n\nMR  PILATO  <span class='badge badge-info'>DAVID</span>  ROBERT      CONSEIL  EN  SYSTEMES  ET", "  et  Prénom  de  la\npersonne  ayant  effectué  la\ndéclaration\n\nMR  PILATO  <span class='badge badge-info'>DAVID</span>  ROBERT  CONSEIL", "<span class='badge badge-info'>David</span> PILATO" ],
+    "document" : {
+      "id" : "ubiOzHZZtmVNLukoNuV6Fx08XNE=",
+      "type" : "fs",
+      "content" : "\n                          \n\n  \n\n    \n\nDÉCLARATION  TRIMESTRIELLE  DE  RECETTES\n\nRégime  micro-­social  simplifié  \n\nAccusé  de  réception\n\nMR  PILATO  DAVID  ROBERT      CONSEIL  EN  SYSTEMES  ET  LOGICIE  -­  SIRET  40197606300024  -­  Profession\n\nLibérale\n\nVous  avez  opté  pour  le  versement  libératoire  de  l'impôt  sur  le  revenu.  \n\nCet  accusé  de  réception  précise  la  date  et  l'heure  à  laquelle  vous  avez  effectué  votre  déclaration.  \nVous  avez  la  possibilité  d'effectuer  des  déclarations  rectificatives.  \n\n  Numéro  d'accusé  de\nréception D029566281      \n\n  Millésime  de  la  déclaration 4ème  Trim  2012      \n\n  Date  et  heure  d'exigibilité     le  31/01/2013  à  12h00      \n\n  Date  et  heure  de  la\ndéclaration     le  28/01/2013  à  08h46      \n\n  Nom  et  Prénom  de  la\npersonne  ayant  effectué  la\ndéclaration\n\nMR  PILATO  DAVID  ROBERT  CONSEIL  EN  SYSTEMES  ET  LOGICIE      \n\n  SIRET  de  la  personne 40197606300024      \n\n  \n  \n\n  \n\n    Déclaration\n\nRecettes  pour  profession  libérale  relevant  de  la  CIPAV       1.050    €    \n\nChiffre  d'affaires  des  activités  annexes  de  ventes  de  marchandises       0    €    \n\nChiffre  d'affaires  des  activités  annexes  de  prestations  de  services\ncommerciales       0    €    \n\n  \n\n    Montant  à  payer\n\nMontant  des  cotisations  et  impôts      (  +  ) 215    €    \n\nContribution  à  la  formation  professionnelle.        (  +  ) 2    €    \n\nDéduction  éventuelle      (  -­  ) 0    €    \n\nMontant  à  payer    (  =  ) 217    €    \n\n  \n\n    Télérèglement\n\nSTE  GENERALE  -­  30003  01862  00010418520    (  +  ) 217    €    \n\nMontant  du  télérèglement    (  =  ) 217    €    \n\n  \n  \n\n\n",
+      "meta" : {
+        "author" : "David PILATO",
+        "title" : "La déclaration des auto-entrepreneurs -",
+        "date" : "2013-01-28T07:47:27.000+0000",
+        "keywords" : [ ]
+      },
+      "file" : {
+        "content_type" : "application/pdf",
+        "last_modified" : "2013-01-28T07:47:27.000+0000",
+        "indexing_date" : "2015-01-30T17:35:22.822+0000",
+        "filesize" : 110831,
+        "filename" : "Autoentreprise2012.pdf",
+        "path" : "/Users/dpilato/Documents/Elasticsearch/tmp/es",
+        "url" : "file:///Users/dpilato/Documents/Elasticsearch/tmp/es/Autoentreprise2012.pdf",
+        "indexed_chars" : null
+      }
+    }
+-->
+
+  <div ng-repeat="document in documents">
+    <hr class="clear"/>
+    <div class="table-fpm">
+      <div>
+        <div class="login-row">
+          <span class="label-login" rx-translate="author">author</span>
+          <span>{{document.document.meta.author}}</span>
+        </div>
+        <div class="login-row">
+          <span class="label-login" rx-translate="title">title</span>
+          <span>{{document.document.meta.title}}</span>
+        </div>
+        <div class="login-row">
+          <span class="label-login" rx-translate="date">date</span>
+          <span>{{document.document.meta.date}}</span>
+        </div>
+        <div class="login-row">
+          <span class="label-login" rx-translate="filename">filename</span>
+          <span>{{document.document.file.filename}}</span>
+        </div>
+        <div class="login-row">
+          <span class="label-login" rx-translate="filesize">filesize</span>
+          <span>{{document.document.file.filesize}}</span>
+        </div>
+        <div class="login-row">
+          <span class="label-login" rx-translate="last_modified">last_modified</span>
+          <span>{{document.document.file.last_modified}}</span>
+        </div>
+        <div class="login-row">
+          <span class="label-login" rx-translate="indexing_date">indexing_date</span>
+          <span>{{document.document.file.indexing_date}}</span>
+        </div>
+      </div>
+
+      <div class="highlights">
+        <div ng-repeat="highlight in document.highlights">
+          {{highlight}}
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
