@@ -1,11 +1,11 @@
 package org.scrutmydocs.jobs;
 
 import com.google.common.base.Predicate;
+import org.elasticsearch.action.search.SearchResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.scrutmydocs.ScrutMyDocsTests;
 import org.scrutmydocs.domain.SMDSearchQuery;
-import org.scrutmydocs.domain.SMDSearchResponse;
 import org.scrutmydocs.exceptions.SMDJsonParsingException;
 import org.scrutmydocs.plugins.fs.FSSMDRepository;
 import org.scrutmydocs.plugins.fs.FSSMDRepositoryScan;
@@ -43,8 +43,8 @@ public class TestScan extends ScrutMyDocsTests {
             }
         }, 6, TimeUnit.SECONDS);
 
-		SMDSearchResponse searchResponse = components.searchService.search(new SMDSearchQuery("*", 0, 1, null));
-        assertThat(searchResponse.totalHits, is(0L));
+		SearchResponse searchResponse = components.searchService.search(new SMDSearchQuery("*", 0, 1, null));
+        assertThat(searchResponse.getHits().getTotalHits(), is(0L));
 
 		// add file
 		File tmp = File.createTempFile("add-file", "tmp", dir);
@@ -56,13 +56,13 @@ public class TestScan extends ScrutMyDocsTests {
         assertThat("We should have a new document indexed", awaitBusy(new Predicate<Object>() {
             @Override
             public boolean apply(Object input) {
-                SMDSearchResponse searchResponse = null;
+                SearchResponse searchResponse = null;
                 try {
                     searchResponse = components.searchService.search(new SMDSearchQuery("*", 0, 1, null));
                 } catch (SMDJsonParsingException e) {
                     fail(e.getMessage());
                 }
-                return searchResponse.totalHits == 1;
+                return searchResponse.getHits().getTotalHits() == 1;
             }
         }, 6, TimeUnit.SECONDS), is(true));
 
@@ -74,13 +74,13 @@ public class TestScan extends ScrutMyDocsTests {
         assertThat("We should have 0 document indexed", awaitBusy(new Predicate<Object>() {
             @Override
             public boolean apply(Object input) {
-                SMDSearchResponse searchResponse = null;
+                SearchResponse searchResponse = null;
                 try {
                     searchResponse = components.searchService.search(new SMDSearchQuery("*", 0, 1, null));
                 } catch (SMDJsonParsingException e) {
                     fail(e.getMessage());
                 }
-                return searchResponse.totalHits == 0;
+                return searchResponse.getHits().getTotalHits() == 0;
             }
         }, 6, TimeUnit.SECONDS), is(true));
 	}

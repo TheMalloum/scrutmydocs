@@ -1,11 +1,11 @@
 package org.scrutmydocs.search;
 
 import com.google.common.base.Predicate;
+import org.elasticsearch.action.search.SearchResponse;
 import org.junit.Test;
 import org.scrutmydocs.ScrutMyDocsTests;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.domain.SMDSearchQuery;
-import org.scrutmydocs.domain.SMDSearchResponse;
 import org.scrutmydocs.exceptions.SMDJsonParsingException;
 
 import java.io.File;
@@ -31,13 +31,13 @@ public class TestIndexSearch extends ScrutMyDocsTests {
         assertThat("We should have 1 document indexed", awaitBusy(new Predicate<Object>() {
             @Override
             public boolean apply(Object input) {
-                SMDSearchResponse searchResponse = null;
+                SearchResponse searchResponse = null;
                 try {
                     searchResponse = components.searchService.search(new SMDSearchQuery("*", 0, 1, null));
                 } catch (SMDJsonParsingException e) {
                     e.printStackTrace();
                 }
-                return searchResponse.totalHits == 1;
+                return searchResponse.getHits().getTotalHits() == 1;
             }
         }, 6, TimeUnit.SECONDS), is(true));
 
@@ -62,13 +62,13 @@ public class TestIndexSearch extends ScrutMyDocsTests {
         assertThat("We should have 1 document indexed", awaitBusy(new Predicate<Object>() {
             @Override
             public boolean apply(Object input) {
-                SMDSearchResponse searchResponse = null;
+                SearchResponse searchResponse = null;
                 try {
                     searchResponse = components.searchService.search(new SMDSearchQuery("*", 0, 1, null));
                 } catch (SMDJsonParsingException e) {
                     e.printStackTrace();
                 }
-                return searchResponse.totalHits == 1;
+                return searchResponse.getHits().getTotalHits() == 1;
             }
         }, 6, TimeUnit.SECONDS), is(true));
 
@@ -77,13 +77,13 @@ public class TestIndexSearch extends ScrutMyDocsTests {
         assertThat("We should have 0 document indexed", awaitBusy(new Predicate<Object>() {
             @Override
             public boolean apply(Object input) {
-                SMDSearchResponse searchResponse = null;
+                SearchResponse searchResponse = null;
                 try {
                     searchResponse = components.searchService.search(new SMDSearchQuery("*", 0, 1, null));
                 } catch (SMDJsonParsingException e) {
                     e.printStackTrace();
                 }
-                return searchResponse.totalHits == 1;
+                return searchResponse.getHits().getTotalHits() == 1;
             }
         }, 6, TimeUnit.SECONDS), is(true));
 	}

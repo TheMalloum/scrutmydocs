@@ -1,9 +1,9 @@
 package org.scrutmydocs.services;
 
 
+import org.elasticsearch.action.search.SearchResponse;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.domain.SMDSearchQuery;
-import org.scrutmydocs.domain.SMDSearchResponse;
 import org.scrutmydocs.exceptions.SMDDocumentNotFoundException;
 import org.scrutmydocs.exceptions.SMDIndexException;
 import org.scrutmydocs.exceptions.SMDJsonParsingException;
@@ -12,7 +12,7 @@ public interface SMDDocumentService {
 
 	public void index(SMDDocument smdDocument) throws SMDIndexException;
 
-	public SMDSearchResponse search(SMDSearchQuery searchQuery) throws SMDJsonParsingException;
+	public SearchResponse search(SMDSearchQuery searchQuery) throws SMDJsonParsingException;
 
 	public void deleteDirectory(String directory);
 

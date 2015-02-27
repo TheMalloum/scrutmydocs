@@ -10,7 +10,7 @@
                      ng-change="search()"
                      >
             </span>
-            <span class="title-page-content">{{total}} results in {{took}} ms</span>
+            <span class="title-page-content">{{result.hits.totalHits}} results in {{result.took.millis}} ms</span>
         </h1>
     </a>
 
@@ -39,37 +39,37 @@
     }
 -->
 
-  <div ng-repeat="document in documents">
+  <div ng-repeat="document in hits.hits">
     <hr class="clear"/>
     <div class="table-fpm">
       <div>
         <div class="login-row">
           <span class="label-login" rx-translate="author">author</span>
-          <span>{{document.document.meta.author}}</span>
+          <span>{{document.source.meta.author}}</span>
         </div>
         <div class="login-row">
           <span class="label-login" rx-translate="title">title</span>
-          <span>{{document.document.meta.title}}</span>
+          <span>{{document.source.meta.title}}</span>
         </div>
         <div class="login-row">
           <span class="label-login" rx-translate="date">date</span>
-          <span>{{document.document.meta.date}}</span>
+          <span>{{document.source.meta.date}}</span>
         </div>
         <div class="login-row">
           <span class="label-login" rx-translate="filename">filename</span>
-          <span>{{document.document.file.filename}}</span>
+          <span>{{document.source.file.filename}}</span>
         </div>
         <div class="login-row">
           <span class="label-login" rx-translate="filesize">filesize</span>
-          <span>{{document.document.file.filesize}}</span>
+          <span>{{document.source.file.filesize}}</span>
         </div>
         <div class="login-row">
           <span class="label-login" rx-translate="last_modified">last_modified</span>
-          <span>{{document.document.file.last_modified}}</span>
+          <span>{{document.source.file.last_modified}}</span>
         </div>
         <div class="login-row">
           <span class="label-login" rx-translate="indexing_date">indexing_date</span>
-          <span>{{document.document.file.indexing_date}}</span>
+          <span>{{document.source.file.indexing_date}}</span>
         </div>
       </div>
 

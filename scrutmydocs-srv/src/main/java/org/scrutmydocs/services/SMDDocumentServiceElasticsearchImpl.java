@@ -21,7 +21,6 @@ package org.scrutmydocs.services;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableList;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -31,20 +30,15 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.Strings;
-import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.highlight.HighlightField;
 import org.scrutmydocs.converters.JsonToSMDDocumentService;
 import org.scrutmydocs.dao.elasticsearch.ElasticsearchService;
 import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.domain.SMDResponseDocument;
 import org.scrutmydocs.domain.SMDSearchQuery;
-import org.scrutmydocs.domain.SMDSearchResponse;
 import org.scrutmydocs.exceptions.SMDDocumentNotFoundException;
 import org.scrutmydocs.exceptions.SMDIndexException;
 import org.scrutmydocs.exceptions.SMDJsonParsingException;
@@ -53,8 +47,6 @@ import org.slf4j.LoggerFactory;
 import restx.factory.Component;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.elasticsearch.index.query.FilterBuilders.matchAllFilter;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
@@ -132,10 +124,8 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
     }
 
     @Override
-	public SMDSearchResponse search(SMDSearchQuery searchQuery) throws SMDJsonParsingException {
+	public SearchResponse search(SMDSearchQuery searchQuery) throws SMDJsonParsingException {
         logger.debug("search({})", searchQuery);
-
-		SMDSearchResponse searchResponse;
 
 		QueryBuilder query;
 		if (!Strings.hasText(searchQuery.search)) {
@@ -164,34 +154,13 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
 				.setHighlighterPreTags("<span class='badge badge-info'>")
 				.setHighlighterPostTags("</span>")
 
-				.addFields("*", "_source");
+				.addFields("*");
 		logger.trace("search: [{}]", request.toString());
 		SearchResponse hits = request.get();
 
-        logger.trace("result: {}", hits.toString());
-
-		List<SMDResponseDocument> documents = new ArrayList<>();
-		for (SearchHit hit : hits.getHits()) {
-			ImmutableList.Builder<String> highlights = ImmutableList.builder();
-			SMDDocument smdDocument = jsonToSMDDocumentService.toDocument(hit.getSourceAsString());
-			for (HighlightField highlightField : hit.getHighlightFields().values()) {
-				for (Text fragment : highlightField.getFragments()) {
-					highlights.add(fragment.string());
-				}
-			}
-			SMDResponseDocument responseDocument = new SMDResponseDocument(
-					highlights.build(), smdDocument);
-			documents.add(responseDocument);
-		}
-
-		searchResponse = new SMDSearchResponse(
-                hits.getTookInMillis(),
-                hits.getHits().totalHits(),
-                documents);
-
         logger.debug("/google({}) : {}", searchQuery, hits.getHits().totalHits());
 
-		return searchResponse;
+		return hits;
 
 	}
 

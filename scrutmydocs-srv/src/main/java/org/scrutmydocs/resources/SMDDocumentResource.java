@@ -19,9 +19,9 @@
 
 package org.scrutmydocs.resources;
 
+import org.elasticsearch.action.search.SearchResponse;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.domain.SMDSearchQuery;
-import org.scrutmydocs.domain.SMDSearchResponse;
 import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.exceptions.SMDIndexException;
 import org.scrutmydocs.exceptions.SMDJsonParsingException;
@@ -54,7 +54,7 @@ public class SMDDocumentResource {
 
     @POST("/_search")
     @PermitAll
-    public SMDSearchResponse search(SMDSearchQuery query) throws IOException {
+    public SearchResponse search(SMDSearchQuery query) throws IOException {
         logger.debug("_search([{}])", query);
         try {
             return documentService.search(query);
