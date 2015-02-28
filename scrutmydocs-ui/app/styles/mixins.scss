@@ -1,0 +1,38 @@
+@import "variables";
+
+// ==== COLORS MIXINS
+// == Status color
+@mixin colorStatus ($color) {
+  background-color: $color;
+
+  &:before {
+    border-right-color: $color;
+  }
+}
+
+// == Buttons color
+@mixin colorButton ($color, $hover-color) {
+  border-bottom-color: darken($color, 10%);
+  background-color: $color;
+
+  @if($color == $fsh-mediumgrey) {
+    color: $fsh-black;
+  } @else if ($color == $fsh-lightgrey) {
+    color: $fsh-black;
+  } @else {
+    color: white();
+  }
+
+  &:hover {
+    border-bottom-color: darken($hover-color, 10%);
+    background-color: $hover-color;
+
+    @if($color == $fsh-mediumgrey) {
+      color: $fsh-black;
+    } @else if ($color == $fsh-lightgrey) {
+      color: $fsh-black;
+    } @else {
+      color: white();
+    }
+  }
+}

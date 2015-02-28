@@ -1,0 +1,424 @@
+@import "variables";
+@import "mixins";
+
+.fsh-btn {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 5px;
+  padding: 10px 15px 10px 15px;
+  border: none;
+  border-bottom: 1px solid transparent;
+  color: white();
+  outline: none;
+  -webkit-border-radius: $global-radius;
+  border-radius: $global-radius;
+
+  &:hover {
+    transition: 200ms;
+    text-decoration: none;
+  }
+
+  @include colorButton($btn-main-color, $btn-main-color-hover);
+
+  &.fsh-login {
+    float: right;
+    margin-top: 15px;
+    padding: 0;
+    @include colorButton($fsh-darkgrey, $btn-main-color-hover);
+
+    a {
+      display: block;
+      height: 100%;
+      padding: 12px;
+    }
+
+    .icon-connect {
+      display: block;
+      float: left;
+      height: 19px;
+      width: 19px;
+      margin-right: 10px;
+      background:  url("#{$imagePath}icon-btn-connect.png") no-repeat;
+    }
+
+    &:hover {
+      .icon-connect {
+        transition: 400ms;
+        transform:rotate(360deg);
+        -webkit-transform:rotate(360deg);
+        background: url("#{$imagePath}icon-btn-connect-hover.png") no-repeat;
+      }
+    }
+  }
+}
+
+.fsh-btn-refresh {
+  display: inline-block;
+  vertical-align: middle;
+  height: 21px;
+  width: 21px;
+  background: url("#{$imagePath}icon-refresh.png") no-repeat;
+  opacity: 0.8;
+  cursor: pointer;
+
+  &:hover {
+    transition: 300ms;
+    margin-top: -3px;
+    -webkit-transform: rotate(180deg);/* Agrandissement de la photo à l'échelle 1.4 et rotation de -10 degrés */
+    -moz-transform:  rotate(180deg);
+    -o-transform:  rotate(180deg);
+    opacity: 1;
+  }
+}
+
+.fsh-btn-add {
+  display: inline-block;
+  border: none;
+  background: $fsh-lightgrey;
+  height: 25px;
+  padding: 3px 15px 0px 5px;
+  margin-bottom: 15px;
+  border-radius: $global-radius;
+  -webkit-border-radius: $global-radius;
+  color: $fsh-black;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 12px;
+
+  &:hover {
+    transition: 200ms;
+    background: $green-buttonHover;
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  .icon-buttonAdd {
+    display: inline-block;
+    margin-top: -1px;
+    background: url("#{$imagePath}icon-btn-add.png") no-repeat;
+    height: 16px;
+    width: 16px;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+}
+
+.fsh-btn-edit {
+  display: inline-block;
+  border: none;
+  background: $fsh-lightgrey;
+  height: 25px;
+  padding: 3px 15px 0px 5px;
+  margin-bottom: 15px;
+  border-radius: $global-radius;
+  -webkit-border-radius: $global-radius;
+  color: $fsh-black;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 12px;
+
+  &:hover {
+    transition: 200ms;
+    background: $green-buttonHover;
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  .icon-buttonEdit {
+    display: inline-block;
+    margin-top: -1px;
+    background: url("#{$imagePath}icon-btn-edit.png") no-repeat;
+    height: 16px;
+    width: 16px;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+}
+
+.fsh-btn-look {
+  @extend .fsh-btn-edit;
+  margin-top: 15px;
+
+  .icon-buttonLook {
+    height: 19px;
+    width: 19px;
+    margin-right: 5px;
+    background: url("#{$imagePath}icon-btn-look.png") no-repeat;
+  }
+}
+
+.fsh-btn-drag {
+  float: right;
+  display: inline-block;
+  margin: 20px 10px 0 17px;
+  cursor: pointer;
+
+  .icon-drag {
+    display: block;
+    background: url("#{$imagePath}icon-drag.png") no-repeat;
+    height: 26px;
+    width: 26px;
+  }
+}
+
+.arrow-bottom, .arrow-top {
+  display: inline-block;
+  height: 7px;
+  width: 11px;
+  margin: 0 10px 0 10px;
+}
+
+.arrow-bottom  { background: url("#{$imagePath}arrow-bottom.png") no-repeat;}
+.arrow-top  { background: url("#{$imagePath}arrow-top.png") no-repeat;}
+
+.fsh-hide {
+    float: right;
+    height: 40px;
+    width: 40px;
+    background: $fsh-darkgrey;
+    margin-top: 10px;
+    border-radius: 5px 5px 0 0;
+    cursor: pointer;
+    transition: 300ms;
+
+  &:hover {
+    transition: 300ms;
+    background: $fsh-grey ;
+  }
+
+  .arrow-bottom {
+    margin: 18px 0 0 14px;
+  }
+}
+
+.fsh-btn-success {
+  padding: 10px;
+  padding-right: 20px;
+  background: $fsh-mediumgrey;
+  color: #ffffff;
+  border-radius: $global-radius;
+  -webkit-border-radius: $global-radius;
+  border-bottom: 1px solid #939393;
+  font-size: 12px;
+  border: none;
+  border-bottom: 1px solid #939393;
+  float: none;
+  transition: 300ms;
+
+  &:focus {
+    transition: 300ms;
+    background: $fsh-black !important;
+  }
+
+  .icon-buttonSav {
+    display: block;
+    float: left;
+    margin-right: 5px;
+    background: url("#{$imagePath}icon-btn-sav.png") no-repeat;
+    height: 19px;
+    width: 19px;
+  }
+  .icon-buttonView {
+    display: block;
+    float: left;
+    margin-right: 5px;
+    background: url("#{$imagePath}icon-btn-look.png") no-repeat;
+    height: 19px;
+    width: 19px;
+  }
+
+  &:hover {
+    transition: 200ms;
+    background: $green-buttonHover;
+    color: #ffffff;
+    text-decoration: none;
+  }
+}
+
+/* LOG TIME */
+
+.btnAddtask {
+  margin: 15px 5px 0 0 !important;
+  padding: 10px 20px 10px 10px;
+  background: $fsh-mediumgrey;
+  color: #ffffff;
+  border-radius: $global-radius;
+  -webkit-border-radius: $global-radius;
+  border-bottom: 1px solid #939393;
+  border: none;
+  float: left;
+
+  &:hover {
+    transition: 200ms;
+    background: $green-buttonHover;
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  .icon-btn-addTask {
+    background: url("#{$imagePath}icon-btn-add.png") no-repeat;
+    height: 19px;
+    width: 19px;
+    margin-right: 5px;
+  }
+}
+
+.btnAddplannedtask { @extend .btnAddtask; margin-right: 20px !important; }
+
+.btnDiscardPlannedTask {
+  margin-left: 5px !important;
+  padding: 2px 10px;
+  background: $fsh-mediumgrey;
+  color: #ffffff;
+  border-radius: $global-radius;
+  -webkit-border-radius: $global-radius;
+  border-bottom: 1px solid #939393;
+  border: none;
+
+  &:hover {
+    transition: 200ms;
+    background: $green-buttonHover;
+    color: #ffffff;
+    text-decoration: none;
+  }
+}
+
+
+.btnPreviousmonth {
+  background: $fsh-mediumgrey;
+  color: #ffffff;
+  border-radius: $global-radius;
+  -webkit-border-radius: $global-radius;
+  margin: 15px 0 15px 0 !important;
+  padding-left: 10px;
+  height: 42px;
+  width: 50px;
+  border: none;
+  float: left;
+
+  &:hover {
+    transition: 200ms;
+    background: $green-buttonHover;
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  .iconPreviousmonth {
+    display: block;
+    height: 19px;
+    width: 19px;
+    margin-left: 6px;
+    background: url("#{$imagePath}incon-btn-previousmonth.png") no-repeat;
+  }
+}
+
+.btnNextmonth {
+  @extend .btnPreviousmonth;
+
+  .iconNextmonth {
+  @extend .iconPreviousmonth;
+    background: url("#{$imagePath}incon-btn-nextmonth.png") no-repeat;
+  }
+}
+
+.infoMonth {
+  margin: 15px 15px 0 0 !important;
+  margin-right: 15px;
+  float: left !important;
+}
+
+/* POP UP ADD TASK */
+
+.btnAddtask-popup {
+  @extend .btnAddtask;
+  padding: 5px 20px 5px 10px ;
+  margin: 0 !important;
+  border: none !important;
+  float: none !important;
+}
+
+.btnCancel {
+  @extend .btnAddtask;
+  padding: 5px 20px 5px 10px ;
+  margin: 0 !important;
+  border: none !important;
+  float: none !important;
+}
+
+.icon-btn-canceladdTask {
+  height: 19px;
+  width: 19px;
+  vertical-align: middle;
+  margin-right: 5px;
+  background: url("#{$imagePath}icon-btn-cancel.png") no-repeat;
+}
+
+
+/* EDIT PROJET */
+
+.add-task {
+  display: inline-block;
+  float: right;
+  height: 20px;
+  width: 30px;
+  margin: 3px 3px 0 3px;
+  background:  url("#{$imagePath}btn-addtask.png") no-repeat;
+  cursor: pointer;
+  transition: 250ms;
+
+  &:hover {
+    transition: 250ms;
+    background:  url("#{$imagePath}btn-addtask-hover.png") no-repeat;
+  }
+}
+
+.add-resource-type {
+  @extend .add-task;
+  background:  url("#{$imagePath}btn-addrt.png") no-repeat;
+  transition: 250ms;
+
+  &:hover {
+    transition: 250ms;
+    background:  url("#{$imagePath}btn-addrt-hover.png") no-repeat;
+  }
+}
+
+.add-resource {
+  @extend .add-task;
+  background:  url("#{$imagePath}btn-addr.png") no-repeat;
+
+  &:hover {
+    transition: 250ms;
+    background:  url("#{$imagePath}btn-addr-hover.png") no-repeat;
+  }
+}
+
+.delete-line {
+  @extend .add-task;
+  width: 20px !important;
+  background:  url("#{$imagePath}btn-suppr.png") no-repeat;
+  transition: 250ms;
+
+  &:hover {
+    transition: 250ms;
+    background:  url("#{$imagePath}btn-suppr-hover.png") no-repeat;
+  }
+}
+
+
+.button {
+  width: 20px;
+  height: 20px;
+}
+.buttonAdd {
+  background: url(#{$imagePath}icon-btn-add.png) no-repeat;
+  &:hover {
+    background: url(#{$imagePath}icon-btn-add-hover.png) no-repeat;
+  }
+}
+.buttonDelete {
+  background: url(#{$imagePath}btn-suppr.png) no-repeat;
+  &:hover {
+    background: url(#{$imagePath}btn-suppr-hover.png) no-repeat;
+  }
+}

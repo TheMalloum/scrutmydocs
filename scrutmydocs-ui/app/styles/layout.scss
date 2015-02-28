@@ -1,0 +1,488 @@
+@import "variables";
+
+body {
+  margin:0;
+  padding:0;
+  background: url(#{$imagePath}bg-body3.jpg) no-repeat fixed;
+  -webkit-background-size: cover; /* pour Chrome et Safari */
+  -moz-background-size: cover; /* pour Firefox */
+  -o-background-size: cover; /* pour Opera */
+  background-size: cover; /* version standardisée */
+  background-color: lighten($fsh-darkgrey, 10%);
+  font-family: $fsh-main-font;
+  font-size: 12px;
+
+  &.print {
+    background: none;
+    background-color: lighten($fsh-darkgrey, 10%);
+  }
+}
+
+.container {
+  min-width: 1024px;
+  width: 95%;
+
+  @media screen and (min-width: 1441px) {
+    width: 85%;
+  }
+
+  @media screen and (min-width: 1920px) {
+    width: 75%;
+  }
+}
+
+label {
+  margin-right: 10px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $fsh-title-font;
+  color: white();
+  background-color: $fsh-darkgrey;
+  padding: 10px 10px 10px 20px;
+  border-radius: $global-radius;
+  -webkit-border-radius: $global-radius;
+  font-weight: normal;
+  position: relative;
+}
+
+h1 { font-size: 22px; padding-left: 127px;}
+h2 { font-size: 20px;}
+h3 { font-size: 18px;}
+h4 { font-size: 16px;}
+h5 { font-size: 14px;}
+h6 { font-size: 12px;}
+
+header {
+  height: 60px;
+  background-color: $fsh-darkgrey;
+  opacity: 0.7;
+  overflow: hidden;
+  transition: 650ms;
+
+  &:hover {
+    transition: 650ms;
+    opacity: 1;
+  }
+
+  .avatar {
+    height: 63px;
+    margin-top: -1px;
+    margin-left: -4px;
+  }
+
+  .user-name {
+    color: $fsh-yellow;
+    font-size: 1.3em;
+    margin-left: 10px;
+  }
+
+  .user-function {
+    color: $fsh-yellow;
+    cursor: pointer;
+  }
+}
+
+.white-button {
+  position: relative;
+  background: #ffffff;
+  color: $fsh-black;
+  text-transform: uppercase;
+  height: 60px;
+  padding-left: 45px;
+  padding-right: 30px;
+  padding-bottom: 25px;
+  padding-top: 22px;
+  text-decoration: none;
+  transition: 150ms;
+
+  &:hover {
+    transition: 300ms;
+    background: $blue-button;
+    color: #ffffff;
+    text-decoration: none;
+    cursor: pointer;
+
+    .iconDisconnect {
+      transition: 300ms;
+      -webkit-transform:rotate(360deg);
+      -moz-transform:rotate(360deg);
+      -o-transform:rotate(360deg);
+      background:  url("#{$imagePath}icon-btn-deconnect-hover.png") no-repeat;
+    }
+  }
+
+  .iconDisconnect {
+    position: absolute;
+    left: 20px;
+    top:20px;
+    height: 19px;
+    width: 19px;
+    background:  url("#{$imagePath}icon-btn-deconnect.png") no-repeat;
+  }
+}
+
+.company-logo {
+  display: inline-block;
+  float: right;
+  height: 30px;
+  width: 100px;
+  margin-right: 20px;
+  margin-top: 22px;
+  background: url(#{$imagePath}logo-4sh.png) 0 0 no-repeat transparent;
+}
+
+.table-fpm {
+  background-color: $fsh-lightgrey;
+  border-radius: $global-radius;
+  -webkit-border-radius: $global-radius;
+  padding: 10px;
+}
+
+
+.title-page {
+  padding: 0 15px 0 0;
+  margin-bottom: 25px;
+
+  .title-logo {
+    display: inline-block;
+    vertical-align: middle;
+    width: 90px;
+    height: 55px;
+    line-height: 55px;
+    background: url(#{$imagePath}4d-picto.png) 50% 50% no-repeat transparent;
+    -webkit-border-radius: $global-radius 0 0 $global-radius;
+    border-radius: $global-radius 0 0 $global-radius;
+    cursor: pointer;
+
+    &:hover {
+      background: url(#{$imagePath}4d-picto-hover.png) 50% 50% no-repeat transparent;
+    }
+
+    &.back-home {
+      background-color: white();
+      background-position: 75% 50%;
+      
+      &:before {
+        content: url(#{$imagePath}icon-btn-back.png);
+        position: absolute;
+          top: 4px;
+          left: 6px;
+      }
+      
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .smallSeparator {
+    height: 55px;
+    line-height: 55px;
+    margin-left: -7px;
+  }
+
+  .title-page-content {
+    display: inline-block;
+    position: relative;
+      top: 2px;
+    vertical-align: middle;
+    line-height: 24px;
+  }
+
+}
+
+.application-logo {
+  height: 17px;
+  width: 48px;
+  display: inline-block;
+  background: url(#{$imagePath}4d-picto.png) center center no-repeat transparent;
+  line-height: 17px;
+}
+
+h1 {
+  margin-top: 35px;
+
+  &.title-col {
+    height: 30px;
+    padding: 0 0 0 0;
+    margin-bottom: 3px;
+    background: none;
+    text-transform: uppercase;
+  }
+}
+
+.title-section-invoice {
+  width: 100%;
+  border-bottom: #3f3f3f solid 2px;
+  margin-bottom: 30px;
+
+  h1 {
+    width: auto;
+    margin-top: 35px;
+    background: black;
+
+    &.title-col-onglet {
+      height: 30px;
+      width: 30%;
+      margin-bottom: 0;
+      padding: 15px 0 35px 15px;
+      text-transform: uppercase;
+      background: #3f3f3f;
+      border-radius: 5px 5px 0 0;
+    }
+}
+
+    .application-logo {
+    //left: 0;
+    //padding: 21px 20px 22px;
+    //position: absolute;
+    //top: 0;
+
+    &.back-home {
+      font-size: 18px;
+      padding-left: 15px;
+      width: 75px;
+      background-position: 40px center;
+      background-color: white();
+      cursor: pointer;
+      border-radius: $global-radius 0 0 $global-radius;
+      -webkit-border-radius: $global-radius 0 0 $global-radius;
+      transition: 250ms;
+
+      &:hover .iconBack {
+        transition: 250ms;
+        background: url(#{$imagePath}icon-btn-back-hover.png) no-repeat;
+      }
+
+      .iconBack {
+        display: block;
+        float: left;
+        background: url(#{$imagePath}icon-btn-back.png) no-repeat;
+        height: 19px;
+        width: 19px;
+        transition: 250ms;
+      }
+    }
+  }
+}
+
+.ng-binding:focus {
+  background-color: white();
+}
+
+/* TABLE DASHBOARD*/
+
+.nameProject {
+  vertical-align: middle !important;
+  padding-left: 15px !important;
+  border-bottom: 1px #383838 solid;
+  background-image: linear-gradient(#3f3f3f, #373737);
+
+  a {
+    color: #ffffff !important;
+    margin-left: 10px;
+  }
+
+  li {
+    float: left;
+    list-style: none;
+  }
+}
+
+.pelletDiscover {
+  width: 17px;
+  height: 17px;
+  background: url(#{$imagePath}pellet-discover.png) no-repeat;
+}
+
+.pelletDesign { @extend .pelletDiscover; background: url(#{$imagePath}pellet-design.png) no-repeat;}
+.pelletDevelop { @extend .pelletDiscover; background: url(#{$imagePath}pellet-develop.png) no-repeat;}
+.pelletDeploy { @extend .pelletDiscover; background: url(#{$imagePath}pellet-deploy.png) no-repeat;}
+
+.progress {
+  margin: 25px 15px 10px 15px !important;
+
+  .bar { background-image:$grd-green;}
+}
+
+.typeProjet { @extend .nameProject; border: solid $fsh-mediumgrey 1px; background-image: $grd-gray; }
+.typeStatut {@extend .typeProjet; }
+.progressBar {@extend .typeProjet; }
+.typeActions {@extend .typeProjet; }
+
+
+/* RESSOURCE TYPE */
+
+.nameRessources { @extend .nameProject; }
+.codeRessources { @extend .typeProjet; width: 100px;}
+.codeRessources input { width: 100px;}
+.tjmRessources { @extend .typeProjet; }
+.costRessources { @extend .typeProjet; }
+.actionRessources {@extend .typeProjet;}
+
+/* SEPARATOR */
+
+.smallSeparator {
+  display: inline-block;
+  vertical-align: middle;
+  width: 4px;
+  background: url(#{$imagePath}small-separator.png) no-repeat;
+}
+
+/* FORM PROJET TYPE */
+
+.container-form {
+  display: block;
+}
+
+.form-horizontal .controls {
+  margin-left: 0 !important;
+}
+/*
+
+.control-group {
+  display: inline-block;
+  width: 290px;
+  margin-top: 10px;
+  float: left;
+}
+*/
+
+.tableProjet {
+  //background: $light-black;
+}
+
+/* LOG TIME */
+
+.infoMonth {
+  background: $fsh-darkgrey;
+  color: #ffffff !important;
+  padding: 10px 15px 10px 15px;
+  margin-top: 15px;
+  margin-left: 15px;
+  border-radius: $global-radius;
+  -webkit-border-radius: $global-radius;
+}
+
+.icon-calendar {
+  margin: 15px 15px 0 15px !important;
+  height: 42px;
+  width: 42px;
+  background:  url(#{$imagePath}icon-calendar.png) no-repeat;
+  float: left;
+}
+
+.timeLog-saveState {
+  float: left !important;
+  width: 280px !important;
+  margin: 27px 0 0 25px !important;
+}
+
+.column-week-end {
+  background-image: $grd-black !important;
+}
+
+/* POP UP ADD TASK */
+
+.addtaskHeader {
+
+  h3 {
+    padding: 5px 0 3px 20px;
+    margin: 0;
+    border-radius: $global-radius $global-radius 0 0 !important;
+    -webkit-border-radius: $global-radius $global-radius 0 0 !important;
+  }
+}
+
+.addtaskFooter {
+  background: $fsh-darkgrey;
+  padding: 15px 20px 30px 20px;
+  text-align: right;
+  border-radius: 0 0 $global-radius $global-radius;
+  -webkit-border-radius: 0 0 $global-radius $global-radius;
+  height: 15px;
+}
+
+.modal-body {
+  padding: 0;
+
+  .contentFormtask {
+    margin: 0;
+    padding-top: 30px;
+    background: $fsh-lightgrey ;
+
+    label {
+      float: left;
+      width: 150px;
+      text-align: right;
+      margin-left: 5px;
+    }
+  }
+}
+
+/* LOGIN */
+
+.login-page {
+  width: 580px;
+  margin: 0 auto;
+}
+
+.login-form {
+  display: table-cell;
+  vertical-align: middle;
+  width: 340px;
+}
+
+.login-logo {
+  display: table-cell;
+  vertical-align: middle;
+  width: 196px;
+  padding-left: 20px;
+}
+
+.img4pm {
+  width: 196px;
+  height: 70px;
+  margin-top: 3px;
+  margin-right: 5px;
+  background: url(#{$imagePath}img-4pm-logo.png) no-repeat;
+}
+
+.mentionLogo {
+  width: 51px;
+  height: 20px;
+  float: right;
+  margin-top: 10px;
+  margin-right: 20px;
+  background: url(#{$imagePath}img-by4sh.png) no-repeat;
+}
+
+.invoicing-lines {
+  width: 100%;
+  margin-top: 20px;
+
+  .title {
+    width: 35%;
+    text-align: left;
+    input {
+      width: 100%;
+    }
+  }
+
+  .quantity, .unitPrice, .unitCost, .totalPrice, .totalCost {
+    text-align: center;
+
+    input {
+      width: 65px;
+      text-align: right;
+    }
+  }
+
+  .total {
+    background-color: $fsh-blue;
+  }
+}
+
+
+

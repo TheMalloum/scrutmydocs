@@ -1,0 +1,41 @@
+@import "variables";
+@import "mixins";
+
+.company {
+  .companyDescription {
+    clear: both;
+    label.legalNotice {
+      height: 100px;
+      vertical-align: top;
+    }
+    textarea.legalNotice {
+      height: 100px;
+      width: 305px;
+      max-width: 305px;
+      line-height: normal;
+    }
+  }
+
+  .companyAddress {
+    clear: both;
+  }
+
+  .companyBusiness {
+    clear: both;
+    input {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  label.address {
+    height: 100px;
+    vertical-align: top;
+  }
+  textarea.address {
+    height: 100px;
+    width: 220px;
+    max-width: 305px;
+    line-height: normal;
+  }
+}

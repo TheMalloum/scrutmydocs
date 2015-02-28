@@ -1,0 +1,46 @@
+@import "variables";
+
+* {
+  -o-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+
+  outline: none;
+}
+
+.clear {
+  clear: both;
+  margin: 0;
+  padding: 0;
+  visibility: hidden;
+}
+
+.f-left {
+  float: left;
+}
+
+.f-right {
+  float: right;
+}
+
+.f-none {
+  float: none;
+  clear: both;
+}
+
+.txt-left {
+  text-align: left;
+}
+
+.txt-center {
+  text-align: center;
+}
+
+.txt-right {
+  text-emphasis: right;
+}
+
+.txt-justify {
+  text-align: justify;
+}

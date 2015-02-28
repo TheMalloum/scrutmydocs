@@ -1,0 +1,765 @@
+@import "variables";
+@import "mixins";
+
+
+// NAV ACTION
+.nav-action {
+  margin: 0 0 20px;
+
+  .fsh-btn {
+    margin-top: 0;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
+
+// TRIE
+.sorts-projects {
+  display: inline-block;
+  vertical-align: middle;
+  height: 40px;
+  margin: 0 0 20px;
+
+  .sorts-item {
+    display: inline-block;
+    margin-right: 5px;
+    padding: 10px 25px 10px 25px;
+    transition: 450ms;
+    text-transform: uppercase;
+    color: white();
+    background-color: $fsh-grey;
+    cursor: pointer;
+    list-style: none;
+    -webkit-border-radius: $global-radius;
+    border-radius: $global-radius;
+
+    &:hover {
+      transition: 250ms;
+      background-color: $green-buttonHover;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &.title-list-sorts {
+      background-color: $blue-buttonHover;
+
+      &:hover {
+        transition: 250ms;
+        background-color: $blue-buttonHover;
+        border: none;
+      }
+    }
+  }
+
+  .project-search {
+    height: 40px;
+    width: 150px;
+    margin-bottom: 0px;
+  }
+}
+
+//COLUMNS
+
+.col-type-left {
+  float: left;
+  width: 48%;
+  height: auto;
+}
+
+.col-type-right {
+  float: right;
+  width: 48%;
+  height: auto;
+}
+
+.zone-title {
+  width: 100%;
+  display: inline-block;
+
+  .info-stat {
+    display: block;
+    margin-bottom: 25px;
+    font-size: 10px 21px;
+    color: white;
+  }
+
+  .sorts {
+    display: inline-block;
+    float: right;
+    color: #b2b2b2;
+    cursor: pointer;
+    font-size: 12px;
+
+    .arrowBottom {
+      display: inline-block;
+      height: 7px;
+      width: 11px;
+      margin: 0 10px 0 10px;
+      background: url("#{$imagePath}arrow-bottom.png") no-repeat;
+    }
+    .arrowTop {
+      display: inline-block;
+      height: 7px;
+      width: 11px;
+      margin: 0 10px 0 10px;
+      background: url("#{$imagePath}arrow-top.png") no-repeat;
+    }
+    .selected {
+      text-decoration: underline;
+      font-weight: bold;
+      color: white();
+    }
+  }
+
+  .separator-sorts {
+    display: inline-block;
+    float: right;
+    margin: 0 20px 0 10px;
+    color: white();
+  }
+}
+
+.zone-actions {
+  display: block;
+
+  .display-mode {
+    color: #ffffff;
+    margin-left: 10px;
+    display: inline-block;
+  }
+
+  .select2-container {
+    margin-right: 10px;
+    width: 100px;
+
+    @media (max-width: 1250px) {
+      width: 150px !important;
+    }
+  }
+
+  .date {
+    width: 120px;
+    height: 25px;
+    border-radius: 0 3px 3px 0;
+  }
+
+  .ref {
+    width: 80px;
+    height: 25px;
+    border-radius: 0 3px 3px 0;
+  }
+
+  .fsh-btn-add {
+    float: right;
+    width: 25px;
+  }
+  .fsh-btn-edit {
+    float: right;
+    width: 25px;
+    margin-right: 5px;
+  }
+}
+
+// BLOC TYPE ITEM
+
+.bloc-type {
+  position: relative;
+  background-color: #ffffff;
+  height: 500px;
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.blocTypeOneCompany {
+  height: auto;
+}
+
+.content-infos {
+  width: auto;
+  height: 120px;
+
+  .avatar-project {
+    display: inline-block;
+    position: relative;
+    vertical-align: top;
+    height: 67px;
+    width: 17%;
+    margin-top: 8px;
+    background: url("#{$imagePath}cache-avatar.png") no-repeat;
+
+    &:after {
+      content: url("#{$imagePath}cache-avatar.png");
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 83px;
+      height: 83px;
+    }
+
+    .show-all-project {
+      display: block;
+      height: 20px;
+      width: 83px;
+      background: $fsh-darkgrey;
+      color: white;
+      text-align: center;
+      cursor: pointer;
+      transition: 300ms;
+
+      &:hover {
+        background: $fsh-grey;
+        transition: 300ms;
+      }
+    }
+  }
+
+.content-infos-project {
+  display: inline-block;
+  width: 82%;
+
+  &.content-invoice-project {
+    width :99%;
+  }
+
+  .header-project {
+    display: block;
+    float: right;
+    height: 60px;
+    width: 100%;
+
+    @media (max-width: 1250px) {
+      width: 95%;
+    }
+
+    .title-project-content {
+      float: left;
+      display: block;
+      max-width: 340px;
+      margin: 8px 0 0;
+      padding: 0;
+      overflow: hidden;
+      font-size: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      cursor:pointer;
+
+      a {color: #3f3f3f;}
+
+      &.invoice {
+        font-size: 14px;
+      }
+    }
+
+    .invoice-date {
+      padding: 0;
+      margin: 5px 0 0 0;
+      font-size: 10px;
+
+      li {
+        line-height: 1.2;
+        list-style: none;
+      }
+
+      .tags-business {
+        font-weight: normal;
+        display: table;
+        padding: 3px 10px 3px 10px;
+        margin-right: 5px;
+        margin-top: 5px;
+        color: #ffffff;
+        background-color: $fsh-grey;
+        cursor: pointer;
+        transition: 450ms;
+        border-radius: $global-radius;
+        -webkit-border-radius: $global-radius;
+      }
+    }
+  }
+}
+
+  .desc-project {
+    display: block;
+    width: 100%;
+    float: right;
+
+    @media (max-width: 1250px) {
+      width: 95%;
+    }
+
+    .content-planned {
+      max-width: 400px;
+      min-width: 310px;
+    }
+
+    .invoices-planned {
+      display: block;
+      float: left;
+      height: 20px;
+      width: auto;
+      margin: 0 auto;
+      margin-right: 25px;
+
+      h1 {
+        float: left;
+        margin: 0;
+        margin-left: 5px;
+        padding: 0;
+        background: none;
+        font-size: 12px;
+        text-align: right;
+        font-weight: bold;;
+        color: $fsh-darkgrey;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        background: none;
+        float: left;
+        font-size: 10px;
+        font-weight: bold;
+        text-align: left;
+        margin: 0;
+        padding: 0;
+        color: $fsh-lightgrey;
+        text-transform: uppercase;
+      }
+
+    }
+
+    .invoices-status {
+      position: absolute;
+      top: -25px;
+      right: 0;
+      width: 40px;;
+      height: 100%;
+      margin-top: 25px;
+      padding: 0 10px 0 10px;
+      color: white;
+      background: $status-current;
+
+      p {
+        position: absolute;
+        top: 50px;
+        left: -60px;
+        display: block;
+        width: 140px;
+        height: 40px;
+        padding: 0;
+        margin: 0;
+        font-size: 13px;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        color: #ffffff;
+        background: none;
+        transform: rotate(90deg);
+        -webkit-transform:rotate(90deg);
+        -moz-transform:rotate(90deg);
+        -o-transform:rotate(90deg);
+      }
+    }
+
+    .PAID {background: $status-closed;}
+    .DRAFT {background: $status-pre;}
+    .SENT {background: $status-draft;}
+    .LATE {background: $status-lost;}
+    .CANCELLED {
+      background-color: $status-canceled;
+      background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.5) 35px, rgba(255,255,255,.5) 70px);
+    }
+
+    .btn-edit {
+      display: inline-block;
+      margin: 30px 5px 0 0;
+      padding: 0;
+      color: white;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.content-bloc-invoice {
+  width: 93%;
+
+  .btn-edit {
+    margin-right: 52px !important;
+  }
+}
+
+.tags-business {
+  display: block;
+  bottom: 40px;
+  left: 34px;
+  height: auto;
+  padding: 0;
+
+  li {
+    display: inline-block;
+    padding: 3px 10px 3px 10px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    color: #ffffff;
+    background-color: $fsh-grey;
+    cursor: pointer;
+    transition: 450ms;
+    border-radius: $global-radius;
+    -webkit-border-radius: $global-radius;
+
+
+    &:hover {
+      transition: 250ms;
+      background-color: $fsh-lightgrey;
+    }
+  }
+}
+
+.invoices-number {
+  float: right;
+  height: 40px;
+  width: 187px;
+  margin-top: 13px;
+  margin-right: 7px;
+
+  @media (max-width: 1150px) {
+    width: 170px;
+  }
+
+  h1 {
+    display: block;
+    background: none;
+    height: 30px;
+    width: 100%;
+    margin-top: 10px;
+    padding: 0;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: right;
+    color: $fsh-darkgrey;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    background: none;
+    height: 25px;
+    width: 100%;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: right;
+    margin: 0;
+    padding: 0;
+    color: $fsh-lightgrey;
+    text-transform: uppercase;
+  }
+}
+
+.raf-time {
+  margin-top: 0 !important;
+}
+
+.consumed-time {
+  @extend .raf-time;
+  margin-top: 0 !important;
+}
+
+.milestones-project {
+  width: 250px;
+  margin: 0 auto;
+  text-align: left;
+  margin-top: 20px;
+
+  li {
+    list-style: none;
+  }
+}
+
+.current-status {
+  font-weight: bold;
+  color: red;
+}
+
+.icon-delivery {
+  margin-right: 5px;
+  height: 12px;
+  width: 12px;
+  background: url("#{$imagePath}icon-delivery.png") no-repeat;
+}
+
+.icon-start-project {
+  @extend .icon-delivery;
+  background: url("#{$imagePath}icon-start-projet.png") no-repeat;
+}
+
+.icon-current-status {
+  @extend .icon-delivery;
+  background: url("#{$imagePath}icon-current-status.png") no-repeat;
+}
+
+.class-project {
+  position: relative;
+  display: inline-block;
+  float: left;
+  background-image: $grd-gray;
+  height: 100%;
+  width: 50px;
+
+  .contract-type-label {
+    position: absolute;
+    top: 68px;
+    left: -65px;
+    display: block;
+    width: 180px;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 22px;
+    color: $fsh-darkgrey;
+    background: none;
+    -webkit-transform:rotate(-90deg);
+    -moz-transform:rotate(-90deg);
+    -o-transform:rotate(-90deg);
+    transform: rotate(-90deg);
+  }
+
+  &.in_house {
+    .contract-type-label {
+      top: 80px;
+    }
+  }
+}
+
+.resources-project {
+  position: absolute;
+    left: 50px;
+    bottom: 0;
+    right: 0;
+  height: 35px;
+  background-image: $grd-black;
+
+  ul {
+    float: left;
+    margin-top: 8px;
+    margin-right: 25px;
+  }
+
+  li {
+    display: inline-block;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: 15px;
+  }
+}
+
+.status-project {
+  position: absolute;
+    top: 0;
+    right: 0;
+  width: 30px;
+  height: 180px;
+  background-color: transparent;
+
+  &:before {
+    content: '';
+    position: absolute;
+      top: 0;
+      left: -21px;
+    width: 0;
+    height: 0;
+    border-top: 90px solid transparent;
+    border-right: 21px solid transparent;
+    border-bottom: 90px solid transparent;
+  }
+
+  &.draft {@include colorStatus($status-draft);}
+  &.pre {@include colorStatus($status-pre);}
+  &.contracted {@include colorStatus($status-contracted);}
+  &.current {@include colorStatus($status-current);}
+  &.lost {@include colorStatus($status-lost);}
+  &.closed {@include colorStatus($status-closed);}
+
+  .status-arrow {
+    position: absolute;
+    display: block;
+    left: -22px;
+    height: 100%;
+    width: 22px;
+    background: url("#{$imagePath}status-ongoing.png") no-repeat;
+  }
+
+
+  .status-label {
+    position: absolute;
+      top: 73px;
+      left: -70px;
+    display: block;
+    width: 140px;
+    height: 40px;
+    padding: 0;
+    margin: 0;
+    font-size: 15px;
+    text-transform: uppercase;
+    text-align: center;
+    color: #ffffff;
+    background: none;
+    transform: rotate(90deg);
+    -webkit-transform:rotate(90deg);
+    -moz-transform:rotate(90deg);
+    -o-transform:rotate(90deg);
+  }
+}
+
+// ICONS
+
+.icon-resources {
+  height: 14px;
+  width: 22px;
+  float: left;
+  margin: 10px 0 0 15px;
+  background: url("#{$imagePath}icon-resources.png") no-repeat;
+}
+
+.icon-person-in-charge {
+  @extend .icon-resources;
+  width: 10px;
+  background: url("#{$imagePath}icon-person-in-charge.png") no-repeat;
+}
+
+.areas-discover { background: url("#{$imagePath}pellet-discover.png") no-repeat !important; }
+.areas-design { background: url("#{$imagePath}pellet-design.png") no-repeat !important; }
+.areas-develop { background: url("#{$imagePath}pellet-develop.png") no-repeat !important;}
+.areas-deploy { background: url("#{$imagePath}pellet-deploy.png") no-repeat !important;}
+
+// BTN EDIT
+
+.btn-edit {
+  position: absolute;
+  padding-right: 25px;
+  right: 0px;
+  height: 20px;
+
+  li {
+    font-size: 12px;
+    display: inline-block;
+    height: 20px;
+    margin-right: 8px;
+    background-color: $fsh-grey;
+    border-radius:$global-radius;
+    -webkit-border-radius:$global-radius;
+    cursor: pointer;
+
+    &:hover {
+      transition: 250ms;
+      background-color: $green-buttonHover;
+    }
+
+    a, div {
+      display: block;
+      width: 100%;
+      height: 100%;
+      padding: 2px 15px 0 15px;
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+}
+
+.small-icon-buttonedit {
+  float: left;
+  margin-right: 8px;
+  height: 15px;
+  width: 15px;
+  background: url("#{$imagePath}icon-edit-16x16.png") no-repeat;
+}
+.small-icon-buttonview {
+  float: left;
+  margin-right: 8px;
+  height: 15px;
+  width: 15px;
+  background: url("#{$imagePath}icon-look-16x16.png") no-repeat;
+}
+.small-icon-buttondelete {
+  float: left;
+  margin-right: 8px;
+  height: 15px;
+  width: 15px;
+  background: url("#{$imagePath}icon-delete-16x16.png") no-repeat;
+}
+
+.small-icon-buttonLook {
+  @extend .small-icon-buttonedit;
+  background: url("#{$imagePath}smallicon-btn-look.png") no-repeat;
+}
+
+// SEPARATOR
+
+.separator-bloc {
+  float: left;
+  margin-top: 12px;
+  width: 1px;
+  height: 124px;
+  background: url("#{$imagePath}sep-bloc.png") no-repeat;
+}
+
+.invoice-table {
+  color: $fsh-darkgrey;
+  background-color: #ffffff;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px;
+
+  .cell-header {
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
+  tbody {
+     tr:nth-child(odd)  {
+        background-color: $fsh-lightgrey;
+      }
+
+      tr:hover {
+        transition: 250ms;
+        background-color: $fsh-mediumgrey;
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+      }
+    }
+
+
+  .invoice-buyer {
+    width: 5%;
+    cursor: pointer;
+  }
+  .invoice-business {
+    width: 25%;
+  }
+  .invoice-object {
+    width: 15%;
+  }
+  .invoice-reference {
+    width: 10%;
+  }
+  .invoice-date {
+    width: 15%;
+  }
+  .invoice-status {
+    width: 15%;
+  }
+  .invoice-grossAmount {
+    width: 15%;
+  }
+
+  .cell-number {
+    text-align: right;
+  }
+}

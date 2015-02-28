@@ -1,0 +1,74 @@
+// DEFINE COLORS
+// fsh == 4sh
+$fsh-red : #eb272d;
+$fsh-blue : #00A7C8;
+$fsh-green : #319831;
+$fsh-yellow : #F8C200;
+$fsh-black : #282727;
+$fsh-darkgrey : #3f3f3f;
+$fsh-grey : #5e5e5e;
+$fsh-mediumgrey : #a2a2a2;
+$fsh-lightgrey : #d6d6d6;
+
+// STATUS
+$status-draft: #b2b2b2;
+$status-pre: #e5b800;
+$status-contracted: #16a765;
+$status-current: #2da2bb;
+$status-lost: #e13e3e;
+$status-canceled: #e13e3e;
+$status-closed: #333333;
+
+// BUTTON
+$btn-main-color : $fsh-grey;
+$btn-main-color-hover : $fsh-red;
+
+$blue-button : #6e8396;
+$blue-buttonHover : darken($blue-button, 15%);
+$green-buttonHover : $fsh-red;
+
+// blue button hover old :  #566675 --- green button hover old : #7ed360
+
+// BAR PROGRESS
+// grd == gradient
+$grd-green :  linear-gradient(#85de65, #79cb5c);
+$grd-gray :  linear-gradient(#D6D6D6, #c7c7c7);
+$grd-black :  linear-gradient(#3f3f3f, #373737);
+
+// TR TD
+$light-blue : lighten($blue-button, 20%);
+$light-black : lighten($fsh-black , 75%);
+$grd-bleu : linear-gradient(#6e8396, #566675);
+
+
+@function black($opacity:1){
+  @return rgba(0,0,0,$opacity)
+}
+
+@function white($opacity:1){
+  @return rgba(255,255,255,$opacity)
+}
+
+// ASSIGN COLORS
+$main-color : $fsh-red;
+$discover-color : $fsh-green;
+$design-color : $fsh-yellow;
+$develop-color : $fsh-red;
+$deploy-color : $fsh-blue;
+//$bg-color : $fsh-lightgrey;
+
+// DIFINE FONTS
+$fsh-main-font : "Lucida Sans Unicode","Lucida Grande",sans-serif;
+$fsh-title-font : $fsh-main-font;
+
+// RADIUS BORDER
+$global-radius: 3px;
+
+//TREE TABLE PADDIKNG
+$tree-padding : 5px;
+$tree-padding-shift : 18px;
+
+// IMAGE PATH
+$imagePath : "../../images/";
+
+$error-color : $fsh-red;

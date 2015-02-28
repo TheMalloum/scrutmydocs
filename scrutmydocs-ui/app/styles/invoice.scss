@@ -1,0 +1,195 @@
+@import "variables";
+@import "mixins";
+
+.invoice {
+  clear: both;
+  table {
+
+    th.currency {
+      width:20%;
+    }
+
+    td.currency {
+      text-align: right;
+    }
+    input {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  label.invoiceObject {
+    height: 145px;
+    vertical-align: top;
+  }
+
+  textarea.invoiceObject {
+    height: 145px;
+    width: 340px;
+    max-width: 340px;
+    line-height: normal;
+  }
+  input.invoiceComment {
+    width: 332px;
+  }
+
+  label.legalNotice {
+    height: 100px;
+    vertical-align: top;
+  }
+  textarea.legalNotice {
+    height: 100px;
+    width: 305px;
+    max-width: 305px;
+    line-height: normal;
+  }
+  label.address {
+    height: 100px;
+    vertical-align: top;
+  }
+  textarea.address {
+    height: 100px;
+    width: 305px;
+    max-width: 305px;
+    line-height: normal;
+  }
+}
+
+.invoiceSeller, .invoiceBuyer, .invoiceComment {
+  clear: both;
+  div.addressBodyBlock {
+    margin-top: 0px;
+    pre.addressBody {
+      border: none;
+      width: 100%;
+      font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+      font-size: 12px;
+      background: none;
+      padding: 0;
+      margin: 0;
+    }
+  }
+}
+
+.view {
+  h2, h3 {
+    color: black;
+    text-transform: uppercase;
+    font-weight: bold;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  h2 {
+    color: #808080;
+  }
+  h3 {
+    font-size: 14px;
+  }
+
+  pre.invoiceObject {
+    border: none;
+    width: 400px;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 12px;
+    background: none;
+    padding: 0;
+  }
+
+  .invoiceSeller, .invoiceBuyer, .invoiceComment {
+    margin-left: 20px;
+    clear: none;
+  }
+  .invoiceReference, .invoiceObject {
+    margin-right: 20px;
+  }
+  .invoiceReference {
+    text-align: right;
+  }
+  .invoiceComment {
+    margin-top: 20px;
+  }
+  .invoiceLines {
+    margin-top: 20px;
+    table {
+      border: none;
+      border-top: solid #000000 2px;
+    }
+    tr.startVat {
+      margin-top: 20px;
+    }
+    tr {
+      border: none;
+    }
+    td {
+      border-left: solid #000000 1px;
+      border-right: solid #000000 1px;
+      border-top: none;
+      border-bottom: none;
+    }
+    td.totalLabel {
+      border: none;
+
+      &.totalGrossAmount {
+        border-top: solid #000000 1px;
+      }
+
+    }
+    td.totalAmount {
+      border: solid #000000 1px;
+    }
+    th {
+      text-align: center;
+      border: solid #000000 1px;
+    }
+  }
+
+  .legalNotice {
+    margin-top:15px;
+  }
+
+  .legalNoticeForeignBuyer {
+    font-style: italic;
+    font-size: 11px;
+  }
+
+  .invoiceLegalNotice {
+    margin-top:40px;
+
+    div.invoiceLegalNoticeBlock {
+      margin-top: 10px;
+      pre.legalNotice {
+        border: none;
+        width: 100%;
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        font-size: 12px;
+        background: none;
+        padding: 0;
+      }
+    }
+    div.invoiceLegalNoticeInfo {
+      font-style: italic;
+      font-size: 80%;
+    }
+  }
+}
+
+// Icon Titles
+
+.icon-title {
+  display: inline-block;
+  vertical-align: top;
+  height: 25px;
+  width: 25px;
+  margin-right: 10px;
+}
+
+.icon-invoice { background: url("#{$imagePath}icon-invoice.png") no-repeat;}
+.icon-seller { background: url("#{$imagePath}icon-seller.png") no-repeat;}
+.icon-buyer { background: url("#{$imagePath}icon-buyer.png") no-repeat;}
+.icon-lines { background: url("#{$imagePath}icon-lines.png") no-repeat;}
+.icon-address { background: url("#{$imagePath}icon-address.png") no-repeat;}
+.icon-business { background: url("#{$imagePath}icon-business.png") no-repeat;}
+.icon-vats { background: url("#{$imagePath}icon-vats.png") no-repeat;}
+

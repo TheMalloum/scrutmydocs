@@ -1,0 +1,191 @@
+@import "variables";
+
+input {
+  padding-left: 5px;
+  border: none;
+  border-radius: $global-radius;
+  -webkit-border-radius: $global-radius;
+}
+
+.nameRessources {
+  input {
+    background: $fsh-mediumgrey;
+    color: #ffffff;
+
+    &:focus {
+      transition: 250ms;
+      background: #ffffff;
+      color: $fsh-darkgrey
+    }
+  }
+}
+
+.input-table-project {
+  padding: 0;
+  margin: 6px 0 5px 0 !important;
+  display: inline-block;
+}
+
+.name-cell {
+  display: inline-block;
+}
+
+.typeRessources {
+  @extend .typeProject !optional;
+
+  select {
+    margin-top: 10px;
+  }
+}
+
+.ressources table td {
+  vertical-align: middle;
+}
+
+.container-control-group {
+  float: left;
+  width: 45%;
+  height: auto;
+
+  @media (max-width: 1150px) {
+    width: 100%;
+  }
+}
+
+
+.control-group {
+  display: inline-block;
+  margin-right: 20px;
+  margin-bottom: 20px;
+
+  .select2-container .select2-choice {
+    height: 17 !important;
+  }
+
+  label {
+    display: inline-block;
+    vertical-align: middle;
+    width: auto !important;
+    min-width: 100px;
+    height: 30px;
+    line-height: 30px;
+    margin: 0 -4px 0 0;
+    padding: 0 10px 0 10px;
+    font-size: 12px;
+    color: #ffffff;
+    background: $fsh-darkgrey;
+    -webkit-border-radius: $global-radius 0 0 $global-radius !important;
+    border-radius: $global-radius 0 0 $global-radius !important;
+  }
+
+  .controls {
+    display: inline-block;
+    vertical-align: middle;
+
+    input,
+    select,
+    > * {
+      display: inline-block;
+      vertical-align: middle;
+      width: 220px;
+      height: 30px;
+      line-height: 30px;
+      -webkit-border-radius: 0 $global-radius $global-radius 0;
+      border-radius: 0 $global-radius $global-radius 0;
+    }
+  }
+}
+
+div[contenteditable="true"] {
+  min-height: 20px;
+}
+
+.control-label {
+  float: none;
+  padding-top: 0;
+  display: inline-block;
+  vertical-align: middle;
+  width: auto!important;
+  min-width: 100px;
+  height: 30px;
+  line-height: 30px;
+  margin: 0 -4px 0 0;
+  padding: 0 10px;
+  font-size: 12px;
+  color: #fff;
+  background: #3f3f3f;
+  -webkit-border-radius: 3px 0 0 3px!important;
+  border-radius: 3px 0 0 3px!important
+}
+
+.label-light {
+  background: #a2a2a2!important;
+}
+
+
+/* PASSWORD */
+.login-row {
+  margin-bottom: 10px;
+
+  .label-login {
+    display: inline-block;
+    vertical-align: middle;
+    width: 130px;
+    height: 35px;
+    line-height: 35px;
+    padding: 2px 15px 2px 15px;
+    text-align: right;
+    color: white();
+    background: $fsh-darkgrey;
+    -webkit-border-radius: $global-radius 0 0 $global-radius;
+    border-radius: $global-radius 0 0 $global-radius;
+  }
+
+  .input-login {
+    display: inline-block;
+    top: 5px;
+    vertical-align: middle;
+    height: 35px;
+    width: 205px;
+    line-height: 35px;
+    margin-left: -4px;
+    padding: 5px 5px 5px 5px;
+    -webkit-border-radius: 0 $global-radius $global-radius 0;
+    border-radius: 0 $global-radius $global-radius 0;
+  }
+}
+
+// Change password
+
+.changePasswordPopup {
+  h3 { margin: 0;}
+}
+
+.contentFormPassword {
+  padding-top: 20px;
+  margin: 0;
+
+  label {
+    width: 163px !important;
+    text-align: right;
+    float: left !important;
+  }
+
+  input {margin: 0;}
+}
+
+.changePasswordFooter {
+  background: #D6D6D6;
+  padding: 10px;
+  text-align: right;
+}
+
+.slidingDiv {
+  display: block;
+  height:auto;
+  background-color: #99CCFF;
+  padding:20px;
+  margin-top:10px;
+  border-bottom:5px solid #3399FF;
+}
+
