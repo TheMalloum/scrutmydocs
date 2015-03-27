@@ -34,6 +34,7 @@ import restx.factory.Component;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Collection;
 
 @Component
@@ -90,7 +91,7 @@ public class ElasticsearchClientService implements AutoStartable {
                         // We ignore if the index was not existing before
                     }
                 }
-            } catch (IOException e) {
+            } catch (IOException|URISyntaxException e) {
                 logger.warn("Can not read [{}]...", templateDirName);
             }
         }
