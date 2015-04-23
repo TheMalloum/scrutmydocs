@@ -25,10 +25,7 @@ import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.plugins.DocumentListener;
 import org.scrutmydocs.plugins.Plugin;
-import org.scrutmydocs.services.SMDDocumentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,20 +39,21 @@ public class PluginScrutinerJob implements Job {
 
         JobDataMap jobDataMap = context.getMergedJobDataMap();
         Map<String, Plugin> plugins = (Map<String, Plugin>) jobDataMap.get("plugins");
-        SMDDocumentService documentService = (SMDDocumentService) jobDataMap.get("document-service");
+//        SMDDocumentService documentService = (SMDDocumentService) jobDataMap.get("document-service");
 
-        for (String pluginType : plugins.keySet()) {
+        for (Plugin plugin : plugins.values()) {
 //            try {
-                DocumentListener listener = plugins.get(pluginType).getDocumentListener();
-                if (listener != null) {
-                    logger.debug("executing plugin [{}]", pluginType);
-                    for (Object id : listener.scrut()) {
-                        SMDDocument smdDocument = listener.get((String) id);
-                        documentService.index(smdDocument);
-                    }
-                } else {
-                    logger.trace("ignoring plugin [{}]: no listener implemented", pluginType);
-                }
+//                if (listener != null) {
+                    logger.debug("executing plugin [{}]", plugin.name());
+                    plugin.scrut();
+//                    
+//                    for (Object id : ) {
+//                        SMDDocument smdDocument = plugin.get((String) id);
+//                        documentService.index(smdDocument);
+//                    }
+//                } else {
+//                    logger.trace("ignoring plugin [{}]: no listener implemented", pluginType);
+//                }
 //            } catch (SMDException e) {
 //                logger.warn("Something goes wrong while dealing with plugin [{}]: [{}]", pluginType, e.getMessage());
 //                logger.debug("error is:", e);

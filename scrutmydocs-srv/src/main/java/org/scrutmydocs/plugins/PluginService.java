@@ -46,7 +46,7 @@ import restx.factory.Factory;
 public class PluginService implements AutoStartable {
     private static final Logger logger = LoggerFactory.getLogger(PluginService.class);
 
-    private final Map<String, Plugin<?,?,?>> plugins;
+    private final Map<String, Plugin> plugins;
     private final SMDDocumentService documentService;
 
     public PluginService(SMDDocumentService documentService) {
@@ -78,7 +78,7 @@ public class PluginService implements AutoStartable {
 
     
     
-    public Map<String, Plugin<?,?,?>> getPlugins()  {
+    public Map<String, Plugin> getPlugins()  {
 //        if (plugins.containsKey(type)) {
 //            return plugins.get(type);
 //        }

@@ -19,8 +19,13 @@
 
 package org.scrutmydocs.services;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.elasticsearch.index.query.FilterBuilders.matchAllFilter;
+import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
+import static org.elasticsearch.index.query.QueryBuilders.simpleQueryString;
+
+import java.io.IOException;
+
+import javax.inject.Inject;
 
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
@@ -36,7 +41,6 @@ import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.scrutmydocs.converters.JsonToSMDDocumentService;
 import org.scrutmydocs.dao.elasticsearch.ElasticsearchService;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.domain.SMDSearchQuery;
@@ -45,52 +49,51 @@ import org.slf4j.LoggerFactory;
 
 import restx.factory.Component;
 
-import javax.inject.Inject;
-
-import static org.elasticsearch.index.query.FilterBuilders.matchAllFilter;
-import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
-import static org.elasticsearch.index.query.QueryBuilders.simpleQueryString;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
 
-    private static final Logger logger = LoggerFactory.getLogger(SMDDocumentServiceElasticsearchImpl.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(SMDDocumentServiceElasticsearchImpl.class);
 
 	final public static String SMDINDEX = "scrutmydocs-docs";
 	final public static String SMDTYPE = "docs";
 
 	private BulkProcessor bulk;
 
-    private final ElasticsearchService elasticsearchService;
-    private final JsonToSMDDocumentService jsonToSMDDocumentService;
+	private final ElasticsearchService elasticsearchService;
 
-    // TODO Inject one single instance for the full project
+	// TODO Inject one single instance for the full project
 	ObjectMapper mapper = new ObjectMapper();
 
-    @Inject
-	public SMDDocumentServiceElasticsearchImpl(ElasticsearchService elasticsearchService,
-                                               JsonToSMDDocumentService jsonToSMDDocumentService) {
+	@Inject
+	public SMDDocumentServiceElasticsearchImpl(
+			ElasticsearchService elasticsearchService) {
 		logger.debug("Starting SMDDocumentServiceElasticsearchImpl");
-        this.elasticsearchService = elasticsearchService;
-        this.jsonToSMDDocumentService = jsonToSMDDocumentService;
+		this.elasticsearchService = elasticsearchService;
 
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+				false);
 
 		this.bulk = new BulkProcessor.Builder(elasticsearchService.esClient(),
 				new BulkProcessor.Listener() {
 					@Override
 					public void beforeBulk(long bulkId, BulkRequest bulkRequest) {
-						logger.debug("before bulking [{}] actions, bulkId [{}]",
-								bulkRequest.numberOfActions(),
-                                bulkId);
+						logger.debug(
+								"before bulking [{}] actions, bulkId [{}]",
+								bulkRequest.numberOfActions(), bulkId);
 					}
 
 					@Override
 					public void afterBulk(long bulkId, BulkRequest bulkRequest,
 							BulkResponse bulkItemResponses) {
-						logger.debug("after bulkId [{}] with [{}] actions - has failures? : [{}]",
-                                bulkId,
-                                bulkRequest.numberOfActions(),
+						logger.debug(
+								"after bulkId [{}] with [{}] actions - has failures? : [{}]",
+								bulkId, bulkRequest.numberOfActions(),
 								bulkItemResponses.hasFailures());
 						// TODO check if errors ?
 					}
@@ -98,7 +101,8 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
 					@Override
 					public void afterBulk(long bulkId, BulkRequest bulkRequest,
 							Throwable throwable) {
-						logger.warn("Error while executing bulk [" + bulkId + "]", throwable);
+						logger.warn("Error while executing bulk [" + bulkId
+								+ "]", throwable);
 					}
 				}).setFlushInterval(TimeValue.timeValueSeconds(5))
 				.setBulkActions(100).build();
@@ -107,24 +111,33 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
 	}
 
 	@Override
-	public SMDDocument getDocument(String id)  {
-		GetResponse response = elasticsearchService.esClient().prepareGet(SMDINDEX, SMDTYPE, id).get();
+	public SMDDocument getDocument(String id) {
 
-		if (!response.isExists()) {
-            return null;
-        }
+		try {
 
-        return jsonToSMDDocumentService.toDocument(response.getSourceAsString());
+			GetResponse response = elasticsearchService.esClient()
+					.prepareGet(SMDINDEX, SMDTYPE, id).get();
+
+			if (!response.isExists()) {
+				return null;
+			}
+
+			return mapper.readValue(response.getSourceAsString(),
+					SMDDocument.class);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
-    @Override
-    public void deleteDocument(String id) {
-        bulk.add(new DeleteRequest(SMDINDEX, SMDTYPE, id));
-    }
+	@Override
+	public void deleteDocument(String id) {
+		bulk.add(new DeleteRequest(SMDINDEX, SMDTYPE, id));
+	}
 
-    @Override
-	public SearchResponse search(SMDSearchQuery searchQuery)  {
-        logger.debug("search({})", searchQuery);
+	@Override
+	public SearchResponse search(SMDSearchQuery searchQuery) {
+		logger.debug("search({})", searchQuery);
 
 		QueryBuilder query;
 		if (!Strings.hasText(searchQuery.search)) {
@@ -132,20 +145,16 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
 		} else {
 			FilterBuilder filter = matchAllFilter();
 			QueryBuilder qb = simpleQueryString(searchQuery.search)
-                    .field("content")
-                    .field("meta.author", 1.5f)
-                    .field("meta.keywords", 2.0f)
-                    .field("meta.title", 3.0f)
-                    .field("file.filename", 1.0f);
-            query = QueryBuilders.filteredQuery(qb, filter);
+					.field("content").field("meta.author", 1.5f)
+					.field("meta.keywords", 2.0f).field("meta.title", 3.0f)
+					.field("file.filename", 1.0f);
+			query = QueryBuilders.filteredQuery(qb, filter);
 		}
 
 		SearchRequestBuilder request = elasticsearchService.esClient()
 				.prepareSearch().setIndices(SMDINDEX).setTypes(SMDTYPE)
-				.setQuery(query)
-				.setFrom(searchQuery.first)
-                .setSize(searchQuery.pageSize)
-				.addHighlightedField("content")
+				.setQuery(query).setFrom(searchQuery.first)
+				.setSize(searchQuery.pageSize).addHighlightedField("content")
 				.addHighlightedField("meta.author")
 				.addHighlightedField("meta.keywords")
 				.addHighlightedField("meta.title")
@@ -157,39 +166,45 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
 		logger.trace("search: [{}]", request.toString());
 		SearchResponse hits = request.get();
 
-        logger.debug("/google({}) : {}", searchQuery, hits.getHits().totalHits());
+		logger.debug("/google({}) : {}", searchQuery, hits.getHits()
+				.totalHits());
 
 		return hits;
 
 	}
 
 	@Override
-	public void index(SMDDocument document)  {
-        logger.debug("indexing document [{}]/[{}]", document.type, document.id);
-        logger.trace("index({})", document);
+	public void index(SMDDocument document) {
+		logger.debug("indexing document [{}]/[{}]", document.type, document.id);
+		logger.trace("index({})", document);
 
 		try {
 			String json = mapper.writeValueAsString(document);
-            logger.trace("json generated({})", json);
-			bulk.add(new IndexRequest(SMDINDEX, SMDTYPE, document.id).source(json));
+			logger.trace("json generated({})", json);
+			bulk.add(new IndexRequest(SMDINDEX, SMDTYPE, document.id)
+					.source(json));
 		} catch (Exception e) {
 			logger.warn("Can not index document {}", document.file.filename);
 			throw new RuntimeException("Can not index document : "
 					+ document.file.filename + ": " + e.getMessage());
 		}
 
-        logger.debug("document [{}]/[{}] indexed", document.type, document.id);
+		logger.debug("document [{}]/[{}] indexed", document.type, document.id);
 	}
 
 	@Override
 	public void deleteDirectory(String directory) {
-        logger.debug("deleteAllDocumentsInDirectory('directory : {}', type : {})", directory, SMDTYPE);
+		logger.debug(
+				"deleteAllDocumentsInDirectory('directory : {}', type : {})",
+				directory, SMDTYPE);
 
-		FilterBuilder filter = FilterBuilders.prefixFilter("pathDirectory", directory);
-		QueryBuilder query = QueryBuilders.filteredQuery(matchAllQuery(), filter);
+		FilterBuilder filter = FilterBuilders.prefixFilter("pathDirectory",
+				directory);
+		QueryBuilder query = QueryBuilders.filteredQuery(matchAllQuery(),
+				filter);
 
-        elasticsearchService.esClient().prepareDeleteByQuery(SMDINDEX).setTypes(SMDTYPE)
-				.setQuery(query).get();
+		elasticsearchService.esClient().prepareDeleteByQuery(SMDINDEX)
+				.setTypes(SMDTYPE).setQuery(query).get();
 
 	}
 }

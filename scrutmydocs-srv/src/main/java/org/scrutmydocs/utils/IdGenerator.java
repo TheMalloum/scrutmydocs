@@ -1,4 +1,5 @@
 /*
+
  * Licensed to Elasticsearch under one or more contributor
  * license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright
@@ -17,29 +18,34 @@
  * under the License.
  */
 
-package org.scrutmydocs.plugins.upload;
+package org.scrutmydocs.utils;
 
-import org.scrutmydocs.plugins.Runner;
+import org.elasticsearch.common.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import restx.factory.Component;
 
-@Component
-public class UploadRunner implements Runner {
-    protected static final Logger logger = LoggerFactory.getLogger(UploadRunner.class);
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
-    private byte[] data;
+public class IdGenerator {
+    private static final Logger logger = LoggerFactory.getLogger(IdGenerator.class);
 
-    public void setData(byte[] data) {
-        this.data = data;
+    private IdGenerator() {
     }
 
-    public byte[] getData() {
-        return data;
+    private static MessageDigest sha;
+    static {
+        try {
+            sha = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("Can not access to SHA-1 algorithm", e);
+        }
     }
 
-    @Override
-    public void run() {
-        logger.debug("running uploader");
+    public static String generateId(String type, String key) {
+        if (sha == null) {
+            throw new IllegalStateException("Can not access to SHA-1 algorithm");
+        }
+        return Base64.encodeBytes(sha.digest(type.concat(key).getBytes()));
     }
 }

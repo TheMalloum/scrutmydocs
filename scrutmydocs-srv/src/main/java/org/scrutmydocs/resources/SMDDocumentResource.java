@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import org.elasticsearch.action.search.SearchResponse;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.domain.SMDSearchQuery;
-import org.scrutmydocs.plugins.upload.UploadConverter;
 import org.scrutmydocs.services.SMDDocumentServiceElasticsearchImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,9 +45,7 @@ public class SMDDocumentResource {
 	@Inject
 	public SMDDocumentServiceElasticsearchImpl documentService;
 
-	@Inject
-	public UploadConverter uploadConverter;
-
+	
 	// @Inject
 	// public SMDDocumentResource(SMDDocumentService documentService,
 	// UploadConverter uploadConverter) {
@@ -69,15 +66,7 @@ public class SMDDocumentResource {
 			documentService.index(document);
 	}
 
-	// TODO implement it
-	@POST("/_upload")
-	// @Consumes("application/octet-stream")
-	@PermitAll
-	public void addBinaryDocument(byte[] data) throws IOException {
-		// TODO replace with actual filename
-			SMDDocument document = uploadConverter.toDocument(data);
-			documentService.index(document);
-	}
+	
 
 	@DELETE("/{id}")
 	@PermitAll

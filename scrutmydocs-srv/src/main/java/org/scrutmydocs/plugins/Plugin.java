@@ -19,69 +19,65 @@
 
 package org.scrutmydocs.plugins;
 
+import org.scrutmydocs.services.SMDDocumentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * You can extend this class if you want to provide plugin
- * which will generate documents from your data source
+ * You can extend this class if you want to provide plugin which will generate
+ * documents from your data source
  */
-public abstract class Plugin<T, L extends DocumentListener<T>, R extends Runner> {
-    protected static final Logger logger = LoggerFactory.getLogger(Plugin.class);
+public abstract class Plugin {
+	protected static final Logger logger = LoggerFactory
+			.getLogger(Plugin.class);
 
-    private boolean started = false;
-    protected L documentListener = null;
-    protected R runner = null;
+	protected final SMDDocumentService documentService;
+	
+	public Plugin(SMDDocumentService documentService) {
+		this.documentService = documentService;
+	}
+	
+	private boolean started = false;
 
-    public L getDocumentListener() {
-        return documentListener;
-    }
 
-    public R getRunner() {
-        return runner;
-    }
+	/**
+	 * Supported type
+	 */
+	public abstract String type();
 
-    /**
-     * Supported type
-     */
-    public abstract String type();
+	/**
+	 * Plugin name
+	 */
+	public abstract String name();
 
-    /**
-     * Plugin name
-     */
-    public abstract String name();
+	/**
+	 * Plugin version
+	 */
+	public abstract String version();
+	
+	
+	 public abstract void scrut() ;
+	 
 
-    /**
-     * Plugin version
-     */
-    public abstract String version();
+	/**
+	 * Start the plugin
+	 */
+	public void start() {
+		logger.debug("starting plugin [{}]/[{}]", name(), version());
 
-    /**
-     * Start the plugin
-     */
-    public void start()  {
-        logger.debug("starting plugin [{}]/[{}]", name(), version());
+		started = true;
+	}
 
-        if (runner != null) {
-            // If we have a runner, we simply use it
-            runner.run();
-        } else {
-            // TODO Add the plugin to the Jobs
-        }
+	/**
+	 * Stop the plugin
+	 */
+	public void stop() {
+		logger.debug("stopping plugin [{}]/[{}]", name(), version());
+		started = false;
+	}
 
-        started = true;
-    }
-
-    /**
-     * Stop the plugin
-     */
-    public void stop()  {
-        logger.debug("stopping plugin [{}]/[{}]", name(), version());
-        started = false;
-    }
-
-    public boolean isStarted() {
-        return started;
-    }
+	public boolean isStarted() {
+		return started;
+	}
 
 }

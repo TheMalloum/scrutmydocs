@@ -27,8 +27,8 @@ import java.util.List;
  * Implementing this interface means that the plugin will be called every x minutes
  * by a Job.
  */
-public interface DocumentListener<T> {
+public interface DocumentListener{
     public List<String> scrut() ;
-    public SMDDocument get(String documentId) ;
-    public void delete(T document) ;
+//    public SMDDocument get(String documentId) ;
+//    public void delete(T document) ;
 }

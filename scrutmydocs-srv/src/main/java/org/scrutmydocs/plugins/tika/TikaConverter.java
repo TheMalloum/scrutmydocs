@@ -25,11 +25,11 @@ import java.util.Date;
 import org.apache.tika.metadata.Metadata;
 import org.elasticsearch.common.Strings;
 import org.joda.time.DateTime;
-import org.scrutmydocs.converters.IdGeneratorService;
 import org.scrutmydocs.domain.SMDConfiguration;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.plugins.Converter;
 import org.scrutmydocs.services.SMDConfigurationService;
+import org.scrutmydocs.utils.IdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +77,7 @@ public abstract class TikaConverter<T> implements Converter<T> {
             throw new RuntimeException(e);
         }
 
-        SMDDocument smdFileDocument = new SMDDocument(type, IdGeneratorService.generateId(type, key));
+        SMDDocument smdFileDocument = new SMDDocument(type, IdGenerator.generateId(type, key));
 
         // File
         smdFileDocument.file.filename = filename;
