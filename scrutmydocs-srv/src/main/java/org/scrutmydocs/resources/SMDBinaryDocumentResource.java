@@ -19,31 +19,34 @@
 
 package org.scrutmydocs.resources;
 
-import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.services.SMDDocumentService;
-import org.scrutmydocs.exceptions.SMDException;
-import org.scrutmydocs.services.SMDRepositoryScanReflectionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import restx.*;
-import restx.factory.Component;
-import restx.http.HttpStatus;
+import java.io.IOException;
 
 import javax.inject.Inject;
-import java.io.IOException;
+
+import org.scrutmydocs.domain.SMDDocument;
+import org.scrutmydocs.exceptions.SMDException;
+import org.scrutmydocs.services.SMDDocumentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import restx.RestxContext;
+import restx.RestxRequest;
+import restx.RestxRequestMatch;
+import restx.RestxResponse;
+import restx.StdRestxRequestMatcher;
+import restx.StdRoute;
+import restx.factory.Component;
+import restx.http.HttpStatus;
 
 @Component
 public class SMDBinaryDocumentResource extends StdRoute {
     private static final Logger logger = LoggerFactory.getLogger(SMDBinaryDocumentResource.class);
     private SMDDocumentService searchService;
-    private SMDRepositoryScanReflectionService repositoryScanReflectionService;
 
     @Inject
-    public SMDBinaryDocumentResource(SMDDocumentService searchService,
-                                     SMDRepositoryScanReflectionService repositoryScanReflectionService) {
+    public SMDBinaryDocumentResource(SMDDocumentService searchService) {
         super("SMDBinaryDocumentResource", new StdRestxRequestMatcher("GET", ScrutmydocsApi.API_ROOT_DOCUMENT + "/{id}"));
         this.searchService = searchService;
-        this.repositoryScanReflectionService = repositoryScanReflectionService;
     }
 
     @Override
@@ -64,9 +67,8 @@ public class SMDBinaryDocumentResource extends StdRoute {
                 return;
             }
 
-            byte[] binaryDoc = repositoryScanReflectionService.getListScan(
-                    smdDocument.type).get(
-                    smdDocument);
+            //TODO checkout the binary from the index
+            byte[] binaryDoc = null;
 
             // We set the filename
             resp.setHeader("Content-Disposition", "attachment; filename=" + smdDocument.file.filename);
