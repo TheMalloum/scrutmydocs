@@ -21,7 +21,6 @@ package org.scrutmydocs.plugins.fs;
 
 import org.scrutmydocs.converters.IdGeneratorService;
 import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.plugins.tika.TikaConverter;
 import org.scrutmydocs.plugins.tika.TikaService;
 import org.scrutmydocs.services.SMDConfigurationService;
@@ -47,7 +46,7 @@ public class FileSystemConverter extends TikaConverter<File> {
     }
 
     @Override
-    public SMDDocument toDocument(File source) throws SMDException {
+    public SMDDocument toDocument(File source)  {
         logger.debug("generating SMDDocument from [{}]", source.getAbsolutePath());
         try (InputStream is = new FileInputStream(source)) {
             return toDocument(

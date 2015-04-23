@@ -1,5 +1,5 @@
 /*
- * Licensed to Elasticsearch under one or more contributor
+s * Licensed to Elasticsearch under one or more contributor
  * license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright
  * ownership. Elasticsearch licenses this file to you under
@@ -19,19 +19,18 @@
 
 package org.scrutmydocs.jobs;
 
+import java.util.Map;
+
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.plugins.DocumentListener;
 import org.scrutmydocs.plugins.Plugin;
 import org.scrutmydocs.services.SMDDocumentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 public class PluginScrutinerJob implements Job {
     private static final Logger logger = LoggerFactory.getLogger(PluginScrutinerJob.class);
@@ -46,7 +45,7 @@ public class PluginScrutinerJob implements Job {
         SMDDocumentService documentService = (SMDDocumentService) jobDataMap.get("document-service");
 
         for (String pluginType : plugins.keySet()) {
-            try {
+//            try {
                 DocumentListener listener = plugins.get(pluginType).getDocumentListener();
                 if (listener != null) {
                     logger.debug("executing plugin [{}]", pluginType);
@@ -57,10 +56,10 @@ public class PluginScrutinerJob implements Job {
                 } else {
                     logger.trace("ignoring plugin [{}]: no listener implemented", pluginType);
                 }
-            } catch (SMDException e) {
-                logger.warn("Something goes wrong while dealing with plugin [{}]: [{}]", pluginType, e.getMessage());
-                logger.debug("error is:", e);
-            }
+//            } catch (SMDException e) {
+//                logger.warn("Something goes wrong while dealing with plugin [{}]: [{}]", pluginType, e.getMessage());
+//                logger.debug("error is:", e);
+//            }
         }
 
         logger.trace("JOB End");

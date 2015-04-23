@@ -21,6 +21,7 @@ package org.scrutmydocs.services;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -39,9 +40,9 @@ import org.scrutmydocs.converters.JsonToSMDDocumentService;
 import org.scrutmydocs.dao.elasticsearch.ElasticsearchService;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.domain.SMDSearchQuery;
-import org.scrutmydocs.exceptions.SMDIndexException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import restx.factory.Component;
 
 import javax.inject.Inject;
@@ -163,7 +164,7 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
 	}
 
 	@Override
-	public void index(SMDDocument document) throws SMDIndexException {
+	public void index(SMDDocument document)  {
         logger.debug("indexing document [{}]/[{}]", document.type, document.id);
         logger.trace("index({})", document);
 
@@ -173,7 +174,7 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
 			bulk.add(new IndexRequest(SMDINDEX, SMDTYPE, document.id).source(json));
 		} catch (Exception e) {
 			logger.warn("Can not index document {}", document.file.filename);
-			throw new SMDIndexException("Can not index document : "
+			throw new RuntimeException("Can not index document : "
 					+ document.file.filename + ": " + e.getMessage());
 		}
 

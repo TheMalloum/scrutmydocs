@@ -19,22 +19,20 @@
 
 package org.scrutmydocs.plugins.upload;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.UUID;
+
+import javax.inject.Inject;
+
 import org.scrutmydocs.converters.IdGeneratorService;
 import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.plugins.tika.TikaConverter;
 import org.scrutmydocs.plugins.tika.TikaService;
 import org.scrutmydocs.services.SMDConfigurationService;
 
 import restx.factory.Component;
-
-import javax.inject.Inject;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.UUID;
 
 @Component
 public class UploadConverter extends TikaConverter<byte[]> {
@@ -47,7 +45,7 @@ public class UploadConverter extends TikaConverter<byte[]> {
     }
 
     @Override
-    public SMDDocument toDocument(byte[] source) throws SMDException {
+    public SMDDocument toDocument(byte[] source)  {
         logger.debug("generating SMDDocument from binary content");
         try (InputStream is = new ByteArrayInputStream(source)) {
             return toDocument(

@@ -19,14 +19,14 @@
 
 package org.scrutmydocs.plugins.dummy;
 
+import java.util.List;
+
 import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.plugins.DocumentListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import restx.factory.Component;
 
-import java.util.List;
+import restx.factory.Component;
 
 /**
  * An empty Document Listener which does not provide any service
@@ -36,16 +36,16 @@ public class DummyDocumentListener<T> implements DocumentListener<T> {
     protected static final Logger logger = LoggerFactory.getLogger(DummyDocumentListener.class);
 
     @Override
-    public List<String> scrut() throws SMDException {
+    public List<String> scrut() {
         return null;
     }
 
     @Override
-    public SMDDocument get(String documentId) throws SMDException {
+    public SMDDocument get(String documentId)  {
         return null;
     }
 
     @Override
-    public void delete(T document) throws SMDException {
+    public void delete(T document)  {
     }
 }

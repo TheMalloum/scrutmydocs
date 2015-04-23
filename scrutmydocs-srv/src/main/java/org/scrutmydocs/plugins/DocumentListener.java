@@ -20,7 +20,6 @@
 package org.scrutmydocs.plugins;
 
 import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.exceptions.SMDException;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ import java.util.List;
  * by a Job.
  */
 public interface DocumentListener<T> {
-    public List<String> scrut() throws SMDException;
-    public SMDDocument get(String documentId) throws SMDException;
-    public void delete(T document) throws SMDException;
+    public List<String> scrut() ;
+    public SMDDocument get(String documentId) ;
+    public void delete(T document) ;
 }

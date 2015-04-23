@@ -19,22 +19,28 @@
 
 package org.scrutmydocs.plugins.fs;
 
-import com.google.common.collect.ImmutableList;
-import org.joda.time.DateTime;
-import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.exceptions.SMDException;
-import org.scrutmydocs.plugins.DocumentListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import restx.factory.Component;
-
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import org.joda.time.DateTime;
+import org.scrutmydocs.domain.SMDDocument;
+import org.scrutmydocs.plugins.DocumentListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import restx.factory.Component;
+
+import com.google.common.collect.ImmutableList;
 
 @Component
 public class FileSystemDocumentListener implements DocumentListener<File> {
@@ -79,7 +85,7 @@ public class FileSystemDocumentListener implements DocumentListener<File> {
     }
 
     @Override
-    public List<String> scrut() throws SMDException {
+    public List<String> scrut()  {
         DateTime checkingDate = DateTime.now();
         logger.debug("current date is [{}]", checkingDate);
         final List<String> files = new ArrayList<>();
@@ -116,7 +122,7 @@ public class FileSystemDocumentListener implements DocumentListener<File> {
     }
 
     @Override
-    public SMDDocument get(String documentId) throws SMDException {
+    public SMDDocument get(String documentId)  {
         Path file = Paths.get(documentId);
         logger.debug("add new file [{}]", file.toAbsolutePath());
         SMDDocument smdDocument = converter.toDocument(file.toFile());
@@ -125,7 +131,7 @@ public class FileSystemDocumentListener implements DocumentListener<File> {
     }
 
     @Override
-    public void delete(File document) throws SMDException {
+    public void delete(File document)  {
         logger.debug("delete file [{}]", document.getAbsolutePath());
         SMDDocument smdDocument = converter.toDocument(document);
         logger.trace("generated document: [{}]", smdDocument);

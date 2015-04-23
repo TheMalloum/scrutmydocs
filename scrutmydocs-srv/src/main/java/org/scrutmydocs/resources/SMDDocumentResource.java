@@ -26,8 +26,6 @@ import javax.inject.Inject;
 import org.elasticsearch.action.search.SearchResponse;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.domain.SMDSearchQuery;
-import org.scrutmydocs.exceptions.SMDException;
-import org.scrutmydocs.exceptions.SMDIndexException;
 import org.scrutmydocs.plugins.upload.UploadConverter;
 import org.scrutmydocs.services.SMDDocumentServiceElasticsearchImpl;
 import org.slf4j.Logger;
@@ -68,13 +66,7 @@ public class SMDDocumentResource {
 	@POST("")
 	@PermitAll
 	public void addDocument(SMDDocument document) throws IOException {
-		try {
 			documentService.index(document);
-		} catch (SMDIndexException e) {
-			// TODO Remove when Restx will be fixed - see
-			// https://github.com/restx/restx/issues/121
-			throw new IOException(e);
-		}
 	}
 
 	// TODO implement it
@@ -83,15 +75,8 @@ public class SMDDocumentResource {
 	@PermitAll
 	public void addBinaryDocument(byte[] data) throws IOException {
 		// TODO replace with actual filename
-		String filename = "dummy";
-		try {
 			SMDDocument document = uploadConverter.toDocument(data);
 			documentService.index(document);
-		} catch (SMDException e) {
-			// TODO Remove when Restx will be fixed - see
-			// https://github.com/restx/restx/issues/121
-			throw new IOException(e);
-		}
 	}
 
 	@DELETE("/{id}")

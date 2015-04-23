@@ -26,12 +26,10 @@ import java.util.Set;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
-import org.quartz.SchedulerException;
 import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.jobs.PluginScrutinerJob;
 import org.scrutmydocs.services.SMDDocumentService;
 import org.slf4j.Logger;
@@ -119,9 +117,7 @@ public class PluginService implements AutoStartable {
             // schedule the job
             StdSchedulerFactory.getDefaultScheduler().scheduleJob(job, trigger);
             StdSchedulerFactory.getDefaultScheduler().start();
-        } catch (SMDException e) {
-            logger.error("can not register plugins...", e);
-        } catch (SchedulerException e) {
+        } catch (Exception e) {
             logger.error("can not start jobs...", e);
         }
     }

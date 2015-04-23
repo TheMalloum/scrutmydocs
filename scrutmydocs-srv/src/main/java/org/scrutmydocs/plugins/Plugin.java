@@ -19,7 +19,6 @@
 
 package org.scrutmydocs.plugins;
 
-import org.scrutmydocs.exceptions.SMDException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +59,7 @@ public abstract class Plugin<T, L extends DocumentListener<T>, R extends Runner>
     /**
      * Start the plugin
      */
-    public void start() throws SMDException {
+    public void start()  {
         logger.debug("starting plugin [{}]/[{}]", name(), version());
 
         if (runner != null) {
@@ -76,7 +75,7 @@ public abstract class Plugin<T, L extends DocumentListener<T>, R extends Runner>
     /**
      * Stop the plugin
      */
-    public void stop() throws SMDException {
+    public void stop()  {
         logger.debug("stopping plugin [{}]/[{}]", name(), version());
         started = false;
     }

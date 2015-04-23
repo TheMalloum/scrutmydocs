@@ -28,7 +28,6 @@ import org.joda.time.DateTime;
 import org.scrutmydocs.converters.IdGeneratorService;
 import org.scrutmydocs.domain.SMDConfiguration;
 import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.plugins.Converter;
 import org.scrutmydocs.services.SMDConfigurationService;
 import org.slf4j.Logger;
@@ -63,7 +62,7 @@ public abstract class TikaConverter<T> implements Converter<T> {
                                      Date lastModified,
                                      Date indexedDate,
                                      String url,
-                                     Long filesize) throws SMDException {
+                                     Long filesize)  {
         // Check rules
         if (type == null || key == null) {
             throw new IllegalArgumentException("type and key must be provided.");

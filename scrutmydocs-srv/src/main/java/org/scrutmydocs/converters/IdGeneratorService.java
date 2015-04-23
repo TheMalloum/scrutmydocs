@@ -1,4 +1,5 @@
 /*
+
  * Licensed to Elasticsearch under one or more contributor
  * license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright
@@ -20,13 +21,14 @@
 package org.scrutmydocs.converters;
 
 import org.elasticsearch.common.Base64;
-import org.scrutmydocs.exceptions.SMDException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import restx.factory.Component;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 
 @Component
 public class IdGeneratorService {
@@ -42,10 +44,7 @@ public class IdGeneratorService {
         }
     }
 
-    public String generateId(String type, String key) throws SMDException {
-        if (sha == null) {
-            throw new SMDException("Can not access to SHA-1 algorithm");
-        }
+    public String  generateId(String type, String key)  {
         return Base64.encodeBytes(sha.digest(type.concat(key).getBytes()));
     }
 

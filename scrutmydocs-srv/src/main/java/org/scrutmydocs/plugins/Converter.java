@@ -20,7 +20,6 @@
 package org.scrutmydocs.plugins;
 
 import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.exceptions.SMDException;
 
 /**
  * Provides conversion services to SMDDocuments from a given type
@@ -30,5 +29,5 @@ public interface Converter<T> {
     /**
      * Generate a Document from object of type T
      */
-    public SMDDocument toDocument(T source) throws SMDException;
+    public SMDDocument toDocument(T source) ;
 }
