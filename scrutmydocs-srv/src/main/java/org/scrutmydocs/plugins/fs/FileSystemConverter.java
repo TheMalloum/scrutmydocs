@@ -19,7 +19,6 @@
 
 package org.scrutmydocs.plugins.fs;
 
-import org.scrutmydocs.converters.IdGeneratorService;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.plugins.tika.TikaConverter;
 import org.scrutmydocs.plugins.tika.TikaService;
@@ -40,9 +39,8 @@ public class FileSystemConverter extends TikaConverter<File> {
 
     @Inject
     public FileSystemConverter(TikaService tikaService,
-                               SMDConfigurationService smdConfigurationService,
-                               IdGeneratorService idGeneratorService) {
-        super(tikaService, smdConfigurationService, idGeneratorService);
+                               SMDConfigurationService smdConfigurationService) {
+        super(tikaService, smdConfigurationService);
     }
 
     @Override

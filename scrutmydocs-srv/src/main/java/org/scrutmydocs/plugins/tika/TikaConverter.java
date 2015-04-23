@@ -41,14 +41,11 @@ public abstract class TikaConverter<T> implements Converter<T> {
     protected static final Logger logger = LoggerFactory.getLogger(TikaConverter.class);
     protected final TikaService tikaService;
     protected final SMDConfiguration smdConfiguration;
-    protected final IdGeneratorService idGeneratorService;
 
     public TikaConverter(TikaService tikaService,
-                         SMDConfigurationService smdConfigurationService,
-                         IdGeneratorService idGeneratorService) {
+                         SMDConfigurationService smdConfigurationService) {
         this.tikaService = tikaService;
         this.smdConfiguration = smdConfigurationService.getSmdConfiguration();
-        this.idGeneratorService = idGeneratorService;
     }
 
     /**
@@ -80,7 +77,7 @@ public abstract class TikaConverter<T> implements Converter<T> {
             throw new RuntimeException(e);
         }
 
-        SMDDocument smdFileDocument = new SMDDocument(type, idGeneratorService.generateId(type, key));
+        SMDDocument smdFileDocument = new SMDDocument(type, IdGeneratorService.generateId(type, key));
 
         // File
         smdFileDocument.file.filename = filename;

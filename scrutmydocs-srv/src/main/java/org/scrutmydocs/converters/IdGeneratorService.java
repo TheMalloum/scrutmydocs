@@ -24,19 +24,17 @@ import org.elasticsearch.common.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import restx.factory.Component;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-
-@Component
 public class IdGeneratorService {
     private static final Logger logger = LoggerFactory.getLogger(IdGeneratorService.class);
 
-    private MessageDigest sha;
+    private IdGeneratorService() {
+    }
 
-    public IdGeneratorService() {
+    private static MessageDigest sha;
+    static {
         try {
             sha = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException e) {
@@ -44,8 +42,10 @@ public class IdGeneratorService {
         }
     }
 
-    public String  generateId(String type, String key)  {
+    public static String generateId(String type, String key) {
+        if (sha == null) {
+            throw new IllegalStateException("Can not access to SHA-1 algorithm");
+        }
         return Base64.encodeBytes(sha.digest(type.concat(key).getBytes()));
     }
-
 }

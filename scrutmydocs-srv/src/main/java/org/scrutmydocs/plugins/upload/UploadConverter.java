@@ -19,29 +19,25 @@
 
 package org.scrutmydocs.plugins.upload;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.UUID;
-
-import javax.inject.Inject;
-
-import org.scrutmydocs.converters.IdGeneratorService;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.plugins.tika.TikaConverter;
 import org.scrutmydocs.plugins.tika.TikaService;
 import org.scrutmydocs.services.SMDConfigurationService;
-
 import restx.factory.Component;
+
+import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class UploadConverter extends TikaConverter<byte[]> {
 
     @Inject
     public UploadConverter(TikaService tikaService,
-                           SMDConfigurationService smdConfigurationService,
-                           IdGeneratorService idGeneratorService) {
-        super(tikaService, smdConfigurationService, idGeneratorService);
+                           SMDConfigurationService smdConfigurationService) {
+        super(tikaService, smdConfigurationService);
     }
 
     @Override
