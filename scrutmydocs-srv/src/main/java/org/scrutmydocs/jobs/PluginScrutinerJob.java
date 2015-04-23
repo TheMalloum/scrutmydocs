@@ -35,12 +35,14 @@ public class PluginScrutinerJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         // Do something
-        logger.trace("JOB Running");
+       
 
         JobDataMap jobDataMap = context.getMergedJobDataMap();
         Map<String, Plugin> plugins = (Map<String, Plugin>) jobDataMap.get("plugins");
 //        SMDDocumentService documentService = (SMDDocumentService) jobDataMap.get("document-service");
 
+        logger.trace("JOB Runnings [{}]",plugins.size());
+        
         for (Plugin plugin : plugins.values()) {
 //            try {
 //                if (listener != null) {

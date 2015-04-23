@@ -65,6 +65,7 @@ public class PluginService implements AutoStartable {
     }
 
     public void registerPlugin(Plugin plugin) {
+    	logger.debug("registering plugin [{}]",plugin.name());
         plugins.put(plugin.type(), plugin);
     }
 
