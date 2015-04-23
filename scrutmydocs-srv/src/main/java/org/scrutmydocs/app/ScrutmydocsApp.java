@@ -25,18 +25,13 @@ import restx.server.JettyWebServer;
 import restx.server.WebServer;
 
 public class ScrutmydocsApp {
-    public static final String WEB_INF_LOCATION = "scrutmydocs-srv/src/main/webapp/WEB-INF/web.xml";
-    public static final String WEB_APP_LOCATION = "scrutmydocs-ui/app";
-    public static final String SRV_LOCATION = "scrutmydocs-srv";
-    public static final String SRV_RESOURCES_LOCATION = SRV_LOCATION + "/src/main/resources";
-    public static final String SRV_RECORDER_LOCATION = SRV_RESOURCES_LOCATION;
-    public static final String SRV_TARGET_LOCATION = SRV_LOCATION + "/target/restx/classes";
-    public static final String SRV_JAVA_LOCATION = SRV_LOCATION + "/src/main/java";
+    public static final String WEB_INF_LOCATION = "./src/main/webapp/WEB-INF/web.xml";
+    public static final String WEB_APP_LOCATION = "./src/main/webapp/";
 
     public static void main(String[] args) throws Exception {
 
         int port = Integer.valueOf(Optional.fromNullable(System.getenv("PORT")).or("8080"));
-        WebServer server = new JettyWebServer(WEB_INF_LOCATION, WEB_APP_LOCATION, port, "0.0.0.0");
+        WebServer server = new JettyWebServer(WEB_APP_LOCATION, port);
 
         /*
          * load mode from system property if defined, or default to dev

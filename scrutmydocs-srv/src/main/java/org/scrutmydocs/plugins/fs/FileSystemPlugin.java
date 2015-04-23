@@ -19,21 +19,21 @@
 
 package org.scrutmydocs.plugins.fs;
 
-import org.joda.time.DateTime;
-import org.scrutmydocs.annotations.SMDRegisterRepository;
-import org.scrutmydocs.plugins.AbstractTikaPlugin;
-import org.scrutmydocs.plugins.dummy.DummyRunner;
-import restx.factory.Component;
-
-import javax.inject.Inject;
 import java.io.File;
 import java.nio.file.Paths;
+
+import javax.inject.Inject;
+
+import org.joda.time.DateTime;
+import org.scrutmydocs.plugins.AbstractTikaPlugin;
+import org.scrutmydocs.plugins.dummy.DummyRunner;
+
+import restx.factory.Component;
 
 /**
  * This plugin processes a local file
  */
 @Component
-@SMDRegisterRepository(name = FileSystemPlugin.TYPE_FS)
 public class FileSystemPlugin extends AbstractTikaPlugin<File, FileSystemDocumentListener, DummyRunner> {
 
     public static final String TYPE_FS = "fs";

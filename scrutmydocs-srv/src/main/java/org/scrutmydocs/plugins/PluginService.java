@@ -27,10 +27,12 @@ import org.scrutmydocs.jobs.PluginScrutinerJob;
 import org.scrutmydocs.services.SMDDocumentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import restx.factory.AutoStartable;
 import restx.factory.Component;
 import restx.factory.Factory;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -72,6 +74,19 @@ public class PluginService implements AutoStartable {
         throw new SMDIllegalArgumentException("plugin [" + type + "] has not been registered.");
     }
 
+    
+    
+    public Map<String, Plugin<?,?,?>> getPlugins()  {
+//        if (plugins.containsKey(type)) {
+//            return plugins.get(type);
+//        }
+//
+//        throw new SMDIllegalArgumentException("plugin [" + type + "] has not been registered.");
+        
+        return plugins;
+    }
+
+    
     public void start() {
         try {
             registerPlugins();

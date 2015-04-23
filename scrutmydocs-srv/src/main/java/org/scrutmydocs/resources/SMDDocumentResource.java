@@ -19,6 +19,10 @@
 
 package org.scrutmydocs.resources;
 
+import java.io.IOException;
+
+import javax.inject.Inject;
+
 import org.elasticsearch.action.search.SearchResponse;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.domain.SMDSearchQuery;
@@ -27,30 +31,32 @@ import org.scrutmydocs.exceptions.SMDIndexException;
 import org.scrutmydocs.exceptions.SMDJsonParsingException;
 import org.scrutmydocs.plugins.upload.UploadConverter;
 import org.scrutmydocs.services.SMDDocumentService;
+import org.scrutmydocs.services.SMDDocumentServiceElasticsearchImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import restx.annotations.DELETE;
 import restx.annotations.POST;
 import restx.annotations.RestxResource;
 import restx.factory.Component;
 import restx.security.PermitAll;
 
-import javax.inject.Inject;
-import java.io.IOException;
-
 @Component
 @RestxResource(ScrutmydocsApi.API_ROOT_DOCUMENT)
 public class SMDDocumentResource {
 
     private static final Logger logger = LoggerFactory.getLogger(SMDDocumentResource.class);
-    private final SMDDocumentService documentService;
-    private final UploadConverter uploadConverter;
-
     @Inject
-    public SMDDocumentResource(SMDDocumentService documentService, UploadConverter uploadConverter) {
-        this.documentService = documentService;
-        this.uploadConverter = uploadConverter;
-    }
+    public  SMDDocumentServiceElasticsearchImpl documentService;
+   
+    @Inject
+    public  UploadConverter uploadConverter;
+
+//    @Inject
+//    public SMDDocumentResource(SMDDocumentService documentService, UploadConverter uploadConverter) {
+//        this.documentService = documentService;
+//        this.uploadConverter = uploadConverter;
+//    }
 
     @POST("/_search")
     @PermitAll

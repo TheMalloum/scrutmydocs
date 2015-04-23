@@ -19,19 +19,18 @@
 
 package org.scrutmydocs.plugins.upload;
 
+import javax.inject.Inject;
+
 import org.apache.commons.codec.binary.Base64;
-import org.scrutmydocs.annotations.SMDRegisterRepository;
 import org.scrutmydocs.plugins.AbstractTikaPlugin;
 import org.scrutmydocs.plugins.dummy.DummyDocumentListener;
-import restx.factory.Component;
 
-import javax.inject.Inject;
+import restx.factory.Component;
 
 /**
  * This plugin processes an uploaded stream
  */
 @Component
-@SMDRegisterRepository(name = UploadPlugin.TYPE_UPLOAD)
 public class UploadPlugin
         extends AbstractTikaPlugin<byte[], DummyDocumentListener<byte[]>, UploadRunner> {
 
