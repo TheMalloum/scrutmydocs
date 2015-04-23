@@ -19,6 +19,9 @@
 
 package org.scrutmydocs.plugins.tika;
 
+import java.io.InputStream;
+import java.util.Date;
+
 import org.apache.tika.metadata.Metadata;
 import org.elasticsearch.common.Strings;
 import org.joda.time.DateTime;
@@ -26,15 +29,10 @@ import org.scrutmydocs.converters.IdGeneratorService;
 import org.scrutmydocs.domain.SMDConfiguration;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.exceptions.SMDException;
-import org.scrutmydocs.exceptions.SMDExtractionException;
-import org.scrutmydocs.exceptions.SMDIllegalArgumentException;
 import org.scrutmydocs.plugins.Converter;
 import org.scrutmydocs.services.SMDConfigurationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.InputStream;
-import java.util.Date;
 
 /**
  * Uses Tika to convert a binary content to a SMDDocument
@@ -68,7 +66,7 @@ public abstract class TikaConverter<T> implements Converter<T> {
                                      Long filesize) throws SMDException {
         // Check rules
         if (type == null || key == null) {
-            throw new SMDIllegalArgumentException("type and key must be provided.");
+            throw new IllegalArgumentException("type and key must be provided.");
         }
 
         Metadata metadata = new Metadata();
@@ -77,10 +75,10 @@ public abstract class TikaConverter<T> implements Converter<T> {
         try {
             // Set the maximum length of strings returned by the parseToString method, -1 sets no limit
             parsedContent = tikaService.tika().parseToString(is, metadata, smdConfiguration.getIndexedChars());
-        } catch (Throwable e) {
+        } catch (Exception e) {
             logger.debug("Failed to extract [{}] characters of text", smdConfiguration.getIndexedChars());
             logger.trace("exception raised", e);
-            throw new SMDExtractionException(e);
+            throw new RuntimeException(e);
         }
 
         SMDDocument smdFileDocument = new SMDDocument(type, idGeneratorService.generateId(type, key));

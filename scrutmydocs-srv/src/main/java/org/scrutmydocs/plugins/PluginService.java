@@ -19,10 +19,19 @@
 
 package org.scrutmydocs.plugins;
 
-import org.quartz.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.scrutmydocs.exceptions.SMDException;
-import org.scrutmydocs.exceptions.SMDIllegalArgumentException;
 import org.scrutmydocs.jobs.PluginScrutinerJob;
 import org.scrutmydocs.services.SMDDocumentService;
 import org.slf4j.Logger;
@@ -31,11 +40,6 @@ import org.slf4j.LoggerFactory;
 import restx.factory.AutoStartable;
 import restx.factory.Component;
 import restx.factory.Factory;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * This class registers plugins and starts them
@@ -66,12 +70,12 @@ public class PluginService implements AutoStartable {
         plugins.put(plugin.type(), plugin);
     }
 
-    public Plugin getPlugin(String type) throws SMDIllegalArgumentException {
+    public Plugin getPlugin(String type)  {
         if (plugins.containsKey(type)) {
             return plugins.get(type);
         }
 
-        throw new SMDIllegalArgumentException("plugin [" + type + "] has not been registered.");
+        throw new IllegalArgumentException("plugin [" + type + "] has not been registered.");
     }
 
     

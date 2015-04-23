@@ -20,9 +20,9 @@
 package org.scrutmydocs.converters;
 
 import org.scrutmydocs.domain.SMDDocument;
-import org.scrutmydocs.exceptions.SMDJsonParsingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import restx.factory.Component;
 
 import javax.inject.Inject;
@@ -38,13 +38,13 @@ public class JsonToSMDDocumentService {
         this.jsonService = jsonService;
     }
 
-    public SMDDocument toDocument(String json) throws SMDJsonParsingException {
+    public SMDDocument toDocument(String json)  {
         try {
             SMDDocument smdDocument = jsonService.mapper().readValue(json, SMDDocument.class);
             return smdDocument;
         } catch (Exception e) {
             logger.warn("Can not parse json document to SMDDocument: [{}]", json);
-            throw new SMDJsonParsingException("Can not parse json document", e);
+            throw new RuntimeException("Can not parse json document", e);
         }
     }
 }

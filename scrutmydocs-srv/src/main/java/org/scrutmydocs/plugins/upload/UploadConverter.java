@@ -22,13 +22,14 @@ package org.scrutmydocs.plugins.upload;
 import org.scrutmydocs.converters.IdGeneratorService;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.exceptions.SMDException;
-import org.scrutmydocs.exceptions.SMDExtractionException;
 import org.scrutmydocs.plugins.tika.TikaConverter;
 import org.scrutmydocs.plugins.tika.TikaService;
 import org.scrutmydocs.services.SMDConfigurationService;
+
 import restx.factory.Component;
 
 import javax.inject.Inject;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,8 +61,8 @@ public class UploadConverter extends TikaConverter<byte[]> {
                     null,
                     new Long(source.length)
             );
-        } catch (IOException e) {
-            throw new SMDExtractionException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

@@ -28,9 +28,7 @@ import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.domain.SMDSearchQuery;
 import org.scrutmydocs.exceptions.SMDException;
 import org.scrutmydocs.exceptions.SMDIndexException;
-import org.scrutmydocs.exceptions.SMDJsonParsingException;
 import org.scrutmydocs.plugins.upload.UploadConverter;
-import org.scrutmydocs.services.SMDDocumentService;
 import org.scrutmydocs.services.SMDDocumentServiceElasticsearchImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,61 +43,60 @@ import restx.security.PermitAll;
 @RestxResource(ScrutmydocsApi.API_ROOT_DOCUMENT)
 public class SMDDocumentResource {
 
-    private static final Logger logger = LoggerFactory.getLogger(SMDDocumentResource.class);
-    @Inject
-    public  SMDDocumentServiceElasticsearchImpl documentService;
-   
-    @Inject
-    public  UploadConverter uploadConverter;
+	private static final Logger logger = LoggerFactory
+			.getLogger(SMDDocumentResource.class);
+	@Inject
+	public SMDDocumentServiceElasticsearchImpl documentService;
 
-//    @Inject
-//    public SMDDocumentResource(SMDDocumentService documentService, UploadConverter uploadConverter) {
-//        this.documentService = documentService;
-//        this.uploadConverter = uploadConverter;
-//    }
+	@Inject
+	public UploadConverter uploadConverter;
 
-    @POST("/_search")
-    @PermitAll
-    public SearchResponse search(SMDSearchQuery query) throws IOException {
-        logger.debug("_search([{}])", query);
-        try {
-            return documentService.search(query);
-        } catch (SMDJsonParsingException e) {
-            // TODO Remove when Restx will be fixed - see https://github.com/restx/restx/issues/121
-            throw new IOException(e);
-        }
-    }
+	// @Inject
+	// public SMDDocumentResource(SMDDocumentService documentService,
+	// UploadConverter uploadConverter) {
+	// this.documentService = documentService;
+	// this.uploadConverter = uploadConverter;
+	// }
 
-    @POST("")
-    @PermitAll
-    public void addDocument(SMDDocument document) throws IOException {
-        try {
-            documentService.index(document);
-        } catch (SMDIndexException e) {
-            // TODO Remove when Restx will be fixed - see https://github.com/restx/restx/issues/121
-            throw new IOException(e);
-        }
-    }
+	@POST("/_search")
+	@PermitAll
+	public SearchResponse search(SMDSearchQuery query) throws IOException {
+		logger.debug("_search([{}])", query);
+		return documentService.search(query);
+	}
 
-    // TODO implement it
-    @POST("/_upload")
-//    @Consumes("application/octet-stream")
-    @PermitAll
-    public void addBinaryDocument(byte[] data) throws IOException {
-        // TODO replace with actual filename
-        String filename = "dummy";
-        try {
-            SMDDocument document = uploadConverter.toDocument(data);
-            documentService.index(document);
-        } catch (SMDException e) {
-            // TODO Remove when Restx will be fixed - see https://github.com/restx/restx/issues/121
-            throw new IOException(e);
-        }
-    }
+	@POST("")
+	@PermitAll
+	public void addDocument(SMDDocument document) throws IOException {
+		try {
+			documentService.index(document);
+		} catch (SMDIndexException e) {
+			// TODO Remove when Restx will be fixed - see
+			// https://github.com/restx/restx/issues/121
+			throw new IOException(e);
+		}
+	}
 
-    @DELETE("/{id}")
-    @PermitAll
-    public void removeDocument(String id) {
-        documentService.deleteDocument(id);
-    }
+	// TODO implement it
+	@POST("/_upload")
+	// @Consumes("application/octet-stream")
+	@PermitAll
+	public void addBinaryDocument(byte[] data) throws IOException {
+		// TODO replace with actual filename
+		String filename = "dummy";
+		try {
+			SMDDocument document = uploadConverter.toDocument(data);
+			documentService.index(document);
+		} catch (SMDException e) {
+			// TODO Remove when Restx will be fixed - see
+			// https://github.com/restx/restx/issues/121
+			throw new IOException(e);
+		}
+	}
+
+	@DELETE("/{id}")
+	@PermitAll
+	public void removeDocument(String id) {
+		documentService.deleteDocument(id);
+	}
 }

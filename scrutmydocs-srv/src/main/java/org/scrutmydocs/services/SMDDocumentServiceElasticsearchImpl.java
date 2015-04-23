@@ -39,9 +39,7 @@ import org.scrutmydocs.converters.JsonToSMDDocumentService;
 import org.scrutmydocs.dao.elasticsearch.ElasticsearchService;
 import org.scrutmydocs.domain.SMDDocument;
 import org.scrutmydocs.domain.SMDSearchQuery;
-import org.scrutmydocs.exceptions.SMDDocumentNotFoundException;
 import org.scrutmydocs.exceptions.SMDIndexException;
-import org.scrutmydocs.exceptions.SMDJsonParsingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import restx.factory.Component;
@@ -108,11 +106,11 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
 	}
 
 	@Override
-	public SMDDocument getDocument(String id) throws SMDDocumentNotFoundException, SMDJsonParsingException {
+	public SMDDocument getDocument(String id)  {
 		GetResponse response = elasticsearchService.esClient().prepareGet(SMDINDEX, SMDTYPE, id).get();
 
 		if (!response.isExists()) {
-            throw new SMDDocumentNotFoundException();
+            return null;
         }
 
         return jsonToSMDDocumentService.toDocument(response.getSourceAsString());
@@ -124,7 +122,7 @@ public class SMDDocumentServiceElasticsearchImpl implements SMDDocumentService {
     }
 
     @Override
-	public SearchResponse search(SMDSearchQuery searchQuery) throws SMDJsonParsingException {
+	public SearchResponse search(SMDSearchQuery searchQuery)  {
         logger.debug("search({})", searchQuery);
 
 		QueryBuilder query;
